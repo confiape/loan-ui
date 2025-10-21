@@ -1,0 +1,25 @@
+<div class="tabs-container">
+  <!-- Tab Headers -->
+  <div class="tabs">
+    @for (tab of tabs(); track tab.id) {
+      <button
+        type="button"
+        class="tab-item"
+        [class.tab-item-active]="isActive(tab)"
+        [class.disabled]="tab.disabled"
+        [disabled]="tab.disabled"
+        (click)="selectTab(tab)"
+      >
+        @if (tab.icon) {
+          <span class="mr-2">{{ tab.icon }}</span>
+        }
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    {{ getActiveContent() }}
+  </div>
+</div>
