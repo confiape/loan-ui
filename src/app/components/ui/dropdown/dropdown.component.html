@@ -8,6 +8,7 @@
     [attr.aria-haspopup]="true"
     [attr.aria-expanded]="isOpen()"
     [attr.aria-label]="placeholder()"
+    [attr.aria-controls]="'dropdown-menu-' + placeholder()"
     role="combobox"
   >
     <span class="dropdown-button-content">
@@ -23,15 +24,22 @@
     <!-- Action icons -->
     <span class="dropdown-icons">
       @if (clearable() && selectedItem() && !disabled() && !loading()) {
-        <svg
+        <button
+          type="button"
           class="dropdown-clear-icon"
           (click)="clearSelection($event)"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+          aria-label="Clear selection"
+          style="background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center;"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
+          <svg
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            style="width: 1em; height: 1em;"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
       }
       <svg
         class="dropdown-arrow"
@@ -51,6 +59,7 @@
   <!-- Dropdown Menu -->
   @if (isOpen()) {
     <div
+      [id]="'dropdown-menu-' + placeholder()"
       class="dropdown-menu"
       [class.top]="position() === 'top'"
       [class.bottom]="position() === 'bottom'"

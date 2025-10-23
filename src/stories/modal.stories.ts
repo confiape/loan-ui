@@ -7,7 +7,7 @@ import { wrapInLightDarkComparison } from './story-helpers';
 
 // Wrapper component for interactive stories
 @Component({
-  selector: 'story-modal-wrapper',
+  selector: 'app-story-modal-wrapper',
   standalone: true,
   imports: [ModalComponent, CommonModule],
   template: `
@@ -43,8 +43,8 @@ class ModalWrapperComponent {
   isOpen = signal(false);
   title = '';
   subtitle = '';
-  size: any = 'md';
-  variant: any = 'default';
+  size: 'sm' | 'md' | 'lg' | 'xl' | 'full' = 'md';
+  variant: 'default' | 'success' | 'error' | 'warning' | 'info' = 'default';
   showCloseButton = true;
   closeOnBackdropClick = true;
   closeOnEscape = true;

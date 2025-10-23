@@ -8,6 +8,7 @@
     [attr.aria-haspopup]="true"
     [attr.aria-expanded]="isOpen()"
     [attr.aria-label]="placeholder()"
+    [attr.aria-controls]="'multiselect-menu-' + placeholder()"
     role="combobox"
   >
     <span class="multiselect-button-content">
@@ -28,15 +29,22 @@
               }
               <span class="multiselect-badge-text">{{ item.label }}</span>
               @if (!disabled() && !loading()) {
-                <svg
+                <button
+                  type="button"
                   class="multiselect-badge-remove"
                   (click)="removeBadge(item, $event)"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  [attr.aria-label]="'Remove ' + item.label"
+                  style="background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center;"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    style="width: 1em; height: 1em;"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
               }
             </span>
           }
@@ -49,15 +57,22 @@
     <!-- Arrow icon -->
     <span class="multiselect-icons">
       @if (clearable() && selectedItems().length > 0 && !disabled() && !loading()) {
-        <svg
+        <button
+          type="button"
           class="multiselect-clear-icon"
           (click)="clearAll(); $event.stopPropagation()"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+          aria-label="Clear all selections"
+          style="background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center;"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
+          <svg
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            style="width: 1em; height: 1em;"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
       }
       <svg
         class="multiselect-arrow"
@@ -77,6 +92,7 @@
   <!-- Dropdown Menu -->
   @if (isOpen()) {
     <div
+      [id]="'multiselect-menu-' + placeholder()"
       class="dropdown-menu multiselect-menu"
       [class.top]="position() === 'top'"
       [class.bottom]="position() === 'bottom'"
@@ -100,15 +116,22 @@
             aria-label="Search items"
           />
           @if (searchQuery()) {
-            <svg
+            <button
+              type="button"
               class="multiselect-search-clear"
               (click)="clearSearch()"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+              aria-label="Clear search"
+              style="background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center;"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+              <svg
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                style="width: 1em; height: 1em;"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
           }
         </div>
       }
@@ -142,7 +165,7 @@
           <div class="multiselect-empty">No results found</div>
         } @else {
           @for (item of filteredItems(); track item.value) {
-            <label
+            <div
               class="multiselect-item"
               [class.disabled]="item.disabled"
               [class.selected]="isSelected(item)"
@@ -152,27 +175,48 @@
               [attr.aria-disabled]="item.disabled"
             >
               @if (showCheckboxes()) {
-                <input
-                  type="checkbox"
-                  class="multiselect-checkbox"
-                  [checked]="isSelected(item)"
-                  [disabled]="item.disabled"
-                  (change)="toggleItem(item, $event)"
-                  tabindex="-1"
-                />
-              }
-              <span class="multiselect-item-content" (click)="!showCheckboxes() && toggleItem(item, $event)">
-                @if (item.icon) {
-                  <span class="multiselect-item-icon">{{ item.icon }}</span>
+                <label style="display: flex; align-items: center; width: 100%; cursor: pointer;">
+                  <input
+                    type="checkbox"
+                    class="multiselect-checkbox"
+                    [checked]="isSelected(item)"
+                    [disabled]="item.disabled"
+                    (change)="toggleItem(item, $event)"
+                    tabindex="-1"
+                    [attr.aria-label]="item.label"
+                  />
+                  <span class="multiselect-item-content">
+                  @if (item.icon) {
+                    <span class="multiselect-item-icon">{{ item.icon }}</span>
+                  }
+                  <span class="multiselect-item-label">{{ item.label }}</span>
+                </span>
+                @if (isSelected(item)) {
+                  <svg class="multiselect-check-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
                 }
-                <span class="multiselect-item-label">{{ item.label }}</span>
-              </span>
-              @if (isSelected(item)) {
-                <svg class="multiselect-check-icon" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
+              </label>
+              } @else {
+                <button
+                  type="button"
+                  class="multiselect-item-content"
+                  (click)="toggleItem(item, $event)"
+                  [disabled]="item.disabled"
+                  style="background: none; border: none; padding: 0.5rem; cursor: pointer; display: flex; align-items: center; width: 100%; text-align: left;"
+                >
+                  @if (item.icon) {
+                    <span class="multiselect-item-icon">{{ item.icon }}</span>
+                  }
+                  <span class="multiselect-item-label">{{ item.label }}</span>
+                  @if (isSelected(item)) {
+                    <svg class="multiselect-check-icon" fill="currentColor" viewBox="0 0 20 20" style="margin-left: auto;">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                  }
+                </button>
               }
-            </label>
+            </div>
           }
         }
       </div>

@@ -1,4 +1,4 @@
-import { Component, input, signal, ElementRef, HostListener } from '@angular/core';
+import { Component, input, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
@@ -18,7 +18,7 @@ export class TooltipComponent {
 
   // State
   isVisible = signal(false);
-  private timeoutId: any;
+  private timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   @HostListener('mouseenter')
   onMouseEnter() {

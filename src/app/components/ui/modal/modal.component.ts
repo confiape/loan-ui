@@ -7,6 +7,7 @@ import {
   effect,
   ElementRef,
   AfterViewInit,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -74,7 +75,9 @@ export class ModalComponent implements AfterViewInit {
     return classes.filter(Boolean).join(' ');
   });
 
-  constructor(private elementRef: ElementRef) {
+  private elementRef = inject(ElementRef);
+
+  constructor() {
     // Handle body scroll when modal opens/closes
     effect(() => {
       if (this.isOpen()) {

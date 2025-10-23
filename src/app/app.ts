@@ -1,4 +1,4 @@
-import { Component, signal, effect } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DropdownComponent, DropdownItem } from './components/ui/dropdown/dropdown.component';
 import {

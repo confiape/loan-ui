@@ -6,13 +6,14 @@ import {
   computed,
   HostListener,
   ElementRef,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 export interface MultiSelectItem {
   label: string;
-  value: any;
+  value: unknown;
   icon?: string;
   disabled?: boolean;
   group?: string;
@@ -97,7 +98,7 @@ export class MultiSelectComponent {
     return `${selected} of ${total} selected (${shown} shown)`;
   });
 
-  constructor(private elementRef: ElementRef) {}
+  private elementRef = inject(ElementRef);
 
   // Click outside to close
   @HostListener('document:click', ['$event'])
@@ -159,7 +160,11 @@ export class MultiSelectComponent {
 
   toggle() {
     if (this.disabled() || this.loading()) return;
-    this.isOpen() ? this.close() : this.open();
+    if (this.isOpen()) {
+      this.close();
+    } else {
+      this.open();
+    }
   }
 
   open() {

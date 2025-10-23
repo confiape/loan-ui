@@ -6,13 +6,14 @@ import {
   computed,
   HostListener,
   ElementRef,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 export interface DropdownItem {
   label: string;
-  value: any;
+  value: unknown;
   icon?: string;
   disabled?: boolean;
   divider?: boolean;
@@ -68,7 +69,7 @@ export class DropdownComponent {
     });
   });
 
-  constructor(private elementRef: ElementRef) {}
+  private elementRef = inject(ElementRef);
 
   // Click outside to close
   @HostListener('document:click', ['$event'])
@@ -129,7 +130,11 @@ export class DropdownComponent {
 
   toggle() {
     if (this.disabled() || this.loading()) return;
-    this.isOpen() ? this.close() : this.open();
+    if (this.isOpen()) {
+      this.close();
+    } else {
+      this.open();
+    }
   }
 
   open() {
@@ -163,7 +168,7 @@ export class DropdownComponent {
   clearSelection(event: Event) {
     event.stopPropagation();
     this.selectedItem.set(null);
-    this.selectionChange.emit(null as any);
+    this.selectionChange.emit(null as unknown as DropdownItem);
   }
 
   onSearchInput(event: Event) {

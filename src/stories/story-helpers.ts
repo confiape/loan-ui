@@ -101,7 +101,7 @@ export const createVariantComparison = (
  * @param props - Object with property names and values
  * @returns String of Angular bindings
  */
-export const generateBindings = (props: Record<string, any>): string => {
+export const generateBindings = (props: Record<string, unknown>): string => {
   return Object.entries(props)
     .map(([key, value]) => {
       if (typeof value === 'string') {
@@ -145,7 +145,7 @@ export const wrapInLightDarkComparison = (template: string): string => `
  * @returns Render function for Storybook stories
  */
 export const createLightDarkRender = (componentTag: string, bindings: string) => {
-  return (args: any) => ({
+  return (args: Record<string, unknown>) => ({
     props: args,
     template: createLightDarkComparison(componentTag, bindings),
   });

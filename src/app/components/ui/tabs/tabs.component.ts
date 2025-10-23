@@ -1,4 +1,4 @@
-import { Component, OnInit, input, output, signal, computed, effect } from '@angular/core';
+import { Component, OnInit, input, output, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -41,7 +41,7 @@ export class TabsComponent implements OnInit {
   activeTab = signal<string>('');
   focusedTabIndex = signal<number>(0);
 
-  constructor(private router: Router) {}
+  private router = inject(Router);
 
   // Computed properties
   activeTabItem = computed(() => {
@@ -180,13 +180,14 @@ export class TabsComponent implements OnInit {
         newIndex = this.findNextEnabledTab(tabsArray.length, -1);
         break;
       case 'Enter':
-      case ' ':
+      case ' ': {
         event.preventDefault();
         const tab = tabsArray[currentIndex];
         if (tab && !tab.disabled) {
           this.selectTab(tab, currentIndex);
         }
         return;
+      }
       default:
         return;
     }
