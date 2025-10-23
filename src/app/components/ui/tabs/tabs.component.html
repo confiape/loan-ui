@@ -1,25 +1,62 @@
-<div class="tabs-container">
-  <!-- Tab Headers -->
-  <div class="tabs">
-    @for (tab of tabs(); track tab.id) {
+<div [ngClass]="containerClasses()">
+  <!-- Tab List -->
+  <div
+    [ngClass]="tabListClasses()"
+    role="tablist"
+    [attr.aria-orientation]="orientation()"
+  >
+    @for (tab of tabs(); track tab.id; let i = $index) {
       <button
         type="button"
-        class="tab-item"
-        [class.tab-item-active]="isActive(tab)"
-        [class.disabled]="tab.disabled"
+        class="tab-button"
+        [class.tab-button-active]="isActive(tab)"
         [disabled]="tab.disabled"
-        (click)="selectTab(tab)"
+        [attr.data-index]="i"
+        role="tab"
+        [attr.aria-selected]="isActive(tab)"
+        [attr.aria-controls]="'tabpanel-' + tab.id"
+        [attr.id]="'tab-' + tab.id"
+        [attr.tabindex]="isActive(tab) ? 0 : -1"
+        [routerLink]="getRouterLink(tab)"
+        [routerLinkActive]="useRouter() ? 'tab-button-active' : ''"
+        (click)="selectTab(tab, i)"
+        (keydown)="handleKeyDown($event, i)"
       >
         @if (tab.icon) {
-          <span class="mr-2">{{ tab.icon }}</span>
+          <span class="tab-icon">{{ tab.icon }}</span>
         }
-        {{ tab.label }}
+        <span>{{ tab.label }}</span>
+        @if (tab.badge !== undefined && tab.badge !== null) {
+          @if (tab.badgeVariant) {
+            <span [ngClass]="getBadgeClass(tab.badgeVariant)">
+              {{ tab.badge }}
+            </span>
+          } @else {
+            <span class="tab-badge">{{ tab.badge }}</span>
+          }
+        }
       </button>
     }
   </div>
 
   <!-- Tab Content -->
-  <div class="tab-content">
-    {{ getActiveContent() }}
-  </div>
+  @if (useRouter()) {
+    <!-- Router Mode: Use router-outlet -->
+    <div class="tab-content" role="tabpanel">
+      <router-outlet></router-outlet>
+    </div>
+  } @else {
+    <!-- Content Mode: Display static content -->
+    @if (activeTabItem()) {
+      <div
+        class="tab-content"
+        role="tabpanel"
+        [attr.id]="'tabpanel-' + activeTabItem()!.id"
+        [attr.aria-labelledby]="'tab-' + activeTabItem()!.id"
+        tabindex="0"
+      >
+        {{ getActiveContent() }}
+      </div>
+    }
+  }
 </div>

@@ -29,6 +29,13 @@ npm test            # Run all tests with Karma
 ng test             # Same as above
 ```
 
+### Storybook
+```bash
+npm run storybook           # Start Storybook dev server on port 6006
+npm run build-storybook     # Build static Storybook for deployment
+```
+Storybook is configured for component development and documentation. Stories are located in [src/stories/](src/stories/).
+
 ### Prettier Formatting
 Prettier is configured in [package.json](package.json):
 - Print width: 100
@@ -55,6 +62,8 @@ ng generate --help                      # See all schematics
 - **Root Component**: [src/app/app.ts](src/app/app.ts) - uses signals for reactive state
 - **Routes**: Defined in [src/app/app.routes.ts](src/app/app.routes.ts) (currently empty)
 - **Config**: Application config in [src/app/app.config.ts](src/app/app.config.ts)
+- **Components**: UI components in [src/app/components/ui/](src/app/components/ui/)
+- **Stories**: Storybook stories in [src/stories/](src/stories/)
 
 ### TypeScript Configuration
 The project uses strict TypeScript settings ([tsconfig.json](tsconfig.json)):
@@ -123,6 +132,56 @@ The application uses a comprehensive semantic component system in [src/styles.cs
 - Use signals for reactive state (e.g., `signal()`, `computed()`)
 - Import dependencies directly in the component decorator's `imports` array
 - Use semantic HTML with ARIA attributes for accessibility
+- **ALWAYS create Storybook stories** for new UI components in [src/stories/](src/stories/)
+- Follow the component structure: `.ts`, `.html`, `.css` files (no inline templates/styles)
+
+### UI Components Library
+
+The project includes a growing library of reusable UI components in [src/app/components/ui/](src/app/components/ui/):
+
+#### Dropdown Component
+Location: [src/app/components/ui/dropdown/](src/app/components/ui/dropdown/)
+
+**Features:**
+- ✅ Full keyboard navigation (Arrow keys, Enter, Escape, Home, End)
+- ✅ WCAG accessibility compliant (ARIA attributes, roles)
+- ✅ Search/filter functionality
+- ✅ Clearable selection
+- ✅ Loading state with spinner
+- ✅ Disabled items and dividers
+- ✅ Icon support
+- ✅ Multiple sizes (sm, md, lg)
+- ✅ Multiple variants (primary, secondary, outline)
+- ✅ Position control (auto, top, bottom)
+- ✅ Dark mode support
+
+**Usage:**
+```typescript
+import { DropdownComponent, DropdownItem } from '@/components/ui/dropdown/dropdown.component';
+
+// In component
+items: DropdownItem[] = [
+  { label: 'Option 1', value: 1, icon: '🏠' },
+  { label: 'Option 2', value: 2 },
+  { divider: true, label: '', value: 'div' },
+  { label: 'Disabled', value: 3, disabled: true }
+];
+```
+
+```html
+<app-dropdown
+  [items]="items"
+  [searchable]="true"
+  [clearable]="true"
+  [size]="'md'"
+  [variant]="'primary'"
+  placeholder="Select option"
+  (selectionChange)="onSelect($event)"
+  (searchChange)="onSearch($event)"
+/>
+```
+
+**Storybook:** See [src/stories/dropdown.stories.ts](src/stories/dropdown.stories.ts) for 17+ examples
 
 ### Template Files
 - Component templates use `.html` extension (not inline)
@@ -142,6 +201,52 @@ The application uses a comprehensive semantic component system in [src/styles.cs
 - Use Angular signals for reactive state
 - No external state management library is currently configured
 - RxJS is available for reactive programming patterns
+
+### Storybook Guidelines
+
+When creating new UI components, **ALWAYS create corresponding Storybook stories**:
+
+1. **Location**: Create stories in [src/stories/](src/stories/) with naming: `component-name.stories.ts`
+
+2. **Story Structure**:
+```typescript
+import type { Meta, StoryObj } from '@storybook/angular';
+import { fn } from 'storybook/test';
+import { YourComponent } from '../app/components/ui/your-component/your-component.component';
+
+const meta: Meta<YourComponent> = {
+  title: 'UI/YourComponent',
+  component: YourComponent,
+  tags: ['autodocs'],
+  argTypes: {
+    // Define controls
+  },
+  args: {
+    // Default args with fn() for actions
+  },
+};
+
+export default meta;
+type Story = StoryObj<YourComponent>;
+
+export const Default: Story = {
+  args: { /* ... */ }
+};
+```
+
+3. **Story Coverage**: Create stories for:
+   - Default/basic usage
+   - All variants and sizes
+   - Different states (disabled, loading, error, etc.)
+   - Edge cases (empty, long content, etc.)
+   - Feature combinations
+
+4. **Best Practices**:
+   - Use `autodocs` tag for automatic documentation
+   - Add `argTypes` for interactive controls
+   - Use `fn()` from `storybook/test` for action logging
+   - Group related stories with descriptive names
+   - Add `parameters` for layout or other config when needed
 
 ## Dynamic Theming System
 
@@ -507,8 +612,46 @@ Modifica las variables CSS en `:root` para cambiar los colores base:
 5. **Accesibilidad**: Añade atributos ARIA donde sea necesario
 6. **Responsive**: Usa las clases de Tailwind para breakpoints (`md:`, `lg:`, etc.)
 
+## Component Development Workflow
+
+When creating new UI components, follow this workflow:
+
+1. **Create Component Files**:
+   ```bash
+   ng generate component components/ui/component-name
+   ```
+
+2. **Implement Component**:
+   - Use Angular signals for state (`signal()`, `computed()`)
+   - Add proper TypeScript types and interfaces
+   - Use CSS variables from the design system
+   - Implement ARIA attributes for accessibility
+   - Support dark mode via CSS variables
+
+3. **Create Storybook Stories**:
+   - Create `src/stories/component-name.stories.ts`
+   - Add multiple stories covering all use cases
+   - Use `autodocs` tag for automatic documentation
+   - Add interactive controls with `argTypes`
+
+4. **Test in Storybook**:
+   ```bash
+   npm run storybook
+   ```
+   - Verify all variants work correctly
+   - Test in both light and dark modes
+   - Test keyboard navigation and accessibility
+   - Test responsive behavior
+
+5. **Document Component**:
+   - Update this CLAUDE.md with component info
+   - Add usage examples
+   - List all features and props
+
 ## Notes
 - The application currently shows a live theming demo with two-column comparison (light/dark)
 - Spanish is used in the example content (loan application context: "Confiape Loan")
 - All hardcoded colors have been replaced with CSS variables for maximum flexibility
 - El sistema de diseño está completo y listo para producción
+- **Storybook** is configured and ready for component development and documentation
+- All UI components should be created in `src/app/components/ui/` with corresponding stories in `src/stories/`

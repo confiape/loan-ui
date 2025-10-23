@@ -84,14 +84,8 @@
           "options": {
             "configDir": ".storybook",
             "browserTarget": "loan-ui:build",
-            "compodoc": true,
+            "compodoc": false,
             "experimentalZoneless": true,
-            "compodocArgs": [
-              "-e",
-              "json",
-              "-d",
-              "."
-            ],
             "port": 6006
           }
         },
@@ -101,13 +95,7 @@
             "configDir": ".storybook",
             "browserTarget": "loan-ui:build",
             "experimentalZoneless": true,            
-            "compodoc": true,
-            "compodocArgs": [
-              "-e",
-              "json",
-              "-d",
-              "."
-            ],
+            "compodoc": false,
             "outputDir": "storybook-static"
           }
         }

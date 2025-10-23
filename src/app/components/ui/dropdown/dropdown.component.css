@@ -171,12 +171,23 @@
 /* Item States */
 .dropdown-item.highlighted {
   background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.dark .dropdown-item.highlighted {
+  background: var(--color-primary-900);
+  color: var(--color-primary-300);
 }
 
 .dropdown-item.selected {
   background: var(--color-primary-light);
   color: var(--color-primary);
   font-weight: var(--font-weight-medium);
+}
+
+.dark .dropdown-item.selected {
+  background: var(--color-primary-900);
+  color: var(--color-primary-300);
 }
 
 .dropdown-item.disabled {
@@ -211,6 +222,10 @@
   height: 1.25rem;
   color: var(--color-primary);
   flex-shrink: 0;
+}
+
+.dark .dropdown-check-icon {
+  color: var(--color-primary-300);
 }
 
 /* Divider */

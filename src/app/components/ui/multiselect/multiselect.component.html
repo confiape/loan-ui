@@ -1,22 +1,118 @@
-<div class="multiselect">
+<div class="multiselect" [class.multiselect-open]="isOpen()">
+  <!-- Toggle Button -->
   <button
     type="button"
-    class="btn btn-outline-primary dropdown-toggle"
-    [disabled]="disabled()"
+    [class]="buttonClass()"
+    [disabled]="disabled() || loading()"
     (click)="toggle()"
+    [attr.aria-haspopup]="true"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-label]="placeholder()"
+    role="combobox"
   >
-    <span>{{ displayText }}</span>
-    <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
-      <path
-        fill-rule="evenodd"
-        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-        clip-rule="evenodd"
-      ></path>
-    </svg>
+    <span class="multiselect-button-content">
+      @if (loading()) {
+        <svg class="spinner spinner-sm" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      }
+
+      <!-- Selected badges or text -->
+      @if (showBadges() && selectedItems().length > 0 && selectedItems().length <= 3) {
+        <div class="multiselect-badges">
+          @for (item of selectedItems(); track item.value) {
+            <span class="multiselect-badge">
+              @if (item.icon) {
+                <span class="multiselect-badge-icon">{{ item.icon }}</span>
+              }
+              <span class="multiselect-badge-text">{{ item.label }}</span>
+              @if (!disabled() && !loading()) {
+                <svg
+                  class="multiselect-badge-remove"
+                  (click)="removeBadge(item, $event)"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              }
+            </span>
+          }
+        </div>
+      } @else {
+        <span class="multiselect-button-text">{{ displayText() }}</span>
+      }
+    </span>
+
+    <!-- Arrow icon -->
+    <span class="multiselect-icons">
+      @if (clearable() && selectedItems().length > 0 && !disabled() && !loading()) {
+        <svg
+          class="multiselect-clear-icon"
+          (click)="clearAll(); $event.stopPropagation()"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      }
+      <svg
+        class="multiselect-arrow"
+        [class.rotate]="isOpen()"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+          clip-rule="evenodd"
+        ></path>
+      </svg>
+    </span>
   </button>
 
+  <!-- Dropdown Menu -->
   @if (isOpen()) {
-    <div class="dropdown-menu multiselect-menu">
+    <div
+      class="dropdown-menu multiselect-menu"
+      [class.top]="position() === 'top'"
+      [class.bottom]="position() === 'bottom'"
+      role="listbox"
+      [attr.aria-label]="placeholder()"
+      [attr.aria-multiselectable]="true"
+    >
+      <!-- Search Input -->
+      @if (searchable()) {
+        <div class="multiselect-search-wrapper">
+          <svg class="multiselect-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          <input
+            type="text"
+            class="multiselect-search"
+            placeholder="Search..."
+            [value]="searchQuery()"
+            (input)="onSearchInput($event)"
+            (click)="$event.stopPropagation()"
+            aria-label="Search items"
+          />
+          @if (searchQuery()) {
+            <svg
+              class="multiselect-search-clear"
+              (click)="clearSearch()"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          }
+        </div>
+      }
+
       <!-- Select All / Clear All -->
       @if (showSelectAll()) {
         <div class="multiselect-actions">
@@ -24,7 +120,7 @@
             type="button"
             class="action-btn"
             (click)="selectAll()"
-            [disabled]="isAllSelected"
+            [disabled]="isAllSelected()"
           >
             Select All
           </button>
@@ -40,35 +136,55 @@
         <div class="dropdown-divider"></div>
       }
 
-      <!-- Items -->
-      @for (item of items(); track item.value) {
-        <label
-          class="multiselect-item"
-          [class.disabled]="item.disabled"
-          [class.selected]="isSelected(item)"
-        >
-          @if (showCheckboxes()) {
-            <input
-              type="checkbox"
-              class="form-checkbox mr-2"
-              [checked]="isSelected(item)"
-              [disabled]="item.disabled"
-              (change)="toggleItem(item, $event)"
-            />
+      <!-- Items Container -->
+      <div class="multiselect-items-container">
+        @if (filteredItems().length === 0) {
+          <div class="multiselect-empty">No results found</div>
+        } @else {
+          @for (item of filteredItems(); track item.value) {
+            <label
+              class="multiselect-item"
+              [class.disabled]="item.disabled"
+              [class.selected]="isSelected(item)"
+              [class.highlighted]="isItemHighlighted(item)"
+              role="option"
+              [attr.aria-selected]="isSelected(item)"
+              [attr.aria-disabled]="item.disabled"
+            >
+              @if (showCheckboxes()) {
+                <input
+                  type="checkbox"
+                  class="multiselect-checkbox"
+                  [checked]="isSelected(item)"
+                  [disabled]="item.disabled"
+                  (change)="toggleItem(item, $event)"
+                  tabindex="-1"
+                />
+              }
+              <span class="multiselect-item-content" (click)="!showCheckboxes() && toggleItem(item, $event)">
+                @if (item.icon) {
+                  <span class="multiselect-item-icon">{{ item.icon }}</span>
+                }
+                <span class="multiselect-item-label">{{ item.label }}</span>
+              </span>
+              @if (isSelected(item)) {
+                <svg class="multiselect-check-icon" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              }
+            </label>
           }
-          <span (click)="!showCheckboxes() && toggleItem(item, $event)">
-            {{ item.label }}
-          </span>
-        </label>
-      }
+        }
+      </div>
 
-      <!-- Max selections info -->
-      @if (maxSelections() !== null) {
-        <div class="dropdown-divider"></div>
-        <div class="multiselect-info">
-          {{ selectedItems().length }} / {{ maxSelections() }} selected
-        </div>
-      }
+      <!-- Stats Footer -->
+      <div class="dropdown-divider"></div>
+      <div class="multiselect-stats">
+        {{ statsText() }}
+        @if (maxSelections() !== null) {
+          <span class="multiselect-max">(max: {{ maxSelections() }})</span>
+        }
+      </div>
     </div>
   }
 </div>

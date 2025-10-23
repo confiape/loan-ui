@@ -1,32 +1,67 @@
 @if (isOpen()) {
   <!-- Backdrop -->
-  <div class="modal-backdrop" (click)="onBackdropClick()"></div>
+  <div
+    class="modal-backdrop"
+    (click)="onBackdropClick()"
+    [class.loading]="loading()"
+  ></div>
 
-  <!-- Modal -->
-  <div class="modal">
+  <!-- Modal Container -->
+  <div
+    class="modal-container"
+    [class.modal-centered]="centered()"
+    role="dialog"
+    [attr.aria-modal]="true"
+    [attr.aria-labelledby]="modalId() + '-title'"
+    [attr.aria-describedby]="subtitle() ? modalId() + '-subtitle' : null"
+  >
     <div
-      class="modal-dialog"
-      [class]="sizeClass"
-      [class.dark]="darkMode()"
+      [class]="dialogClass()"
       (click)="onDialogClick($event)"
+      tabindex="-1"
     >
+      <!-- Loading Overlay -->
+      @if (loading()) {
+        <div class="modal-loading-overlay">
+          <svg class="spinner spinner-lg" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+      }
+
       <!-- Header -->
-      @if (title() || showCloseButton()) {
+      @if (showHeader() && (title() || showCloseButton() || variant() !== 'default')) {
         <div class="modal-header">
-          <h3 class="modal-title">{{ title() }}</h3>
+          <div class="modal-header-content">
+            @if (variant() !== 'default') {
+              <div class="modal-variant-icon" [style.color]="getVariantColor()">
+                <span class="modal-variant-icon-text">{{ getVariantIcon() }}</span>
+              </div>
+            }
+            <div class="modal-title-container">
+              @if (title()) {
+                <h2 class="modal-title" [id]="modalId() + '-title'">
+                  {{ title() }}
+                </h2>
+              }
+              @if (subtitle()) {
+                <p class="modal-subtitle" [id]="modalId() + '-subtitle'">
+                  {{ subtitle() }}
+                </p>
+              }
+            </div>
+          </div>
           @if (showCloseButton()) {
             <button
               type="button"
               class="modal-close"
               (click)="close()"
-              aria-label="Close"
+              [disabled]="loading()"
+              aria-label="Close modal"
             >
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fill-rule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clip-rule="evenodd"
-                ></path>
+              <svg class="modal-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             </button>
           }
@@ -34,14 +69,16 @@
       }
 
       <!-- Body -->
-      <div class="modal-body">
+      <div class="modal-body" [class.scrollable]="scrollable()">
         <ng-content></ng-content>
       </div>
 
-      <!-- Footer (if provided) -->
-      <div class="modal-footer">
-        <ng-content select="[modal-footer]"></ng-content>
-      </div>
+      <!-- Footer -->
+      @if (showFooter()) {
+        <div class="modal-footer">
+          <ng-content select="[modal-footer]"></ng-content>
+        </div>
+      }
     </div>
   </div>
 }
