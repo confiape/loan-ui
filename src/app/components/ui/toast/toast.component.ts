@@ -2,7 +2,13 @@ import { Component, input, output, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
-export type ToastPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
+export type ToastPosition =
+  | 'top-right'
+  | 'top-left'
+  | 'bottom-right'
+  | 'bottom-left'
+  | 'top-center'
+  | 'bottom-center';
 
 export interface Toast {
   id: string;
@@ -18,7 +24,7 @@ export interface Toast {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './toast.component.html',
-  styleUrl: './toast.component.css'
+  styleUrl: './toast.component.css',
 })
 export class ToastComponent {
   // Inputs
@@ -48,7 +54,7 @@ export class ToastComponent {
       success: 'toast-success',
       error: 'toast-error',
       warning: 'toast-warning',
-      info: 'toast-info'
+      info: 'toast-info',
     };
     return typeMap[this.toast().type];
   }
@@ -58,7 +64,7 @@ export class ToastComponent {
       success: '✓',
       error: '✕',
       warning: '⚠',
-      info: 'ℹ'
+      info: 'ℹ',
     };
     return icons[this.toast().type];
   }

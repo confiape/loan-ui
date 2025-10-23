@@ -40,28 +40,64 @@ type Story = StoryObj<TabsComponent>;
 
 // Sample data
 const basicTabs: TabItem[] = [
-  { id: 'tab1', label: 'Profile', content: 'Profile content here. Edit your personal information and settings.' },
-  { id: 'tab2', label: 'Dashboard', content: 'Dashboard content here. View your analytics and statistics.' },
-  { id: 'tab3', label: 'Settings', content: 'Settings content here. Configure your preferences and options.' },
+  {
+    id: 'tab1',
+    label: 'Profile',
+    content: 'Profile content here. Edit your personal information and settings.',
+  },
+  {
+    id: 'tab2',
+    label: 'Dashboard',
+    content: 'Dashboard content here. View your analytics and statistics.',
+  },
+  {
+    id: 'tab3',
+    label: 'Settings',
+    content: 'Settings content here. Configure your preferences and options.',
+  },
 ];
 
 const tabsWithIcons: TabItem[] = [
   { id: 'home', label: 'Home', icon: '🏠', content: 'Welcome to your home page!' },
   { id: 'profile', label: 'Profile', icon: '👤', content: 'Manage your profile information.' },
-  { id: 'messages', label: 'Messages', icon: '💬', content: 'Check your messages and notifications.' },
+  {
+    id: 'messages',
+    label: 'Messages',
+    icon: '💬',
+    content: 'Check your messages and notifications.',
+  },
   { id: 'settings', label: 'Settings', icon: '⚙️', content: 'Configure application settings.' },
 ];
 
 const tabsWithBadges: TabItem[] = [
-  { id: 'inbox', label: 'Inbox', icon: '📥', badge: 5, badgeVariant: 'primary', content: 'You have 5 unread messages.' },
+  {
+    id: 'inbox',
+    label: 'Inbox',
+    icon: '📥',
+    badge: 5,
+    badgeVariant: 'primary',
+    content: 'You have 5 unread messages.',
+  },
   { id: 'sent', label: 'Sent', icon: '📤', badge: 12, content: 'View your sent messages.' },
-  { id: 'drafts', label: 'Drafts', icon: '📝', badge: 3, badgeVariant: 'warning', content: 'You have 3 draft messages.' },
+  {
+    id: 'drafts',
+    label: 'Drafts',
+    icon: '📝',
+    badge: 3,
+    badgeVariant: 'warning',
+    content: 'You have 3 draft messages.',
+  },
   { id: 'trash', label: 'Trash', icon: '🗑️', content: 'View deleted messages.' },
 ];
 
 const tabsWithDisabled: TabItem[] = [
   { id: 'available', label: 'Available', content: 'This tab is available.' },
-  { id: 'disabled1', label: 'Disabled', content: 'This content is not accessible.', disabled: true },
+  {
+    id: 'disabled1',
+    label: 'Disabled',
+    content: 'This content is not accessible.',
+    disabled: true,
+  },
   { id: 'enabled', label: 'Enabled', content: 'This tab is enabled.' },
   { id: 'disabled2', label: 'Also Disabled', content: 'This is also disabled.', disabled: true },
 ];
@@ -93,7 +129,7 @@ export const Default: Story = {
       'app-tabs',
       `[tabs]="tabs"
         [variant]="variant"
-        [orientation]="orientation"`
+        [orientation]="orientation"`,
     ),
   }),
 };
@@ -110,7 +146,7 @@ export const Pills: Story = {
       'app-tabs',
       `[tabs]="tabs"
         [variant]="variant"
-        [orientation]="orientation"`
+        [orientation]="orientation"`,
     ),
   }),
 };
@@ -127,7 +163,7 @@ export const Underline: Story = {
       'app-tabs',
       `[tabs]="tabs"
         [variant]="variant"
-        [orientation]="orientation"`
+        [orientation]="orientation"`,
     ),
   }),
 };
@@ -144,7 +180,7 @@ export const Boxed: Story = {
       'app-tabs',
       `[tabs]="tabs"
         [variant]="variant"
-        [orientation]="orientation"`
+        [orientation]="orientation"`,
     ),
   }),
 };
@@ -161,7 +197,7 @@ export const Segmented: Story = {
       'app-tabs',
       `[tabs]="tabs"
         [variant]="variant"
-        [orientation]="orientation"`
+        [orientation]="orientation"`,
     ),
   }),
 };
@@ -402,7 +438,8 @@ export const CompleteExample: Story = {
         id: 'overview',
         label: 'Overview',
         icon: '📊',
-        content: 'Overview of all your activities and recent updates. Monitor your progress and key metrics.',
+        content:
+          'Overview of all your activities and recent updates. Monitor your progress and key metrics.',
       },
       {
         id: 'analytics',
@@ -410,7 +447,8 @@ export const CompleteExample: Story = {
         icon: '📈',
         badge: 'New',
         badgeVariant: 'success',
-        content: 'Detailed analytics and insights. View trends, charts, and performance indicators.',
+        content:
+          'Detailed analytics and insights. View trends, charts, and performance indicators.',
       },
       {
         id: 'reports',
@@ -543,12 +581,14 @@ export const KeyboardNavigationDemo: Story = {
       {
         id: 'k1',
         label: 'Tab 1',
-        content: 'Use Arrow keys (← →) to navigate between tabs. Press Enter or Space to activate a tab. Press Home to go to first tab, End to go to last tab.',
+        content:
+          'Use Arrow keys (← →) to navigate between tabs. Press Enter or Space to activate a tab. Press Home to go to first tab, End to go to last tab.',
       },
       {
         id: 'k2',
         label: 'Tab 2',
-        content: 'Keyboard navigation is fully supported. Try using Tab to focus the tab list, then use arrow keys.',
+        content:
+          'Keyboard navigation is fully supported. Try using Tab to focus the tab list, then use arrow keys.',
       },
       {
         id: 'k3',

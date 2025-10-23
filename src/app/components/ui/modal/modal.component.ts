@@ -1,4 +1,13 @@
-import { Component, input, output, signal, computed, effect, ElementRef, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  computed,
+  effect,
+  ElementRef,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
@@ -9,7 +18,7 @@ export type ModalVariant = 'default' | 'success' | 'error' | 'warning' | 'info';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './modal.component.html',
-  styleUrl: './modal.component.css'
+  styleUrl: './modal.component.css',
 })
 export class ModalComponent implements AfterViewInit {
   // Inputs
@@ -46,7 +55,7 @@ export class ModalComponent implements AfterViewInit {
       md: 'modal-md',
       lg: 'modal-lg',
       xl: 'modal-xl',
-      full: 'modal-full'
+      full: 'modal-full',
     };
     return sizeMap[this.size()];
   });
@@ -57,11 +66,7 @@ export class ModalComponent implements AfterViewInit {
   });
 
   dialogClass = computed(() => {
-    const classes = [
-      'modal-dialog',
-      this.sizeClass(),
-      this.variantClass()
-    ];
+    const classes = ['modal-dialog', this.sizeClass(), this.variantClass()];
 
     if (this.centered()) classes.push('modal-centered');
     if (this.scrollable()) classes.push('modal-scrollable');
@@ -141,7 +146,9 @@ export class ModalComponent implements AfterViewInit {
 
     // Try to focus first focusable element or close button
     const closeButton = modalElement.querySelector('.modal-close') as HTMLElement;
-    const firstInput = modalElement.querySelector('input, button, select, textarea, [tabindex]:not([tabindex="-1"])') as HTMLElement;
+    const firstInput = modalElement.querySelector(
+      'input, button, select, textarea, [tabindex]:not([tabindex="-1"])',
+    ) as HTMLElement;
 
     if (firstInput && firstInput !== closeButton) {
       firstInput.focus();
@@ -157,17 +164,17 @@ export class ModalComponent implements AfterViewInit {
     if (!modalElement) return;
 
     const nodeList = modalElement.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
 
     this.focusableElements = Array.from(nodeList)
       .filter((el) => {
         const htmlEl = el as HTMLElement;
-        return !htmlEl.hasAttribute('disabled') &&
-               htmlEl.offsetParent !== null &&
-               htmlEl.tabIndex !== -1;
+        return (
+          !htmlEl.hasAttribute('disabled') && htmlEl.offsetParent !== null && htmlEl.tabIndex !== -1
+        );
       })
-      .map(el => el as HTMLElement);
+      .map((el) => el as HTMLElement);
 
     modalElement.addEventListener('keydown', this.handleFocusTrap.bind(this));
   }
@@ -209,7 +216,7 @@ export class ModalComponent implements AfterViewInit {
       success: '✓',
       error: '✕',
       warning: '⚠',
-      info: 'ℹ'
+      info: 'ℹ',
     };
     return icons[this.variant()];
   }
@@ -220,7 +227,7 @@ export class ModalComponent implements AfterViewInit {
       success: 'var(--color-success)',
       error: 'var(--color-error)',
       warning: 'var(--color-warning)',
-      info: 'var(--color-info)'
+      info: 'var(--color-info)',
     };
     return colors[this.variant()];
   }

@@ -12,9 +12,7 @@ import { wrapInLightDarkComparison } from './story-helpers';
   imports: [ModalComponent, CommonModule],
   template: `
     <div>
-      <button class="btn btn-primary" (click)="isOpen.set(true)">
-        Open Modal
-      </button>
+      <button class="btn btn-primary" (click)="isOpen.set(true)">Open Modal</button>
 
       <app-modal
         [isOpen]="isOpen()"

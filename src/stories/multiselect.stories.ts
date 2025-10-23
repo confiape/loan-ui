@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { fn } from 'storybook/test';
-import { MultiSelectComponent, MultiSelectItem } from '../app/components/ui/multiselect/multiselect.component';
+import {
+  MultiSelectComponent,
+  MultiSelectItem,
+} from '../app/components/ui/multiselect/multiselect.component';
 import { createLightDarkComparison } from './story-helpers';
 
 const meta: Meta<MultiSelectComponent> = {
@@ -158,7 +161,7 @@ export const Default: Story = {
         [showBadges]="showBadges"
         [showCheckboxes]="showCheckboxes"
         [showSelectAll]="showSelectAll"
-        [clearable]="clearable"`
+        [clearable]="clearable"`,
     ),
   }),
 };
@@ -181,7 +184,7 @@ export const Primary: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -204,7 +207,7 @@ export const Secondary: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -227,7 +230,7 @@ export const Small: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -250,7 +253,7 @@ export const Large: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -273,7 +276,7 @@ export const WithIcons: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -298,7 +301,7 @@ export const WithBadges: Story = {
         [size]="size"
         [searchable]="searchable"
         [showBadges]="showBadges"
-        [showCheckboxes]="showCheckboxes"`
+        [showCheckboxes]="showCheckboxes"`,
     ),
   }),
 };
@@ -323,7 +326,7 @@ export const WithoutBadges: Story = {
         [size]="size"
         [searchable]="searchable"
         [showBadges]="showBadges"
-        [showCheckboxes]="showCheckboxes"`
+        [showCheckboxes]="showCheckboxes"`,
     ),
   }),
 };
@@ -346,7 +349,7 @@ export const WithDisabledItems: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -369,7 +372,7 @@ export const WithSearch: Story = {
         [searchable]="searchable"
         [variant]="variant"
         [size]="size"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -392,7 +395,7 @@ export const WithoutSearch: Story = {
         [searchable]="searchable"
         [variant]="variant"
         [size]="size"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -417,7 +420,7 @@ export const WithoutCheckboxes: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -442,7 +445,7 @@ export const WithMaxSelections: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -467,7 +470,7 @@ export const WithoutSelectAll: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -492,7 +495,7 @@ export const Disabled: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -517,7 +520,7 @@ export const Loading: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -542,7 +545,7 @@ export const NotClearable: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -567,7 +570,7 @@ export const PositionTop: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -590,7 +593,7 @@ export const LongList: Story = {
         [variant]="variant"
         [size]="size"
         [searchable]="searchable"
-        [showBadges]="showBadges"`
+        [showBadges]="showBadges"`,
     ),
   }),
 };
@@ -621,7 +624,7 @@ export const AllFeatures: Story = {
         [showSelectAll]="showSelectAll"
         [variant]="variant"
         [size]="size"
-        [maxSelections]="maxSelections"`
+        [maxSelections]="maxSelections"`,
     ),
   }),
 };
@@ -650,7 +653,7 @@ export const MinimalConfig: Story = {
         [showCheckboxes]="showCheckboxes"
         [showSelectAll]="showSelectAll"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };

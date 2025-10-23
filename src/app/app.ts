@@ -1,7 +1,10 @@
 import { Component, signal, effect } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DropdownComponent, DropdownItem } from './components/ui/dropdown/dropdown.component';
-import { MultiSelectComponent, MultiSelectItem } from './components/ui/multiselect/multiselect.component';
+import {
+  MultiSelectComponent,
+  MultiSelectItem,
+} from './components/ui/multiselect/multiselect.component';
 import { ModalComponent } from './components/ui/modal/modal.component';
 import { AccordionComponent, AccordionItem } from './components/ui/accordion/accordion.component';
 import { TooltipComponent } from './components/ui/tooltip/tooltip.component';
@@ -26,10 +29,10 @@ interface ColorConfig {
     AccordionComponent,
     TooltipComponent,
     TabsComponent,
-    ToastContainerComponent
+    ToastContainerComponent,
   ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('loan-ui');
@@ -54,44 +57,48 @@ export class App {
     {
       id: '1',
       title: '¿Qué es Flowbite?',
-      content: 'Flowbite es una biblioteca de componentes de código abierto construida con Tailwind CSS con elementos interactivos como dropdowns, modals, navbars, y más.',
-      isOpen: true
+      content:
+        'Flowbite es una biblioteca de componentes de código abierto construida con Tailwind CSS con elementos interactivos como dropdowns, modals, navbars, y más.',
+      isOpen: true,
     },
     {
       id: '2',
       title: '¿Es gratis usar Flowbite?',
-      content: 'Sí, Flowbite es 100% gratuito y de código abierto bajo la licencia MIT. Puedes usarlo en proyectos personales y comerciales.'
+      content:
+        'Sí, Flowbite es 100% gratuito y de código abierto bajo la licencia MIT. Puedes usarlo en proyectos personales y comerciales.',
     },
     {
       id: '3',
       title: '¿Qué tecnologías soporta?',
-      content: 'Flowbite funciona con Tailwind CSS v3.x y es compatible con React, Vue, Angular, Svelte y vanilla JavaScript.'
-    }
+      content:
+        'Flowbite funciona con Tailwind CSS v3.x y es compatible con React, Vue, Angular, Svelte y vanilla JavaScript.',
+    },
   ]);
 
   protected tabItems = signal<TabItem[]>([
     {
       id: 'profile',
       label: 'Perfil',
-      content: 'Información del perfil del usuario. Aquí puedes ver y editar tu información personal.',
-      icon: '👤'
+      content:
+        'Información del perfil del usuario. Aquí puedes ver y editar tu información personal.',
+      icon: '👤',
     },
     {
       id: 'dashboard',
       label: 'Dashboard',
-      content: 'Panel de control con estadísticas y métricas importantes de tu cuenta.'
+      content: 'Panel de control con estadísticas y métricas importantes de tu cuenta.',
     },
     {
       id: 'settings',
       label: 'Configuración',
-      content: 'Ajusta las preferencias y configuraciones de tu cuenta.'
+      content: 'Ajusta las preferencias y configuraciones de tu cuenta.',
     },
     {
       id: 'disabled',
       label: 'Deshabilitado',
       content: '',
-      disabled: true
-    }
+      disabled: true,
+    },
   ]);
 
   protected toasts = signal<Toast[]>([
@@ -101,8 +108,8 @@ export class App {
       title: 'Success!',
       message: 'Tu operación se completó correctamente',
       duration: 5000,
-      dismissible: true
-    }
+      dismissible: true,
+    },
   ]);
 
   protected isModalOpenLight = signal(false);
@@ -113,13 +120,33 @@ export class App {
   // Configuración de colores editables
   protected colors: ColorConfig[] = [
     { name: 'Primary', variable: 'primary', defaultLight: '#1d4ed8', defaultDark: '#2563eb' },
-    { name: 'Primary Hover', variable: 'primary-hover', defaultLight: '#1e40af', defaultDark: '#1d4ed8' },
+    {
+      name: 'Primary Hover',
+      variable: 'primary-hover',
+      defaultLight: '#1e40af',
+      defaultDark: '#1d4ed8',
+    },
     { name: 'Success', variable: 'success', defaultLight: '#15803d', defaultDark: '#16a34a' },
-    { name: 'Success Hover', variable: 'success-hover', defaultLight: '#166534', defaultDark: '#15803d' },
+    {
+      name: 'Success Hover',
+      variable: 'success-hover',
+      defaultLight: '#166534',
+      defaultDark: '#15803d',
+    },
     { name: 'Error', variable: 'error', defaultLight: '#b91c1c', defaultDark: '#dc2626' },
-    { name: 'Error Hover', variable: 'error-hover', defaultLight: '#991b1b', defaultDark: '#b91c1c' },
+    {
+      name: 'Error Hover',
+      variable: 'error-hover',
+      defaultLight: '#991b1b',
+      defaultDark: '#b91c1c',
+    },
     { name: 'Warning', variable: 'warning', defaultLight: '#eab308', defaultDark: '#facc15' },
-    { name: 'Warning Hover', variable: 'warning-hover', defaultLight: '#ca8a04', defaultDark: '#eab308' },
+    {
+      name: 'Warning Hover',
+      variable: 'warning-hover',
+      defaultLight: '#ca8a04',
+      defaultDark: '#eab308',
+    },
     { name: 'Info', variable: 'info', defaultLight: '#0891b2', defaultDark: '#06b6d4' },
     { name: 'Info Hover', variable: 'info-hover', defaultLight: '#0e7490', defaultDark: '#0891b2' },
   ];
@@ -132,7 +159,7 @@ export class App {
     const lightColors: Record<string, string> = {};
     const darkColors: Record<string, string> = {};
 
-    this.colors.forEach(color => {
+    this.colors.forEach((color) => {
       lightColors[color.variable] = color.defaultLight;
       darkColors[color.variable] = color.defaultDark;
     });
@@ -162,7 +189,7 @@ export class App {
     const lightColors: Record<string, string> = {};
     const darkColors: Record<string, string> = {};
 
-    this.colors.forEach(color => {
+    this.colors.forEach((color) => {
       lightColors[color.variable] = color.defaultLight;
       darkColors[color.variable] = color.defaultDark;
     });
@@ -242,7 +269,7 @@ export class App {
       success: { title: 'Éxito!', message: 'La operación se completó correctamente' },
       error: { title: 'Error!', message: 'Algo salió mal. Por favor intenta de nuevo' },
       warning: { title: 'Advertencia!', message: 'Ten cuidado con esta acción' },
-      info: { title: 'Información', message: 'Aquí hay información importante' }
+      info: { title: 'Información', message: 'Aquí hay información importante' },
     };
 
     const newToast: Toast = {
@@ -250,13 +277,13 @@ export class App {
       type,
       ...messages[type],
       duration: 5000,
-      dismissible: true
+      dismissible: true,
     };
 
-    this.toasts.update(toasts => [...toasts, newToast]);
+    this.toasts.update((toasts) => [...toasts, newToast]);
   }
 
   protected dismissToast(id: string) {
-    this.toasts.update(toasts => toasts.filter(t => t.id !== id));
+    this.toasts.update((toasts) => toasts.filter((t) => t.id !== id));
   }
 }

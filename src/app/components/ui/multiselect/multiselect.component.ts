@@ -1,4 +1,12 @@
-import { Component, input, output, signal, computed, HostListener, ElementRef } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  computed,
+  HostListener,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -15,7 +23,7 @@ export interface MultiSelectItem {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './multiselect.component.html',
-  styleUrl: './multiselect.component.css'
+  styleUrl: './multiselect.component.css',
 })
 export class MultiSelectComponent {
   // Inputs
@@ -46,7 +54,8 @@ export class MultiSelectComponent {
   // Computed
   buttonClass = computed(() => {
     const base = 'btn multiselect-toggle';
-    const variantClass = this.variant() === 'outline' ? 'btn-outline-primary' : `btn-${this.variant()}`;
+    const variantClass =
+      this.variant() === 'outline' ? 'btn-outline-primary' : `btn-${this.variant()}`;
     const sizeClass = `btn-${this.size()}`;
     const openClass = this.isOpen() ? 'active' : '';
     return `${base} ${variantClass} ${sizeClass} ${openClass}`;
@@ -56,7 +65,7 @@ export class MultiSelectComponent {
     const query = this.searchQuery().toLowerCase().trim();
     if (!query) return this.items();
 
-    return this.items().filter(item => {
+    return this.items().filter((item) => {
       return item.label.toLowerCase().includes(query);
     });
   });
@@ -73,9 +82,8 @@ export class MultiSelectComponent {
   });
 
   isAllSelected = computed(() => {
-    const selectableItems = this.items().filter(item => !item.disabled);
-    return selectableItems.length > 0 &&
-           this.selectedItems().length === selectableItems.length;
+    const selectableItems = this.items().filter((item) => !item.disabled);
+    return selectableItems.length > 0 && this.selectedItems().length === selectableItems.length;
   });
 
   statsText = computed(() => {
@@ -105,8 +113,10 @@ export class MultiSelectComponent {
   onKeyDown(event: KeyboardEvent) {
     if (!this.isOpen()) {
       // Open dropdown with Enter or Space
-      if ((event.key === 'Enter' || event.key === ' ') &&
-          this.elementRef.nativeElement.contains(event.target)) {
+      if (
+        (event.key === 'Enter' || event.key === ' ') &&
+        this.elementRef.nativeElement.contains(event.target)
+      ) {
         event.preventDefault();
         this.open();
       }
@@ -180,11 +190,11 @@ export class MultiSelectComponent {
     if (item.disabled) return;
 
     const currentSelections = this.selectedItems();
-    const index = currentSelections.findIndex(i => i.value === item.value);
+    const index = currentSelections.findIndex((i) => i.value === item.value);
 
     if (index > -1) {
       // Remove item
-      const newSelections = currentSelections.filter(i => i.value !== item.value);
+      const newSelections = currentSelections.filter((i) => i.value !== item.value);
       this.selectedItems.set(newSelections);
       this.selectionChange.emit(newSelections);
     } else {
@@ -204,16 +214,14 @@ export class MultiSelectComponent {
   }
 
   isSelected(item: MultiSelectItem): boolean {
-    return this.selectedItems().some(i => i.value === item.value);
+    return this.selectedItems().some((i) => i.value === item.value);
   }
 
   selectAll() {
-    const selectableItems = this.filteredItems().filter(item => !item.disabled);
+    const selectableItems = this.filteredItems().filter((item) => !item.disabled);
     const max = this.maxSelections();
 
-    const itemsToSelect = max === null
-      ? selectableItems
-      : selectableItems.slice(0, max);
+    const itemsToSelect = max === null ? selectableItems : selectableItems.slice(0, max);
 
     this.selectedItems.set(itemsToSelect);
     this.selectionChange.emit(itemsToSelect);
@@ -285,12 +293,14 @@ export class MultiSelectComponent {
   }
 
   private getSelectableItems(): MultiSelectItem[] {
-    return this.filteredItems().filter(item => !item.disabled);
+    return this.filteredItems().filter((item) => !item.disabled);
   }
 
   private scrollToHighlighted() {
     setTimeout(() => {
-      const highlighted = this.elementRef.nativeElement.querySelector('.multiselect-item.highlighted');
+      const highlighted = this.elementRef.nativeElement.querySelector(
+        '.multiselect-item.highlighted',
+      );
       highlighted?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }, 0);
   }

@@ -7,5 +7,10 @@ export { ModalComponent, type ModalSize } from './modal/modal.component';
 export { AccordionComponent, type AccordionItem } from './accordion/accordion.component';
 export { TooltipComponent, type TooltipPosition } from './tooltip/tooltip.component';
 export { TabsComponent, type TabItem } from './tabs/tabs.component';
-export { ToastComponent, type Toast, type ToastType, type ToastPosition as ToastPos } from './toast/toast.component';
+export {
+  ToastComponent,
+  type Toast,
+  type ToastType,
+  type ToastPosition as ToastPos,
+} from './toast/toast.component';
 export { ToastContainerComponent } from './toast/toast-container.component';

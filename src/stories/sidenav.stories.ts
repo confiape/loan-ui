@@ -193,7 +193,7 @@ const itemsWithDisabled: SidenavItem[] = [
 ];
 
 // Helper function to create side-by-side comparison template
-const createComparisonTemplate = (extraProps: string = '') => `
+const createComparisonTemplate = (extraProps = '') => `
   <div style="display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh;">
     <!-- Light Mode -->
     <div style="background-color: #f9fafb; position: relative; border-right: 2px solid #000;">
@@ -402,7 +402,8 @@ export const WithFooter: Story = {
   args: {
     items: basicItems,
     header: 'My App',
-    footer: '<small style="text-align: center; display: block;">© 2025 My Company<br/>v1.0.0</small>',
+    footer:
+      '<small style="text-align: center; display: block;">© 2025 My Company<br/>v1.0.0</small>',
     position: 'left',
     variant: 'default',
     collapsible: false,
@@ -618,7 +619,8 @@ export const FullExample: Story = {
     logo: '<strong style="font-size: 1.5rem;">💼</strong>',
     logoCollapsed: '<strong style="font-size: 1.25rem;">💼</strong>',
     header: 'Confiape Loan',
-    footer: '<div style="text-align: center;"><small>© 2025 Confiape<br/>Sistema de Préstamos</small></div>',
+    footer:
+      '<div style="text-align: center;"><small>© 2025 Confiape<br/>Sistema de Préstamos</small></div>',
     position: 'left',
     variant: 'default',
     collapsible: true,

@@ -22,7 +22,7 @@ export type TabOrientation = 'horizontal' | 'vertical';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './tabs.component.html',
-  styleUrl: './tabs.component.css'
+  styleUrl: './tabs.component.css',
 })
 export class TabsComponent implements OnInit {
   // Inputs
@@ -45,7 +45,7 @@ export class TabsComponent implements OnInit {
 
   // Computed properties
   activeTabItem = computed(() => {
-    return this.tabs().find(t => t.id === this.activeTab());
+    return this.tabs().find((t) => t.id === this.activeTab());
   });
 
   activeContent = computed(() => {
@@ -53,7 +53,7 @@ export class TabsComponent implements OnInit {
   });
 
   enabledTabs = computed(() => {
-    return this.tabs().filter(t => !t.disabled);
+    return this.tabs().filter((t) => !t.disabled);
   });
 
   containerClasses = computed(() => {
@@ -85,7 +85,7 @@ export class TabsComponent implements OnInit {
     const initialTab = this.activeTabId() || this.tabs()[0]?.id;
     if (initialTab) {
       this.activeTab.set(initialTab);
-      const initialIndex = this.tabs().findIndex(t => t.id === initialTab);
+      const initialIndex = this.tabs().findIndex((t) => t.id === initialTab);
       if (initialIndex !== -1) {
         this.focusedTabIndex.set(initialIndex);
       }
@@ -93,11 +93,9 @@ export class TabsComponent implements OnInit {
 
     // If using router mode, listen to route changes
     if (this.useRouter()) {
-      this.router.events
-        .pipe(filter(event => event instanceof NavigationEnd))
-        .subscribe(() => {
-          this.syncActiveTabWithRoute();
-        });
+      this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+        this.syncActiveTabWithRoute();
+      });
 
       // Sync initial route
       this.syncActiveTabWithRoute();
@@ -106,7 +104,7 @@ export class TabsComponent implements OnInit {
 
   private syncActiveTabWithRoute() {
     const currentUrl = this.router.url;
-    const matchedTab = this.tabs().find(tab => {
+    const matchedTab = this.tabs().find((tab) => {
       if (!tab.route) return false;
       // Support both exact and partial matches
       return currentUrl === tab.route || currentUrl.startsWith(tab.route + '/');
@@ -114,7 +112,7 @@ export class TabsComponent implements OnInit {
 
     if (matchedTab) {
       this.activeTab.set(matchedTab.id);
-      const index = this.tabs().findIndex(t => t.id === matchedTab.id);
+      const index = this.tabs().findIndex((t) => t.id === matchedTab.id);
       if (index !== -1) {
         this.focusedTabIndex.set(index);
       }
@@ -198,7 +196,7 @@ export class TabsComponent implements OnInit {
       // Focus the new tab
       setTimeout(() => {
         const tabButton = document.querySelector(
-          `.tab-button[data-index="${newIndex}"]`
+          `.tab-button[data-index="${newIndex}"]`,
         ) as HTMLElement;
         tabButton?.focus();
       }, 0);

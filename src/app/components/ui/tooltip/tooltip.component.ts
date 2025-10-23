@@ -8,7 +8,7 @@ export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './tooltip.component.html',
-  styleUrl: './tooltip.component.css'
+  styleUrl: './tooltip.component.css',
 })
 export class TooltipComponent {
   // Inputs
@@ -38,7 +38,7 @@ export class TooltipComponent {
       top: 'tooltip-top',
       bottom: 'tooltip-bottom',
       left: 'tooltip-left',
-      right: 'tooltip-right'
+      right: 'tooltip-right',
     };
     return positions[this.position()];
   }

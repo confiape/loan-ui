@@ -9,10 +9,7 @@
  * @param bindings - String of Angular bindings to pass to the component
  * @returns Template string with Light/Dark comparison
  */
-export const createLightDarkComparison = (
-  componentTag: string,
-  bindings: string = ''
-): string => `
+export const createLightDarkComparison = (componentTag: string, bindings = ''): string => `
   <div style="display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh;">
     <!-- Light Mode -->
     <div style="background-color: #f9fafb; position: relative; border-right: 2px solid #000; padding: 2rem;">
@@ -46,7 +43,7 @@ export const createLightDarkComparison = (
 export const createVariantComparison = (
   componentTag: string,
   variants: string[],
-  baseBindings: string = ''
+  baseBindings = '',
 ): string => `
   <div style="min-height: 100vh;">
     <!-- Light Mode Variants -->
@@ -67,7 +64,7 @@ export const createVariantComparison = (
             ${baseBindings}
           />
         </div>
-        `
+        `,
           )
           .join('')}
       </div>
@@ -91,7 +88,7 @@ export const createVariantComparison = (
             ${baseBindings}
           />
         </div>
-        `
+        `,
           )
           .join('')}
       </div>

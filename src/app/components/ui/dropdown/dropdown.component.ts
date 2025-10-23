@@ -1,4 +1,12 @@
-import { Component, input, output, signal, computed, HostListener, ElementRef } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  computed,
+  HostListener,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -16,7 +24,7 @@ export interface DropdownItem {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './dropdown.component.html',
-  styleUrl: './dropdown.component.css'
+  styleUrl: './dropdown.component.css',
 })
 export class DropdownComponent {
   // Inputs
@@ -43,7 +51,8 @@ export class DropdownComponent {
   // Computed
   buttonClass = computed(() => {
     const base = 'btn dropdown-toggle';
-    const variantClass = this.variant() === 'outline' ? 'btn-outline-primary' : `btn-${this.variant()}`;
+    const variantClass =
+      this.variant() === 'outline' ? 'btn-outline-primary' : `btn-${this.variant()}`;
     const sizeClass = `btn-${this.size()}`;
     const openClass = this.isOpen() ? 'active' : '';
     return `${base} ${variantClass} ${sizeClass} ${openClass}`;
@@ -53,7 +62,7 @@ export class DropdownComponent {
     const query = this.searchQuery().toLowerCase().trim();
     if (!query) return this.items();
 
-    return this.items().filter(item => {
+    return this.items().filter((item) => {
       if (item.divider) return false;
       return item.label.toLowerCase().includes(query);
     });
@@ -75,8 +84,10 @@ export class DropdownComponent {
   onKeyDown(event: KeyboardEvent) {
     if (!this.isOpen()) {
       // Open dropdown with Enter or Space
-      if ((event.key === 'Enter' || event.key === ' ') &&
-          this.elementRef.nativeElement.contains(event.target)) {
+      if (
+        (event.key === 'Enter' || event.key === ' ') &&
+        this.elementRef.nativeElement.contains(event.target)
+      ) {
         event.preventDefault();
         this.open();
       }
@@ -211,7 +222,7 @@ export class DropdownComponent {
   }
 
   private getSelectableItems(): DropdownItem[] {
-    return this.filteredItems().filter(item => !item.disabled && !item.divider);
+    return this.filteredItems().filter((item) => !item.disabled && !item.divider);
   }
 
   private scrollToHighlighted() {

@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface AccordionItem {
@@ -14,9 +14,9 @@ export interface AccordionItem {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './accordion.component.html',
-  styleUrl: './accordion.component.css'
+  styleUrl: './accordion.component.css',
 })
-export class AccordionComponent {
+export class AccordionComponent implements OnInit {
   // Inputs
   items = input.required<AccordionItem[]>();
   allowMultiple = input<boolean>(false);
@@ -31,8 +31,8 @@ export class AccordionComponent {
   ngOnInit() {
     // Initialize open items
     const initialOpenItems = this.items()
-      .filter(item => item.isOpen)
-      .map(item => item.id);
+      .filter((item) => item.isOpen)
+      .map((item) => item.id);
 
     this.openItems.set(new Set(initialOpenItems));
   }

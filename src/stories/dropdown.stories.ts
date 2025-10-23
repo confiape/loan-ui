@@ -136,7 +136,7 @@ export const Default: Story = {
       `[items]="items"
         [placeholder]="placeholder"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -155,7 +155,7 @@ export const Primary: Story = {
       `[items]="items"
         [placeholder]="placeholder"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -174,7 +174,7 @@ export const Secondary: Story = {
       `[items]="items"
         [placeholder]="placeholder"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -193,7 +193,7 @@ export const Small: Story = {
       `[items]="items"
         [placeholder]="placeholder"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -212,7 +212,7 @@ export const Large: Story = {
       `[items]="items"
         [placeholder]="placeholder"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -231,7 +231,7 @@ export const WithIcons: Story = {
       `[items]="items"
         [placeholder]="placeholder"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -250,7 +250,7 @@ export const WithDividers: Story = {
       `[items]="items"
         [placeholder]="placeholder"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -269,7 +269,7 @@ export const WithDisabledItems: Story = {
       `[items]="items"
         [placeholder]="placeholder"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -290,7 +290,7 @@ export const Searchable: Story = {
         [placeholder]="placeholder"
         [searchable]="searchable"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -311,7 +311,7 @@ export const SearchableWithIcons: Story = {
         [placeholder]="placeholder"
         [searchable]="searchable"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -332,7 +332,7 @@ export const Clearable: Story = {
         [placeholder]="placeholder"
         [clearable]="clearable"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -355,7 +355,7 @@ export const ClearableAndSearchable: Story = {
         [searchable]="searchable"
         [clearable]="clearable"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -376,7 +376,7 @@ export const Disabled: Story = {
         [placeholder]="placeholder"
         [disabled]="disabled"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -397,7 +397,7 @@ export const Loading: Story = {
         [placeholder]="placeholder"
         [loading]="loading"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
@@ -420,7 +420,7 @@ export const AllFeatures: Story = {
         [searchable]="searchable"
         [clearable]="clearable"
         [variant]="variant"
-        [size]="size"`
+        [size]="size"`,
     ),
   }),
 };
