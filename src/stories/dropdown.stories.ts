@@ -1,11 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { fn } from 'storybook/test';
 import { DropdownComponent, DropdownItem } from '../app/components/ui/dropdown/dropdown.component';
+import { createLightDarkComparison } from './story-helpers';
 
 const meta: Meta<DropdownComponent> = {
   title: 'UI/Dropdown',
   component: DropdownComponent,
   tags: ['autodocs'],
+  parameters: {
+    layout: 'fullscreen',
+  },
   argTypes: {
     variant: {
       control: 'select',
@@ -42,10 +45,6 @@ const meta: Meta<DropdownComponent> = {
       control: 'text',
       description: 'Placeholder text when no item is selected',
     },
-  },
-  args: {
-    selectionChange: fn(),
-    searchChange: fn(),
   },
 };
 
@@ -121,7 +120,7 @@ const longItemsList: DropdownItem[] = [
   { label: 'United States', value: 'US' },
 ];
 
-// Stories
+// Stories with Light vs Dark comparison
 
 export const Default: Story = {
   args: {
@@ -130,6 +129,16 @@ export const Default: Story = {
     variant: 'outline',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const Primary: Story = {
@@ -139,6 +148,16 @@ export const Primary: Story = {
     variant: 'primary',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const Secondary: Story = {
@@ -148,6 +167,16 @@ export const Secondary: Story = {
     variant: 'secondary',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const Small: Story = {
@@ -157,6 +186,16 @@ export const Small: Story = {
     size: 'sm',
     variant: 'outline',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const Large: Story = {
@@ -166,6 +205,16 @@ export const Large: Story = {
     size: 'lg',
     variant: 'primary',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const WithIcons: Story = {
@@ -175,6 +224,16 @@ export const WithIcons: Story = {
     variant: 'outline',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const WithDividers: Story = {
@@ -184,6 +243,16 @@ export const WithDividers: Story = {
     variant: 'outline',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const WithDisabledItems: Story = {
@@ -193,6 +262,16 @@ export const WithDisabledItems: Story = {
     variant: 'outline',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const Searchable: Story = {
@@ -203,6 +282,17 @@ export const Searchable: Story = {
     variant: 'outline',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [searchable]="searchable"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const SearchableWithIcons: Story = {
@@ -213,6 +303,17 @@ export const SearchableWithIcons: Story = {
     variant: 'outline',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [searchable]="searchable"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const Clearable: Story = {
@@ -223,6 +324,17 @@ export const Clearable: Story = {
     variant: 'outline',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [clearable]="clearable"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const ClearableAndSearchable: Story = {
@@ -234,6 +346,18 @@ export const ClearableAndSearchable: Story = {
     variant: 'outline',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [searchable]="searchable"
+        [clearable]="clearable"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const Disabled: Story = {
@@ -244,6 +368,17 @@ export const Disabled: Story = {
     variant: 'outline',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const Loading: Story = {
@@ -254,28 +389,17 @@ export const Loading: Story = {
     variant: 'outline',
     size: 'md',
   },
-};
-
-export const PositionTop: Story = {
-  args: {
-    items: basicItems,
-    placeholder: 'Opens upward',
-    position: 'top',
-    variant: 'outline',
-    size: 'md',
-  },
-  parameters: {
-    layout: 'centered',
-  },
-};
-
-export const LongList: Story = {
-  args: {
-    items: longItemsList,
-    placeholder: 'Select a country',
-    variant: 'outline',
-    size: 'md',
-  },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [loading]="loading"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 
 export const AllFeatures: Story = {
@@ -287,4 +411,16 @@ export const AllFeatures: Story = {
     variant: 'primary',
     size: 'lg',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-dropdown',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [searchable]="searchable"
+        [clearable]="clearable"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };

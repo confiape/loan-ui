@@ -1,11 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { fn } from 'storybook/test';
 import { MultiSelectComponent, MultiSelectItem } from '../app/components/ui/multiselect/multiselect.component';
+import { createLightDarkComparison } from './story-helpers';
 
 const meta: Meta<MultiSelectComponent> = {
   title: 'UI/MultiSelect',
   component: MultiSelectComponent,
   tags: ['autodocs'],
+  parameters: {
+    layout: 'fullscreen',
+  },
   argTypes: {
     variant: {
       control: 'select',
@@ -142,6 +146,21 @@ export const Default: Story = {
     showSelectAll: true,
     clearable: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"
+        [showCheckboxes]="showCheckboxes"
+        [showSelectAll]="showSelectAll"
+        [clearable]="clearable"`
+    ),
+  }),
 };
 
 export const Primary: Story = {
@@ -153,6 +172,18 @@ export const Primary: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const Secondary: Story = {
@@ -164,6 +195,18 @@ export const Secondary: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const Small: Story = {
@@ -175,6 +218,18 @@ export const Small: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const Large: Story = {
@@ -186,6 +241,18 @@ export const Large: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const WithIcons: Story = {
@@ -197,6 +264,18 @@ export const WithIcons: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const WithBadges: Story = {
@@ -209,6 +288,19 @@ export const WithBadges: Story = {
     showBadges: true,
     showCheckboxes: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"
+        [showCheckboxes]="showCheckboxes"`
+    ),
+  }),
 };
 
 export const WithoutBadges: Story = {
@@ -221,6 +313,19 @@ export const WithoutBadges: Story = {
     showBadges: false,
     showCheckboxes: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"
+        [showCheckboxes]="showCheckboxes"`
+    ),
+  }),
 };
 
 export const WithDisabledItems: Story = {
@@ -232,6 +337,18 @@ export const WithDisabledItems: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const WithSearch: Story = {
@@ -243,6 +360,18 @@ export const WithSearch: Story = {
     size: 'md',
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [searchable]="searchable"
+        [variant]="variant"
+        [size]="size"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const WithoutSearch: Story = {
@@ -254,6 +383,18 @@ export const WithoutSearch: Story = {
     size: 'md',
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [searchable]="searchable"
+        [variant]="variant"
+        [size]="size"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const WithoutCheckboxes: Story = {
@@ -266,6 +407,19 @@ export const WithoutCheckboxes: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [showCheckboxes]="showCheckboxes"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const WithMaxSelections: Story = {
@@ -278,6 +432,19 @@ export const WithMaxSelections: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [maxSelections]="maxSelections"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const WithoutSelectAll: Story = {
@@ -290,6 +457,19 @@ export const WithoutSelectAll: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [showSelectAll]="showSelectAll"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const Disabled: Story = {
@@ -302,6 +482,19 @@ export const Disabled: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const Loading: Story = {
@@ -314,6 +507,19 @@ export const Loading: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [loading]="loading"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const NotClearable: Story = {
@@ -326,6 +532,19 @@ export const NotClearable: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [clearable]="clearable"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const PositionTop: Story = {
@@ -338,9 +557,19 @@ export const PositionTop: Story = {
     searchable: true,
     showBadges: true,
   },
-  parameters: {
-    layout: 'centered',
-  },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [position]="position"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const LongList: Story = {
@@ -352,6 +581,18 @@ export const LongList: Story = {
     searchable: true,
     showBadges: true,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [variant]="variant"
+        [size]="size"
+        [searchable]="searchable"
+        [showBadges]="showBadges"`
+    ),
+  }),
 };
 
 export const AllFeatures: Story = {
@@ -367,6 +608,22 @@ export const AllFeatures: Story = {
     size: 'lg',
     maxSelections: 5,
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [searchable]="searchable"
+        [clearable]="clearable"
+        [showBadges]="showBadges"
+        [showCheckboxes]="showCheckboxes"
+        [showSelectAll]="showSelectAll"
+        [variant]="variant"
+        [size]="size"
+        [maxSelections]="maxSelections"`
+    ),
+  }),
 };
 
 export const MinimalConfig: Story = {
@@ -381,4 +638,19 @@ export const MinimalConfig: Story = {
     variant: 'outline',
     size: 'md',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-multiselect',
+      `[items]="items"
+        [placeholder]="placeholder"
+        [searchable]="searchable"
+        [clearable]="clearable"
+        [showBadges]="showBadges"
+        [showCheckboxes]="showCheckboxes"
+        [showSelectAll]="showSelectAll"
+        [variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };

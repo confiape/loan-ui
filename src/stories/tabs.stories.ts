@@ -1,10 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { TabsComponent, TabItem } from '../app/components/ui/tabs/tabs.component';
+import { createLightDarkComparison } from './story-helpers';
 
 const meta: Meta<TabsComponent> = {
   title: 'Components/Tabs',
   component: TabsComponent,
   tags: ['autodocs'],
+  parameters: {
+    layout: 'fullscreen',
+  },
   argTypes: {
     variant: {
       control: 'select',
@@ -83,6 +87,15 @@ export const Default: Story = {
     variant: 'default',
     orientation: 'horizontal',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-tabs',
+      `[tabs]="tabs"
+        [variant]="variant"
+        [orientation]="orientation"`
+    ),
+  }),
 };
 
 export const Pills: Story = {
@@ -91,6 +104,15 @@ export const Pills: Story = {
     variant: 'pills',
     orientation: 'horizontal',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-tabs',
+      `[tabs]="tabs"
+        [variant]="variant"
+        [orientation]="orientation"`
+    ),
+  }),
 };
 
 export const Underline: Story = {
@@ -99,6 +121,15 @@ export const Underline: Story = {
     variant: 'underline',
     orientation: 'horizontal',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-tabs',
+      `[tabs]="tabs"
+        [variant]="variant"
+        [orientation]="orientation"`
+    ),
+  }),
 };
 
 export const Boxed: Story = {
@@ -107,6 +138,15 @@ export const Boxed: Story = {
     variant: 'boxed',
     orientation: 'horizontal',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-tabs',
+      `[tabs]="tabs"
+        [variant]="variant"
+        [orientation]="orientation"`
+    ),
+  }),
 };
 
 export const Segmented: Story = {
@@ -115,6 +155,15 @@ export const Segmented: Story = {
     variant: 'segmented',
     orientation: 'horizontal',
   },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-tabs',
+      `[tabs]="tabs"
+        [variant]="variant"
+        [orientation]="orientation"`
+    ),
+  }),
 };
 
 // ============================================

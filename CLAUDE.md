@@ -206,47 +206,210 @@ items: DropdownItem[] = [
 
 When creating new UI components, **ALWAYS create corresponding Storybook stories**:
 
-1. **Location**: Create stories in [src/stories/](src/stories/) with naming: `component-name.stories.ts`
+#### 1. Location and Naming
+Create stories in [src/stories/](src/stories/) with naming: `component-name.stories.ts`
 
-2. **Story Structure**:
+#### 2. Story Structure with Light/Dark Comparison
+
+**IMPORTANTE**: Todos los stories DEBEN incluir comparación Light/Dark mode usando las funciones helper de [src/stories/story-helpers.ts](src/stories/story-helpers.ts)
+
+**Para componentes simples (dropdown, multiselect, buttons, etc.):**
 ```typescript
 import type { Meta, StoryObj } from '@storybook/angular';
-import { fn } from 'storybook/test';
+import { fn } from '@storybook/test';
 import { YourComponent } from '../app/components/ui/your-component/your-component.component';
+import { createLightDarkComparison } from './story-helpers';
 
 const meta: Meta<YourComponent> = {
   title: 'UI/YourComponent',
   component: YourComponent,
   tags: ['autodocs'],
+  parameters: {
+    layout: 'fullscreen',  // IMPORTANTE para comparación lado a lado
+  },
   argTypes: {
-    // Define controls
+    variant: {
+      control: 'select',
+      options: ['primary', 'secondary', 'outline'],
+      description: 'Visual style variant',
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Component size',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the component is disabled',
+    },
   },
   args: {
-    // Default args with fn() for actions
+    // Usa fn() de @storybook/test para action logging
+    onChange: fn(),
+    onClick: fn(),
   },
 };
 
 export default meta;
 type Story = StoryObj<YourComponent>;
 
+// Story con comparación Light/Dark
 export const Default: Story = {
-  args: { /* ... */ }
+  args: {
+    variant: 'primary',
+    size: 'md',
+    placeholder: 'Enter value',
+  },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-your-component',
+      `[variant]="variant"
+        [size]="size"
+        [placeholder]="placeholder"
+        (onChange)="onChange($event)"`
+    ),
+  }),
+};
+
+export const Secondary: Story = {
+  args: {
+    variant: 'secondary',
+    size: 'md',
+  },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-your-component',
+      `[variant]="variant"
+        [size]="size"`
+    ),
+  }),
 };
 ```
 
-3. **Story Coverage**: Create stories for:
-   - Default/basic usage
-   - All variants and sizes
-   - Different states (disabled, loading, error, etc.)
-   - Edge cases (empty, long content, etc.)
-   - Feature combinations
+**Para componentes complejos con templates custom (modals, dialogs, etc.):**
+```typescript
+import { wrapInLightDarkComparison } from './story-helpers';
 
-4. **Best Practices**:
-   - Use `autodocs` tag for automatic documentation
-   - Add `argTypes` for interactive controls
-   - Use `fn()` from `storybook/test` for action logging
-   - Group related stories with descriptive names
-   - Add `parameters` for layout or other config when needed
+export const ComplexStory: Story = {
+  render: (args) => ({
+    props: args,
+    template: wrapInLightDarkComparison(`
+      <app-modal [isOpen]="true" [title]="'Modal Title'">
+        <p>Modal content goes here</p>
+        <div modal-footer>
+          <button class="btn btn-primary">Confirm</button>
+        </div>
+      </app-modal>
+    `),
+    moduleMetadata: {
+      imports: [ModalComponent],
+    },
+  }),
+};
+```
+
+#### 3. Helper Functions Disponibles
+
+El archivo [src/stories/story-helpers.ts](src/stories/story-helpers.ts) provee funciones reutilizables:
+
+**`createLightDarkComparison(componentTag, bindings)`**
+- Para componentes simples
+- Crea grid 2 columnas: Light mode (izquierda) + Dark mode (derecha)
+- Parámetros:
+  - `componentTag`: Selector del componente (ej: `'app-dropdown'`)
+  - `bindings`: String con los bindings de Angular (ej: `'[items]="items" [variant]="variant"'`)
+- Retorna: Template string HTML listo para usar
+
+**`wrapInLightDarkComparison(template)`**
+- Para componentes complejos con templates personalizados
+- Envuelve cualquier template HTML en el grid Light/Dark
+- Parámetros:
+  - `template`: Template HTML completo
+- Retorna: Template string HTML envuelto
+
+**`createLightDarkRender(componentTag, bindings)`**
+- Shorthand para crear render functions
+- Retorna función render completa lista para usar
+- Uso: `render: createLightDarkRender('app-component', '[prop]="prop"')`
+
+**`generateBindings(props)`**
+- Helper para generar bindings automáticamente desde objeto
+- Menos usado, para casos avanzados
+
+#### 4. Características del Sistema Light/Dark
+
+Cada story mostrará:
+- **Columna Izquierda**: Light Mode
+  - Fondo claro (`#f9fafb`)
+  - Label "Light Mode" en la parte superior
+- **Columna Derecha**: Dark Mode
+  - Fondo oscuro (`#1f2937`)
+  - Clase `.dark` aplicada
+  - Label "Dark Mode" en la parte superior
+- **Divisor**: Línea negra de 2px entre ambos modos
+- **Layout**: Fullscreen para mejor visualización
+- **Responsivo**: Grid adaptable
+
+#### 5. Story Coverage
+
+Create stories for:
+- ✅ Default/basic usage
+- ✅ All variants (primary, secondary, outline, etc.)
+- ✅ All sizes (xs, sm, md, lg, xl)
+- ✅ Different states (disabled, loading, error, success)
+- ✅ Edge cases (empty, long content, overflow)
+- ✅ Feature combinations (icons + badges, searchable + clearable, etc.)
+- ✅ Accessibility demos (keyboard navigation)
+- ✅ Complex examples (real-world use cases)
+
+#### 6. Best Practices
+
+1. **SIEMPRE usa las helper functions** - No crear templates manualmente
+2. **Layout fullscreen** - Añade `layout: 'fullscreen'` en parameters
+3. **AutoDocs** - Usa tag `autodocs` para documentación automática
+4. **ArgTypes** - Define controles interactivos para todas las props importantes
+5. **Action Logging** - Usa `fn()` de `@storybook/test` para eventos
+6. **Nombres descriptivos** - Usa nombres claros (ej: `WithIconsAndBadges`, `DisabledState`)
+7. **Agrupa stories** - Organiza por categorías (Basic, With Icons, States, Complex)
+8. **Prueba ambos modos** - Siempre verifica que se vea bien en Light y Dark mode
+9. **Documenta props** - Añade `description` en cada argType
+10. **Sample data** - Define data de ejemplo reutilizable al inicio del file
+
+#### 7. Ejemplos de Stories Completos
+
+**Ver estos archivos como referencia:**
+- ✅ [src/stories/dropdown.stories.ts](src/stories/dropdown.stories.ts) - 17 stories, componente simple
+- ✅ [src/stories/multiselect.stories.ts](src/stories/multiselect.stories.ts) - 21 stories, componente con múltiples features
+- ✅ [src/stories/modal.stories.ts](src/stories/modal.stories.ts) - 17 stories, componente complejo con wrapper
+- ⏳ [src/stories/tabs.stories.ts](src/stories/tabs.stories.ts) - 40+ stories, múltiples variantes
+
+#### 8. Template de Story Mínimo
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/angular';
+import { YourComponent } from '../app/components/ui/your-component/your-component.component';
+import { createLightDarkComparison } from './story-helpers';
+
+const meta: Meta<YourComponent> = {
+  title: 'UI/YourComponent',
+  component: YourComponent,
+  tags: ['autodocs'],
+  parameters: { layout: 'fullscreen' },
+};
+
+export default meta;
+type Story = StoryObj<YourComponent>;
+
+export const Default: Story = {
+  args: { /* props */ },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison('app-your-component', `[prop]="prop"`),
+  }),
+};
+```
 
 ## Dynamic Theming System
 
@@ -278,380 +441,887 @@ onColorChange(variable: string, value: string, isDark: boolean)
 2. Use `var(--color-name)` in component styles
 3. Add to color picker configuration in [src/app/app.ts](src/app/app.ts) if needed
 
-## Design System - Complete Reference
+## Component Development Workflow
 
-Este proyecto incluye un sistema de diseño completo y profesional listo para reutilizar en cualquier proyecto desde cero.
+### Workflow Completo: Crear un Componente UI desde Cero
 
-### 1. Sistema de Colores
+Sigue este proceso paso a paso para crear componentes UI profesionales y completos:
 
-#### Paleta de Colores Semánticos
-Cada color tiene una escala completa (50-900) siguiendo el estándar de Flowbite/Tailwind:
+#### Paso 1: Generar Estructura del Componente
 
-**Primary (Blue)**
-- Variables: `--color-primary-50` hasta `--color-primary-900`
-- Atajos: `--color-primary`, `--color-primary-hover`, `--color-primary-light`
-
-**Success (Green)**
-- Variables: `--color-success-50` hasta `--color-success-900`
-- Atajos: `--color-success`, `--color-success-hover`, `--color-success-light`
-
-**Error (Red)**
-- Variables: `--color-error-50` hasta `--color-error-900`
-- Atajos: `--color-error`, `--color-error-hover`, `--color-error-light`
-
-**Warning (Yellow)**
-- Variables: `--color-warning-50` hasta `--color-warning-900`
-- Atajos: `--color-warning`, `--color-warning-hover`, `--color-warning-light`
-
-**Info (Cyan)**
-- Variables: `--color-info-50` hasta `--color-info-900`
-- Atajos: `--color-info`, `--color-info-hover`, `--color-info-light`
-
-**Gray (Neutral)**
-- Variables: `--color-gray-50` hasta `--color-gray-900`
-
-#### Colores de Contexto
-- **Texto**: `--color-text-primary`, `--color-text-secondary`, `--color-text-tertiary`, `--color-text-muted`
-- **Fondos**: `--color-bg-primary`, `--color-bg-secondary`, `--color-bg-tertiary`, `--color-bg-hover`
-- **Bordes**: `--color-border-light`, `--color-border`, `--color-border-dark`
-
-### 2. Sistema de Espaciado
-
-Escala consistente de espaciado (padding/margin):
-```css
---spacing-0: 0          /* 0px */
---spacing-1: 0.25rem    /* 4px */
---spacing-2: 0.5rem     /* 8px */
---spacing-3: 0.75rem    /* 12px */
---spacing-4: 1rem       /* 16px */
---spacing-5: 1.25rem    /* 20px */
---spacing-6: 1.5rem     /* 24px */
---spacing-8: 2rem       /* 32px */
---spacing-10: 2.5rem    /* 40px */
---spacing-12: 3rem      /* 48px */
---spacing-16: 4rem      /* 64px */
---spacing-20: 5rem      /* 80px */
---spacing-24: 6rem      /* 96px */
---spacing-32: 8rem      /* 128px */
+```bash
+ng generate component components/ui/component-name --standalone
 ```
 
-**Uso**: `padding: var(--spacing-4);` o usa las clases de Tailwind (`p-4`, `m-6`, etc.)
+Esto crea:
+- `src/app/components/ui/component-name/component-name.component.ts`
+- `src/app/components/ui/component-name/component-name.component.html`
+- `src/app/components/ui/component-name/component-name.component.css`
+- `src/app/components/ui/component-name/component-name.component.spec.ts`
 
-### 3. Sistema Tipográfico
+#### Paso 2: Implementar el Componente TypeScript
 
-#### Tamaños de Fuente
-```css
---font-size-xs: 0.75rem     /* 12px */
---font-size-sm: 0.875rem    /* 14px */
---font-size-base: 1rem      /* 16px */
---font-size-lg: 1.125rem    /* 18px */
---font-size-xl: 1.25rem     /* 20px */
---font-size-2xl: 1.5rem     /* 24px */
---font-size-3xl: 1.875rem   /* 30px */
---font-size-4xl: 2.25rem    /* 36px */
---font-size-5xl: 3rem       /* 48px */
---font-size-6xl: 3.75rem    /* 60px */
-```
+**Estructura recomendada:**
 
-#### Alturas de Línea
-```css
---line-height-none: 1
---line-height-tight: 1.25
---line-height-snug: 1.375
---line-height-normal: 1.5
---line-height-relaxed: 1.625
---line-height-loose: 2
-```
+```typescript
+import { Component, signal, computed, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-#### Pesos de Fuente
-```css
---font-weight-thin: 100
---font-weight-light: 300
---font-weight-normal: 400
---font-weight-medium: 500
---font-weight-semibold: 600
---font-weight-bold: 700
---font-weight-extrabold: 800
---font-weight-black: 900
-```
+// Define interfaces para props y tipos
+export interface ComponentNameItem {
+  id: string;
+  label: string;
+  value: any;
+  icon?: string;
+  disabled?: boolean;
+}
 
-#### Clases de Tipografía Semánticas
-```html
-<!-- Encabezados -->
-<h1 class="heading-1">Título Principal</h1>    <!-- 3rem/48px, extrabold -->
-<h2 class="heading-2">Título Sección</h2>      <!-- 2.25rem/36px, bold -->
-<h3 class="heading-3">Subtítulo</h3>           <!-- 1.875rem/30px, bold -->
-<h4 class="heading-4">Encabezado</h4>          <!-- 1.5rem/24px, bold -->
-<h5 class="heading-5">Sub-encabezado</h5>      <!-- 1.25rem/20px, bold -->
-<h6 class="heading-6">Título Pequeño</h6>      <!-- 1.125rem/18px, bold -->
+export type ComponentVariant = 'primary' | 'secondary' | 'outline' | 'success' | 'error';
+export type ComponentSize = 'sm' | 'md' | 'lg';
 
-<!-- Texto de cuerpo -->
-<p class="text-lead">Texto introductorio destacado</p>     <!-- 18px, normal -->
-<p class="text-large">Texto grande</p>                     <!-- 18px, semibold -->
-<p class="text-default">Texto por defecto</p>              <!-- 16px, normal -->
-<p class="text-small">Texto pequeño</p>                    <!-- 14px, normal -->
-<p class="text-tiny">Texto muy pequeño</p>                 <!-- 12px, normal -->
+@Component({
+  selector: 'app-component-name',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './component-name.component.html',
+  styleUrl: './component-name.component.css',
+})
+export class ComponentNameComponent {
+  // ==========================================
+  // INPUTS (usando Angular signals input())
+  // ==========================================
 
-<!-- Enlaces -->
-<a href="#" class="link">Enlace</a>                        <!-- Con hover underline -->
-<span class="text-bold">Texto en negrita</span>
-```
+  items = input<ComponentNameItem[]>([]);
+  variant = input<ComponentVariant>('primary');
+  size = input<ComponentSize>('md');
+  disabled = input<boolean>(false);
+  placeholder = input<string>('');
 
-### 4. Bordes y Radios
+  // ==========================================
+  // OUTPUTS (usando Angular signals output())
+  // ==========================================
 
-#### Border Radius
-```css
---border-radius-none: 0
---border-radius-sm: 0.125rem    /* 2px */
---border-radius-base: 0.25rem   /* 4px */
---border-radius-md: 0.375rem    /* 6px */
---border-radius-lg: 0.5rem      /* 8px */
---border-radius-xl: 0.75rem     /* 12px */
---border-radius-2xl: 1rem       /* 16px */
---border-radius-3xl: 1.5rem     /* 24px */
---border-radius-full: 9999px    /* Completamente redondo */
-```
+  selectionChange = output<ComponentNameItem>();
+  itemClick = output<ComponentNameItem>();
 
-**Clases**: `.rounded-none`, `.rounded`, `.rounded-lg`, `.rounded-full`, etc.
+  // ==========================================
+  // STATE (usando signals)
+  // ==========================================
 
-#### Anchos de Borde
-```css
---border-width-0: 0
---border-width-1: 1px
---border-width-2: 2px
---border-width-4: 4px
---border-width-8: 8px
-```
+  isOpen = signal<boolean>(false);
+  selectedItem = signal<ComponentNameItem | null>(null);
+  focusedIndex = signal<number>(-1);
 
-**Clases**: `.border`, `.border-t`, `.border-b`, `.border-l`, `.border-r`
+  // ==========================================
+  // COMPUTED (valores derivados)
+  // ==========================================
 
-### 5. Sombras
+  componentClasses = computed(() => {
+    const variant = this.variant();
+    const size = this.size();
+    const disabled = this.disabled();
 
-```css
---shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05)
---shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1)
---shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1)
---shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1)
---shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1)
---shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25)
---shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)
---shadow-none: none
-```
+    return {
+      [`component-${variant}`]: true,
+      [`component-${size}`]: true,
+      'component-disabled': disabled,
+    };
+  });
 
-**Clases**: `.shadow-sm`, `.shadow`, `.shadow-md`, `.shadow-lg`, `.shadow-xl`, `.shadow-2xl`, `.shadow-inner`, `.shadow-none`
+  filteredItems = computed(() => {
+    return this.items().filter(item => !item.disabled);
+  });
 
-### 6. Transiciones
+  // ==========================================
+  // METHODS
+  // ==========================================
 
-#### Duraciones
-```css
---transition-duration-75: 75ms
---transition-duration-100: 100ms
---transition-duration-150: 150ms
---transition-duration-200: 200ms
---transition-duration-300: 300ms
---transition-duration-500: 500ms
-```
+  toggleOpen() {
+    if (!this.disabled()) {
+      this.isOpen.update(v => !v);
+    }
+  }
 
-#### Timing Functions
-```css
---transition-timing-linear: linear
---transition-timing-ease: ease
---transition-timing-ease-in: ease-in
---transition-timing-ease-out: ease-out
---transition-timing-ease-in-out: ease-in-out
-```
+  selectItem(item: ComponentNameItem) {
+    if (!item.disabled) {
+      this.selectedItem.set(item);
+      this.selectionChange.emit(item);
+      this.isOpen.set(false);
+    }
+  }
 
-**Clases**: `.transition`, `.transition-fast`, `.transition-slow`
+  // Keyboard navigation
+  handleKeyDown(event: KeyboardEvent) {
+    switch(event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.focusNext();
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        this.focusPrevious();
+        break;
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        this.selectFocused();
+        break;
+      case 'Escape':
+        this.isOpen.set(false);
+        break;
+    }
+  }
 
-### 7. Z-Index
+  private focusNext() {
+    const items = this.filteredItems();
+    const currentIndex = this.focusedIndex();
+    const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+    this.focusedIndex.set(nextIndex);
+  }
 
-```css
---z-0: 0
---z-10: 10
---z-20: 20
---z-30: 30
---z-40: 40    /* Modals backdrop */
---z-50: 50    /* Modals, tooltips */
---z-auto: auto
-```
+  private focusPrevious() {
+    const items = this.filteredItems();
+    const currentIndex = this.focusedIndex();
+    const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+    this.focusedIndex.set(prevIndex);
+  }
 
-### 8. Contenedores Responsivos
-
-```css
---container-sm: 640px
---container-md: 768px
---container-lg: 1024px
---container-xl: 1280px
---container-2xl: 1536px
-```
-
-**Clases**: `.container-sm`, `.container-md`, `.container-lg`, `.container-xl`, `.container-2xl`
-
-**Ejemplo**:
-```html
-<div class="container-lg">
-  <!-- Contenido centrado con max-width de 1024px -->
-</div>
-```
-
-### 9. Componentes Completos
-
-Todos los componentes están documentados en la sección "Semantic Component System" arriba. Incluyen:
-
-- **Botones**: 7 variantes de color + outline + 5 tamaños
-- **Forms**: Inputs, labels, checkboxes, floating labels, validación
-- **Cards**: Card, card-link, títulos, botones
-- **Badges**: Variantes de color + pill
-- **Alerts**: Con iconos y variantes semánticas
-- **Navigation**: Navbar, breadcrumb, sidebar, tabs
-- **Tables**: Headers, rows, cells, hover states
-- **Progress**: Barras de progreso con variantes
-- **UI Elements**: Spinners, pagination, tooltips, dropdowns, accordions
-- **List Groups**: Listas interactivas
-- **Timeline**: Línea de tiempo con iconos
-
-### 10. Modo Oscuro (Dark Mode)
-
-**Todo el sistema funciona automáticamente en modo oscuro**:
-
-```html
-<!-- Light mode por defecto -->
-<div class="card">...</div>
-
-<!-- Dark mode -->
-<div class="dark">
-  <div class="card">...</div>  <!-- Se ve oscuro automáticamente -->
-</div>
-```
-
-Todas las variables CSS tienen versiones para light y dark mode definidas en [src/styles.css](src/styles.css).
-
-### 11. Cómo Empezar un Proyecto desde Cero
-
-#### Paso 1: Copiar el Sistema de Diseño
-Copia estos archivos a tu nuevo proyecto:
-- [src/styles.css](src/styles.css) - Sistema completo de diseño
-- [.postcssrc.json](.postcssrc.json) - Configuración de Tailwind CSS v4
-
-#### Paso 2: Usar los Componentes
-```html
-<!-- Ejemplo de página típica -->
-<div class="container-xl">
-  <!-- Header -->
-  <header class="mb-8">
-    <h1 class="heading-1">Mi Aplicación</h1>
-    <p class="text-lead">Descripción de la aplicación</p>
-  </header>
-
-  <!-- Contenido principal -->
-  <main class="space-y-6">
-    <!-- Card con formulario -->
-    <div class="card">
-      <h2 class="heading-3 mb-4">Formulario de Contacto</h2>
-
-      <form class="space-y-4">
-        <div>
-          <label class="form-label">Nombre</label>
-          <input type="text" class="form-input" placeholder="Tu nombre">
-        </div>
-
-        <div>
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" placeholder="tu@email.com">
-        </div>
-
-        <div class="flex gap-3">
-          <button type="submit" class="btn btn-primary">Enviar</button>
-          <button type="button" class="btn btn-outline-secondary">Cancelar</button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Tabla -->
-    <div class="card">
-      <h3 class="heading-4 mb-4">Usuarios</h3>
-      <table class="table">
-        <thead class="table-header">
-          <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="table-row">
-            <td class="table-cell">John Doe</td>
-            <td class="table-cell">john@example.com</td>
-            <td class="table-cell">
-              <span class="badge badge-success">Activo</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </main>
-</div>
-```
-
-#### Paso 3: Personalizar Colores
-Modifica las variables CSS en `:root` para cambiar los colores base:
-```css
-:root {
-  --color-primary: #tu-color;
-  --color-success: #tu-color;
-  /* etc. */
+  private selectFocused() {
+    const items = this.filteredItems();
+    const index = this.focusedIndex();
+    if (index >= 0 && index < items.length) {
+      this.selectItem(items[index]);
+    }
+  }
 }
 ```
 
-### 12. Mejores Prácticas
+**Puntos clave:**
+- ✅ Usa `input()` para props (reemplaza `@Input()`)
+- ✅ Usa `output()` para events (reemplaza `@Output()`)
+- ✅ Usa `signal()` para estado interno
+- ✅ Usa `computed()` para valores derivados
+- ✅ Define interfaces y tipos TypeScript
+- ✅ Implementa keyboard navigation completo
+- ✅ Agrupa código en secciones claras (Inputs, Outputs, State, Computed, Methods)
 
-1. **Usa clases semánticas**: Prefiere `.btn-success` sobre `.btn-green`
-2. **Respeta el espaciado**: Usa la escala de espaciado definida
-3. **Modo oscuro**: Siempre prueba tus componentes en ambos modos
-4. **Variables CSS**: Usa `var(--variable)` para todos los colores y tamaños
-5. **Accesibilidad**: Añade atributos ARIA donde sea necesario
-6. **Responsive**: Usa las clases de Tailwind para breakpoints (`md:`, `lg:`, etc.)
+#### Paso 3: Implementar el Template HTML
 
-## Component Development Workflow
+**Estructura recomendada:**
 
-When creating new UI components, follow this workflow:
+```html
+<div
+  class="component-wrapper"
+  [ngClass]="componentClasses()"
+  [attr.data-variant]="variant()"
+  [attr.data-size]="size()"
+>
+  <!-- Button/Trigger -->
+  <button
+    type="button"
+    class="component-trigger"
+    [disabled]="disabled()"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-haspopup]="true"
+    [attr.aria-label]="placeholder()"
+    (click)="toggleOpen()"
+    (keydown)="handleKeyDown($event)"
+  >
+    @if (selectedItem(); as item) {
+      <span class="component-selected">
+        @if (item.icon) {
+          <span class="component-icon">{{ item.icon }}</span>
+        }
+        <span class="component-label">{{ item.label }}</span>
+      </span>
+    } @else {
+      <span class="component-placeholder">{{ placeholder() }}</span>
+    }
 
-1. **Create Component Files**:
-   ```bash
-   ng generate component components/ui/component-name
-   ```
+    <span class="component-arrow" [class.open]="isOpen()">▼</span>
+  </button>
 
-2. **Implement Component**:
-   - Use Angular signals for state (`signal()`, `computed()`)
-   - Add proper TypeScript types and interfaces
-   - Use CSS variables from the design system
-   - Implement ARIA attributes for accessibility
-   - Support dark mode via CSS variables
+  <!-- Dropdown Menu -->
+  @if (isOpen()) {
+    <div
+      class="component-menu"
+      role="listbox"
+      [attr.aria-label]="'Options list'"
+    >
+      @for (item of items(); track item.id) {
+        @if (!item.disabled) {
+          <div
+            class="component-item"
+            role="option"
+            [class.selected]="selectedItem()?.id === item.id"
+            [class.focused]="$index === focusedIndex()"
+            [attr.aria-selected]="selectedItem()?.id === item.id"
+            (click)="selectItem(item)"
+          >
+            @if (item.icon) {
+              <span class="component-item-icon">{{ item.icon }}</span>
+            }
+            <span class="component-item-label">{{ item.label }}</span>
+          </div>
+        } @else {
+          <div class="component-item component-item-disabled">
+            @if (item.icon) {
+              <span class="component-item-icon">{{ item.icon }}</span>
+            }
+            <span class="component-item-label">{{ item.label }}</span>
+          </div>
+        }
+      }
 
-3. **Create Storybook Stories**:
-   - Create `src/stories/component-name.stories.ts`
-   - Add multiple stories covering all use cases
-   - Use `autodocs` tag for automatic documentation
-   - Add interactive controls with `argTypes`
+      @empty {
+        <div class="component-empty">No items available</div>
+      }
+    </div>
+  }
+</div>
+```
 
-4. **Test in Storybook**:
-   ```bash
-   npm run storybook
-   ```
-   - Verify all variants work correctly
-   - Test in both light and dark modes
-   - Test keyboard navigation and accessibility
-   - Test responsive behavior
+**Puntos clave:**
+- ✅ Usa sintaxis moderna `@if`, `@for`, `@else`, `@empty`
+- ✅ Implementa ARIA attributes completos (roles, aria-label, aria-expanded, etc.)
+- ✅ Usa `[ngClass]` y `computed()` para clases dinámicas
+- ✅ Estructura semántica clara
+- ✅ Manejo de estados (selected, focused, disabled, empty)
 
-5. **Document Component**:
-   - Update this CLAUDE.md with component info
-   - Add usage examples
-   - List all features and props
+#### Paso 4: Implementar los Estilos CSS
 
-## Notes
-- The application currently shows a live theming demo with two-column comparison (light/dark)
-- Spanish is used in the example content (loan application context: "Confiape Loan")
-- All hardcoded colors have been replaced with CSS variables for maximum flexibility
-- El sistema de diseño está completo y listo para producción
-- **Storybook** is configured and ready for component development and documentation
-- All UI components should be created in `src/app/components/ui/` with corresponding stories in `src/stories/`
+**Usa el sistema de diseño:**
+
+```css
+/* component-name.component.css */
+
+.component-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+/* ==========================================
+   TRIGGER BUTTON
+   ========================================== */
+
+.component-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  border: var(--border-width-1) solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all var(--transition-duration-150) var(--transition-timing-ease);
+}
+
+.component-trigger:hover:not(:disabled) {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-primary);
+}
+
+.component-trigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.component-trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   VARIANTS
+   ========================================== */
+
+.component-primary .component-trigger {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.component-primary .component-trigger:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.component-secondary .component-trigger {
+  background-color: var(--color-secondary);
+  color: white;
+  border-color: var(--color-secondary);
+}
+
+.component-outline .component-trigger {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+/* ==========================================
+   SIZES
+   ========================================== */
+
+.component-sm .component-trigger {
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--font-size-sm);
+}
+
+.component-md .component-trigger {
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-base);
+}
+
+.component-lg .component-trigger {
+  padding: var(--spacing-4) var(--spacing-5);
+  font-size: var(--font-size-lg);
+}
+
+/* ==========================================
+   DROPDOWN MENU
+   ========================================== */
+
+.component-menu {
+  position: absolute;
+  top: calc(100% + var(--spacing-1));
+  left: 0;
+  right: 0;
+  z-index: var(--z-50);
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: var(--color-bg-primary);
+  border: var(--border-width-1) solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-2);
+}
+
+.component-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  cursor: pointer;
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
+  transition: all var(--transition-duration-150) var(--transition-timing-ease);
+}
+
+.component-item:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.component-item.focused {
+  background-color: var(--color-bg-hover);
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.component-item.selected {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.component-item-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.component-empty {
+  padding: var(--spacing-4);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ==========================================
+   ICONS & LABELS
+   ========================================== */
+
+.component-icon,
+.component-item-icon {
+  display: inline-flex;
+  font-size: 1.2em;
+}
+
+.component-arrow {
+  transition: transform var(--transition-duration-150) var(--transition-timing-ease);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.component-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* ==========================================
+   DARK MODE
+   ========================================== */
+
+/* Todas las variables CSS ya se adaptan automáticamente con .dark */
+/* Si necesitas estilos específicos para dark mode: */
+
+:host-context(.dark) .component-trigger {
+  /* Estilos específicos dark mode si es necesario */
+}
+```
+
+**Puntos clave:**
+- ✅ Usa TODAS las variables CSS del design system
+- ✅ NO uses colores hardcoded (ej: `#fff`, `rgb()`)
+- ✅ Organiza en secciones claras con comentarios
+- ✅ Implementa variants, sizes, states
+- ✅ Transiciones suaves
+- ✅ Focus states para accesibilidad
+- ✅ Dark mode funciona automáticamente via variables CSS
+
+#### Paso 5: Crear Storybook Stories
+
+Crea `src/stories/component-name.stories.ts`:
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/angular';
+import { fn } from '@storybook/test';
+import { ComponentNameComponent, ComponentNameItem } from '../app/components/ui/component-name/component-name.component';
+import { createLightDarkComparison } from './story-helpers';
+
+const meta: Meta<ComponentNameComponent> = {
+  title: 'UI/ComponentName',
+  component: ComponentNameComponent,
+  tags: ['autodocs'],
+  parameters: {
+    layout: 'fullscreen',
+  },
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['primary', 'secondary', 'outline'],
+      description: 'Visual style variant',
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Component size',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the component is disabled',
+    },
+  },
+  args: {
+    selectionChange: fn(),
+    itemClick: fn(),
+  },
+};
+
+export default meta;
+type Story = StoryObj<ComponentNameComponent>;
+
+// Sample data
+const basicItems: ComponentNameItem[] = [
+  { id: '1', label: 'Option 1', value: 1 },
+  { id: '2', label: 'Option 2', value: 2 },
+  { id: '3', label: 'Option 3', value: 3 },
+];
+
+const itemsWithIcons: ComponentNameItem[] = [
+  { id: 'home', label: 'Home', value: 'home', icon: '🏠' },
+  { id: 'profile', label: 'Profile', value: 'profile', icon: '👤' },
+  { id: 'settings', label: 'Settings', value: 'settings', icon: '⚙️' },
+];
+
+// Stories
+export const Default: Story = {
+  args: {
+    items: basicItems,
+    variant: 'primary',
+    size: 'md',
+    placeholder: 'Select an option',
+  },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-component-name',
+      `[items]="items"
+        [variant]="variant"
+        [size]="size"
+        [placeholder]="placeholder"
+        (selectionChange)="selectionChange($event)"`
+    ),
+  }),
+};
+
+export const WithIcons: Story = {
+  args: {
+    items: itemsWithIcons,
+    variant: 'outline',
+    size: 'md',
+    placeholder: 'Choose an option',
+  },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-component-name',
+      `[items]="items"
+        [variant]="variant"
+        [size]="size"
+        [placeholder]="placeholder"`
+    ),
+  }),
+};
+
+export const Disabled: Story = {
+  args: {
+    items: basicItems,
+    disabled: true,
+    placeholder: 'Disabled component',
+  },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-component-name',
+      `[items]="items"
+        [disabled]="disabled"
+        [placeholder]="placeholder"`
+    ),
+  }),
+};
+
+// ... más stories para todas las variantes, tamaños, estados
+```
+
+#### Paso 6: Probar en Storybook
+
+```bash
+npm run storybook
+```
+
+**Checklist de pruebas:**
+- ✅ Todos los variants se ven correctos (primary, secondary, outline, etc.)
+- ✅ Todos los sizes funcionan (sm, md, lg)
+- ✅ Light mode y Dark mode se ven bien lado a lado
+- ✅ Keyboard navigation funciona (Arrow keys, Enter, Escape, Tab)
+- ✅ Estados disabled, loading, error se muestran correctamente
+- ✅ Responsive design funciona en diferentes tamaños
+- ✅ No hay colores hardcoded (todo usa variables CSS)
+- ✅ Transiciones son suaves
+- ✅ Focus states son visibles
+
+#### Paso 7: Documentar el Componente
+
+Actualiza este CLAUDE.md agregando una sección en "UI Components Library":
+
+```markdown
+#### ComponentName Component
+Location: [src/app/components/ui/component-name/](src/app/components/ui/component-name/)
+
+**Features:**
+- ✅ Full keyboard navigation
+- ✅ WCAG accessibility compliant
+- ✅ Multiple variants (primary, secondary, outline)
+- ✅ Multiple sizes (sm, md, lg)
+- ✅ Dark mode support
+- ✅ Icon support
+- ✅ Disabled state
+
+**Usage:**
+\`\`\`typescript
+import { ComponentNameComponent, ComponentNameItem } from '@/components/ui/component-name/component-name.component';
+
+items: ComponentNameItem[] = [
+  { id: '1', label: 'Option 1', value: 1, icon: '🏠' },
+];
+\`\`\`
+
+\`\`\`html
+<app-component-name
+  [items]="items"
+  [variant]="'primary'"
+  [size]="'md'"
+  (selectionChange)="onSelect($event)"
+/>
+\`\`\`
+
+**Storybook:** See [src/stories/component-name.stories.ts](src/stories/component-name.stories.ts)
+```
+
+#### Paso 8: Crear README (Opcional)
+
+Crea `src/app/components/ui/component-name/README.md` con documentación completa del componente.
+
+### Checklist Final
+
+Antes de considerar el componente completo, verifica:
+
+- [ ] Componente usa standalone: true
+- [ ] Usa Angular signals (input, output, signal, computed)
+- [ ] Template usa sintaxis moderna (@if, @for, @empty)
+- [ ] TODAS las variables CSS son del design system
+- [ ] NO hay colores hardcoded
+- [ ] Keyboard navigation implementado
+- [ ] ARIA attributes completos
+- [ ] Funciona en Light y Dark mode
+- [ ] Stories creados con helper functions
+- [ ] Stories tienen layout: 'fullscreen'
+- [ ] Mínimo 5-10 stories cubriendo casos principales
+- [ ] Documentado en CLAUDE.md
+- [ ] TypeScript interfaces definidas
+- [ ] Props tienen descriptions en argTypes
+- [ ] Eventos usan fn() para logging
+
+## Quick Reference Cheat Sheet
+
+### Comandos Más Usados
+
+```bash
+# Desarrollo
+npm start                    # Dev server en http://localhost:4200
+npm run storybook            # Storybook en http://localhost:6006
+npm test                     # Run tests
+npm run build                # Production build
+
+# Generar componente
+ng generate component components/ui/nombre --standalone
+
+# Generar servicio
+ng generate service services/nombre
+
+# Ver ayuda Angular CLI
+ng generate --help
+```
+
+### Estructura de Archivos
+
+```
+loan-ui/
+├── src/
+│   ├── app/
+│   │   ├── components/
+│   │   │   └── ui/                    # ← Componentes UI aquí
+│   │   │       ├── dropdown/
+│   │   │       ├── multiselect/
+│   │   │       ├── modal/
+│   │   │       ├── tabs/
+│   │   │       └── sidenav/
+│   │   ├── app.ts                     # Root component
+│   │   ├── app.config.ts              # App configuration
+│   │   └── app.routes.ts              # Routes
+│   ├── stories/                       # ← Storybook stories aquí
+│   │   ├── story-helpers.ts           # ← Helper functions
+│   │   ├── dropdown.stories.ts
+│   │   ├── multiselect.stories.ts
+│   │   ├── modal.stories.ts
+│   │   └── tabs.stories.ts
+│   └── styles.css                     # ← Sistema de diseño completo
+├── .storybook/                        # Configuración Storybook
+├── CLAUDE.md                          # ← Este archivo
+└── package.json
+```
+
+### Variables CSS Más Usadas
+
+```css
+/* Colores */
+var(--color-primary)
+var(--color-primary-hover)
+var(--color-success)
+var(--color-error)
+var(--color-warning)
+var(--color-text-primary)
+var(--color-bg-primary)
+var(--color-border)
+
+/* Espaciado */
+var(--spacing-2)    /* 8px */
+var(--spacing-4)    /* 16px */
+var(--spacing-6)    /* 24px */
+
+/* Tipografía */
+var(--font-size-sm)
+var(--font-size-base)
+var(--font-size-lg)
+
+/* Bordes */
+var(--border-radius-md)
+var(--border-radius-lg)
+
+/* Sombras */
+var(--shadow-md)
+var(--shadow-lg)
+
+/* Transiciones */
+var(--transition-duration-150)
+var(--transition-timing-ease)
+```
+
+### Clases Semánticas Más Usadas
+
+```html
+<!-- Botones -->
+<button class="btn btn-primary">Primary</button>
+<button class="btn btn-outline-secondary">Outline</button>
+<button class="btn btn-sm">Small</button>
+
+<!-- Forms -->
+<input class="form-input" type="text">
+<label class="form-label">Label</label>
+
+<!-- Cards -->
+<div class="card">
+  <h3 class="card-title">Title</h3>
+  <p class="card-text">Content</p>
+</div>
+
+<!-- Badges -->
+<span class="badge badge-success">Success</span>
+
+<!-- Alerts -->
+<div class="alert alert-error">
+  <span class="alert-icon">⚠️</span>
+  Error message
+</div>
+
+<!-- Typography -->
+<h1 class="heading-1">Main Title</h1>
+<p class="text-lead">Lead paragraph</p>
+<a href="#" class="link">Link</a>
+```
+
+### Angular Signals Pattern
+
+```typescript
+// Input
+variant = input<string>('primary');
+
+// Output
+onChange = output<string>();
+
+// State
+isOpen = signal(false);
+items = signal<Item[]>([]);
+
+// Computed
+displayValue = computed(() => {
+  return this.isOpen() ? 'Open' : 'Closed';
+});
+
+// Update
+this.isOpen.set(true);           // Set value
+this.isOpen.update(v => !v);     // Toggle
+this.onChange.emit('value');      // Emit event
+```
+
+### Storybook Pattern
+
+```typescript
+import { createLightDarkComparison } from './story-helpers';
+
+const meta: Meta<Component> = {
+  title: 'UI/Component',
+  component: Component,
+  tags: ['autodocs'],
+  parameters: { layout: 'fullscreen' },
+};
+
+export const Story: StoryObj = {
+  args: { prop: 'value' },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-component',
+      `[prop]="prop"`
+    ),
+  }),
+};
+```
+
+## Recursos y Links Útiles
+
+### Documentación Oficial
+- **Angular 20**: https://angular.dev
+- **Tailwind CSS v4**: https://tailwindcss.com/docs
+- **Storybook Angular**: https://storybook.js.org/docs/angular
+- **Angular Signals**: https://angular.dev/guide/signals
+
+### Archivos Clave del Proyecto
+- **Design System**: [src/styles.css](src/styles.css) - Sistema completo de diseño
+- **Story Helpers**: [src/stories/story-helpers.ts](src/stories/story-helpers.ts) - Funciones reutilizables
+- **Root Component**: [src/app/app.ts](src/app/app.ts) - Componente raíz con demo de theming
+- **App Config**: [src/app/app.config.ts](src/app/app.config.ts) - Configuración de la app
+
+### Componentes de Referencia
+- **Dropdown**: [src/app/components/ui/dropdown/](src/app/components/ui/dropdown/) - Componente completo con todas las features
+- **MultiSelect**: [src/app/components/ui/multiselect/](src/app/components/ui/multiselect/) - Componente avanzado
+- **Modal**: [src/app/components/ui/modal/](src/app/components/ui/modal/) - Componente complejo con wrapper
+- **Tabs**: [src/app/components/ui/tabs/](src/app/components/ui/tabs/) - Múltiples variantes
+- **Sidenav**: [src/app/components/ui/sidenav/](src/app/components/ui/sidenav/) - Navegación lateral
+
+### Stories de Referencia
+- ✅ [src/stories/dropdown.stories.ts](src/stories/dropdown.stories.ts) - 17 stories
+- ✅ [src/stories/multiselect.stories.ts](src/stories/multiselect.stories.ts) - 21 stories
+- ✅ [src/stories/modal.stories.ts](src/stories/modal.stories.ts) - 17 stories con wrapper component
+- ⏳ [src/stories/tabs.stories.ts](src/stories/tabs.stories.ts) - 40+ stories (parcialmente actualizado)
+
+## Notas Importantes
+
+### Estado del Proyecto
+- ✅ Sistema de diseño completo con 600+ variables CSS
+- ✅ Dark mode funcionando en todos los componentes
+- ✅ Storybook configurado con comparación Light/Dark automática
+- ✅ 4 componentes UI completos (dropdown, multiselect, modal, tabs)
+- ✅ Helper functions para crear stories fácilmente
+- ✅ Angular 20 con signals y sintaxis moderna
+- ✅ Tailwind CSS v4 con PostCSS
+- ✅ TypeScript strict mode
+- ✅ Standalone components (no NgModules)
+
+### Próximos Pasos Recomendados
+1. Completar actualización de tabs.stories.ts (faltan ~35 stories)
+2. Crear más componentes UI (button, input, select, checkbox, radio, etc.)
+3. Agregar tests unitarios para componentes
+4. Crear página de documentación en la app principal
+5. Agregar ejemplos de uso real en páginas de la app
+
+### Convenciones del Proyecto
+- **Idioma**: Español en contenido de ejemplo, inglés en código
+- **Nomenclatura**: camelCase para variables, kebab-case para archivos
+- **Imports**: Usar rutas relativas, no alias
+- **Standalone**: Todos los componentes son standalone
+- **Signals**: Usar signals para estado, no decorators antiguos
+- **Templates**: Sintaxis moderna (@if, @for) en lugar de directivas (*ngIf, *ngFor)
+- **Styles**: SIEMPRE usar variables CSS, NUNCA colores hardcoded
+- **Storybook**: SIEMPRE crear stories con comparación Light/Dark
+- **Accessibility**: SIEMPRE implementar ARIA attributes y keyboard navigation
+
+### Tips y Trucos
+
+**Tip 1: Preview rápido de colores**
+Abre [src/app/app.html](src/app/app.html) en el navegador para ver demo interactivo con color pickers
+
+**Tip 2: Ver todas las variables CSS**
+Busca `:root {` en [src/styles.css](src/styles.css) para ver todas las variables disponibles
+
+**Tip 3: Copiar componente existente**
+La forma más rápida de crear un componente nuevo es copiar dropdown/ y modificarlo
+
+**Tip 4: Debug Storybook**
+Si un story no se ve, verifica:
+- `layout: 'fullscreen'` en parameters
+- Import correcto de helper functions
+- Bindings correctos en el template
+
+**Tip 5: Test dark mode**
+En la app o Storybook, añade clase `.dark` a cualquier elemento padre para activar dark mode
+
+---
+
+**Última actualización**: Octubre 2024
+**Mantenedores**: Claude Code AI
+**Licencia**: MIT

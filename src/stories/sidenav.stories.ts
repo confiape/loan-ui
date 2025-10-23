@@ -119,7 +119,127 @@ const itemsWithChildren: SidenavItem[] = [
   },
 ];
 
-// Stories
+const itemsWithDividers: SidenavItem[] = [
+  {
+    label: 'Dashboard',
+    icon: '📊',
+    value: 'dashboard',
+  },
+  {
+    label: 'Analytics',
+    icon: '📈',
+    value: 'analytics',
+  },
+  {
+    label: '',
+    value: 'divider-1',
+    divider: true,
+  },
+  {
+    label: 'Settings',
+    icon: '⚙️',
+    value: 'settings',
+  },
+  {
+    label: 'Profile',
+    icon: '👤',
+    value: 'profile',
+  },
+  {
+    label: '',
+    value: 'divider-2',
+    divider: true,
+  },
+  {
+    label: 'Help',
+    icon: '❓',
+    value: 'help',
+  },
+  {
+    label: 'Logout',
+    icon: '🚪',
+    value: 'logout',
+  },
+];
+
+const itemsWithDisabled: SidenavItem[] = [
+  {
+    label: 'Home',
+    icon: '🏠',
+    value: 'home',
+  },
+  {
+    label: 'Projects',
+    icon: '📁',
+    value: 'projects',
+  },
+  {
+    label: 'Team (Coming Soon)',
+    icon: '👥',
+    value: 'team',
+    disabled: true,
+  },
+  {
+    label: 'Calendar (Beta)',
+    icon: '📅',
+    value: 'calendar',
+    disabled: true,
+  },
+  {
+    label: 'Settings',
+    icon: '⚙️',
+    value: 'settings',
+  },
+];
+
+// Helper function to create side-by-side comparison template
+const createComparisonTemplate = (extraProps: string = '') => `
+  <div style="display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh;">
+    <!-- Light Mode -->
+    <div style="background-color: #f9fafb; position: relative; border-right: 2px solid #000;">
+      <div style="position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100; background: white; padding: 0.5rem 1rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: bold;">
+        Light Mode
+      </div>
+      <app-sidenav
+        [items]="items"
+        [header]="header"
+        [position]="position"
+        [variant]="variant"
+        [collapsible]="collapsible"
+        [showToggle]="showToggle"
+        [collapsed]="collapsed"
+        [selectedValue]="selectedValue"
+        [logo]="logo"
+        [logoCollapsed]="logoCollapsed"
+        [footer]="footer"
+        ${extraProps}
+      />
+    </div>
+
+    <!-- Dark Mode -->
+    <div class="dark" style="background-color: #1f2937; position: relative;">
+      <div style="position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100; background: #374151; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-weight: bold;">
+        Dark Mode
+      </div>
+      <app-sidenav
+        [items]="items"
+        [header]="header"
+        [position]="position"
+        [variant]="variant"
+        [collapsible]="collapsible"
+        [showToggle]="showToggle"
+        [collapsed]="collapsed"
+        [selectedValue]="selectedValue"
+        [logo]="logo"
+        [logoCollapsed]="logoCollapsed"
+        [footer]="footer"
+        ${extraProps}
+      />
+    </div>
+  </div>
+`;
+
+// Stories with Light vs Dark comparison
 
 export const Default: Story = {
   args: {
@@ -130,6 +250,10 @@ export const Default: Story = {
     collapsible: false,
     selectedValue: 'dashboard',
   },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
 };
 
 export const WithBadges: Story = {
@@ -141,6 +265,10 @@ export const WithBadges: Story = {
     collapsible: false,
     selectedValue: 'inbox',
   },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
 };
 
 export const WithChildren: Story = {
@@ -152,6 +280,40 @@ export const WithChildren: Story = {
     collapsible: false,
     selectedValue: 'products-all',
   },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
+};
+
+export const WithDividers: Story = {
+  args: {
+    items: itemsWithDividers,
+    header: 'Navigation',
+    position: 'left',
+    variant: 'default',
+    collapsible: false,
+    selectedValue: 'dashboard',
+  },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
+};
+
+export const WithDisabledItems: Story = {
+  args: {
+    items: itemsWithDisabled,
+    header: 'Workspace',
+    position: 'left',
+    variant: 'default',
+    collapsible: false,
+    selectedValue: 'home',
+  },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
 };
 
 export const Collapsible: Story = {
@@ -165,6 +327,10 @@ export const Collapsible: Story = {
     collapsed: false,
     selectedValue: 'home',
   },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
 };
 
 export const CollapsedByDefault: Story = {
@@ -178,6 +344,10 @@ export const CollapsedByDefault: Story = {
     collapsed: true,
     selectedValue: 'dashboard',
   },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
 };
 
 export const BorderedVariant: Story = {
@@ -189,6 +359,10 @@ export const BorderedVariant: Story = {
     collapsible: true,
     selectedValue: 'home',
   },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
 };
 
 export const PillsVariant: Story = {
@@ -200,6 +374,10 @@ export const PillsVariant: Story = {
     collapsible: false,
     selectedValue: 'inbox',
   },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
 };
 
 export const WithLogo: Story = {
@@ -214,6 +392,10 @@ export const WithLogo: Story = {
     showToggle: true,
     selectedValue: 'dashboard',
   },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
 };
 
 export const WithFooter: Story = {
@@ -226,83 +408,31 @@ export const WithFooter: Story = {
     collapsible: false,
     selectedValue: 'dashboard',
   },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
 };
 
-export const DarkMode: Story = {
+export const CustomWidth: Story = {
   args: {
     items: itemsWithChildren,
-    header: 'Dark Menu',
+    header: 'Wide Menu',
     position: 'left',
     variant: 'default',
+    width: '20rem',
+    collapsedWidth: '5rem',
     collapsible: true,
     showToggle: true,
-    selectedValue: 'products-all',
+    selectedValue: 'home',
   },
   render: (args) => ({
     props: args,
-    template: `
-      <div class="dark" style="min-height: 100vh; background-color: #1f2937;">
-        <app-sidenav
-          [items]="items"
-          [header]="header"
-          [position]="position"
-          [variant]="variant"
-          [collapsible]="collapsible"
-          [showToggle]="showToggle"
-          [selectedValue]="selectedValue"
-        />
-      </div>
-    `,
+    template: createComparisonTemplate('[width]="width" [collapsedWidth]="collapsedWidth"'),
   }),
 };
 
-// Side by Side: Light vs Dark Comparison
-export const LightVsDarkComparison: Story = {
-  args: {
-    items: itemsWithChildren,
-    header: 'My App',
-    collapsible: true,
-    selectedValue: 'products-all',
-  },
-  render: (args) => ({
-    props: args,
-    template: `
-      <div style="display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh;">
-        <!-- Light Mode -->
-        <div style="background-color: #f9fafb; position: relative; border-right: 2px solid #000;">
-          <div style="position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100; background: white; padding: 0.5rem 1rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: bold;">
-            Light Mode
-          </div>
-          <app-sidenav
-            [items]="items"
-            [header]="header"
-            [collapsible]="collapsible"
-            [selectedValue]="selectedValue"
-            [position]="'left'"
-            [variant]="'default'"
-          />
-        </div>
-
-        <!-- Dark Mode -->
-        <div class="dark" style="background-color: #1f2937; position: relative;">
-          <div style="position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100; background: #374151; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-weight: bold;">
-            Dark Mode
-          </div>
-          <app-sidenav
-            [items]="items"
-            [header]="header"
-            [collapsible]="collapsible"
-            [selectedValue]="selectedValue"
-            [position]="'left'"
-            [variant]="'default'"
-          />
-        </div>
-      </div>
-    `,
-  }),
-};
-
-// All Variants Comparison (3x2 Grid)
+// Special: All Variants Comparison (3x2 Grid)
 export const AllVariantsComparison: Story = {
   args: {
     items: itemsWithBadges,
@@ -496,4 +626,8 @@ export const FullExample: Story = {
     collapsed: false,
     selectedValue: 'loans-pending',
   },
+  render: (args) => ({
+    props: args,
+    template: createComparisonTemplate(),
+  }),
 };

@@ -3,6 +3,7 @@ import { fn } from 'storybook/test';
 import { Component, signal } from '@angular/core';
 import { ModalComponent } from '../app/components/ui/modal/modal.component';
 import { CommonModule } from '@angular/common';
+import { wrapInLightDarkComparison } from './story-helpers';
 
 // Wrapper component for interactive stories
 @Component({
@@ -61,6 +62,9 @@ const meta: Meta<ModalComponent> = {
   title: 'UI/Modal',
   component: ModalComponent,
   tags: ['autodocs'],
+  parameters: {
+    layout: 'fullscreen',
+  },
   argTypes: {
     size: {
       control: 'select',
@@ -130,7 +134,7 @@ type Story = StoryObj<ModalComponent>;
 export const Default: Story = {
   render: (args) => ({
     props: args,
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Welcome'"
         [size]="'md'"
@@ -142,7 +146,7 @@ export const Default: Story = {
           <button class="btn btn-primary">Confirm</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -152,7 +156,7 @@ export const Default: Story = {
 // Sizes
 export const Small: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Small Modal'"
         [size]="'sm'"
@@ -162,7 +166,7 @@ export const Small: Story = {
           <button class="btn btn-primary">OK</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -171,7 +175,7 @@ export const Small: Story = {
 
 export const Medium: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Medium Modal'"
         [size]="'md'"
@@ -181,7 +185,7 @@ export const Medium: Story = {
           <button class="btn btn-primary">OK</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -190,7 +194,7 @@ export const Medium: Story = {
 
 export const Large: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Large Modal'"
         [size]="'lg'"
@@ -200,7 +204,7 @@ export const Large: Story = {
           <button class="btn btn-primary">OK</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -209,7 +213,7 @@ export const Large: Story = {
 
 export const ExtraLarge: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Extra Large Modal'"
         [size]="'xl'"
@@ -219,7 +223,7 @@ export const ExtraLarge: Story = {
           <button class="btn btn-primary">OK</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -228,7 +232,7 @@ export const ExtraLarge: Story = {
 
 export const Fullscreen: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Fullscreen Modal'"
         [fullscreen]="true"
@@ -238,7 +242,7 @@ export const Fullscreen: Story = {
           <button class="btn btn-primary">OK</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -248,7 +252,7 @@ export const Fullscreen: Story = {
 // Variants
 export const Success: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Success!'"
         [subtitle]="'Your operation completed successfully'"
@@ -259,7 +263,7 @@ export const Success: Story = {
           <button class="btn btn-success">OK</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -268,7 +272,7 @@ export const Success: Story = {
 
 export const Error: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Error'"
         [subtitle]="'Something went wrong'"
@@ -279,7 +283,7 @@ export const Error: Story = {
           <button class="btn btn-error">Close</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -288,7 +292,7 @@ export const Error: Story = {
 
 export const Warning: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Warning'"
         [subtitle]="'This action cannot be undone'"
@@ -300,7 +304,7 @@ export const Warning: Story = {
           <button class="btn btn-warning">Delete</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -309,10 +313,10 @@ export const Warning: Story = {
 
 export const Info: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Information'"
-        [subtitle]="'Here\'s what you need to know'"
+        [subtitle]="'Here\\'s what you need to know'"
         [variant]="'info'"
       >
         <p>This is an informational modal to provide additional details.</p>
@@ -320,7 +324,7 @@ export const Info: Story = {
           <button class="btn btn-info">Got it</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -330,7 +334,7 @@ export const Info: Story = {
 // Features
 export const WithSubtitle: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Modal with Subtitle'"
         [subtitle]="'This is a descriptive subtitle'"
@@ -340,7 +344,7 @@ export const WithSubtitle: Story = {
           <button class="btn btn-primary">OK</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -349,7 +353,7 @@ export const WithSubtitle: Story = {
 
 export const WithoutCloseButton: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'No Close Button'"
         [showCloseButton]="false"
@@ -359,7 +363,7 @@ export const WithoutCloseButton: Story = {
           <button class="btn btn-primary">Close Modal</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -368,7 +372,7 @@ export const WithoutCloseButton: Story = {
 
 export const NoBackdropClick: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'No Backdrop Close'"
         [closeOnBackdropClick]="false"
@@ -378,7 +382,7 @@ export const NoBackdropClick: Story = {
           <button class="btn btn-primary">Close</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -387,7 +391,7 @@ export const NoBackdropClick: Story = {
 
 export const NoEscapeKey: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'No Escape Key'"
         [closeOnEscape]="false"
@@ -397,7 +401,7 @@ export const NoEscapeKey: Story = {
           <button class="btn btn-primary">Close</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -406,7 +410,7 @@ export const NoEscapeKey: Story = {
 
 export const Loading: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Processing'"
         [loading]="true"
@@ -416,7 +420,7 @@ export const Loading: Story = {
           <button class="btn btn-primary" disabled>Submit</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -425,7 +429,7 @@ export const Loading: Story = {
 
 export const ScrollableContent: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Scrollable Content'"
         [scrollable]="true"
@@ -442,7 +446,7 @@ export const ScrollableContent: Story = {
           <button class="btn btn-primary">OK</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -451,7 +455,7 @@ export const ScrollableContent: Story = {
 
 export const WithForm: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'User Profile'"
         [subtitle]="'Update your information'"
@@ -475,7 +479,7 @@ export const WithForm: Story = {
           <button class="btn btn-primary">Save Changes</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -484,7 +488,7 @@ export const WithForm: Story = {
 
 export const ConfirmDialog: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [title]="'Confirm Action'"
         [size]="'sm'"
@@ -496,7 +500,7 @@ export const ConfirmDialog: Story = {
           <button class="btn btn-warning">Yes, Continue</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
@@ -505,7 +509,7 @@ export const ConfirmDialog: Story = {
 
 export const WithoutHeaderAndFooter: Story = {
   render: () => ({
-    template: `
+    template: wrapInLightDarkComparison(`
       <story-modal-wrapper
         [showHeader]="false"
         [showFooter]="false"
@@ -516,7 +520,7 @@ export const WithoutHeaderAndFooter: Story = {
           <button class="btn btn-primary">Close</button>
         </div>
       </story-modal-wrapper>
-    `,
+    `),
     moduleMetadata: {
       imports: [ModalWrapperComponent],
     },
