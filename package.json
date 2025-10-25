@@ -9,7 +9,10 @@
     "test": "ng test",
     "storybook": "ng run loan-ui:storybook",
     "build-storybook": "ng run loan-ui:build-storybook",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "coverage": "vitest run --coverage",
+    "sonarqube": "sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.token=$SONAR_TOKEN -Dsonar.projectKey=loan-ui",
+    "analyze": "npm run coverage && npm run sonarqube"
   },
   "prettier": {
     "printWidth": 100,
@@ -38,6 +41,9 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@analogjs/platform": "^1.22.1",
+    "@analogjs/vite-plugin-angular": "^1.22.1",
+    "@analogjs/vitest-angular": "^1.22.1",
     "@angular-devkit/build-angular": "^20.3.0",
     "@angular/build": "^20.3.5",
     "@angular/cli": "^20.3.5",
@@ -47,6 +53,7 @@
     "@storybook/addon-onboarding": "^9.1.13",
     "@storybook/angular": "^9.1.13",
     "@types/jasmine": "~5.1.0",
+    "@vitest/coverage-v8": "3.2.4",
     "angular-eslint": "20.4.0",
     "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",

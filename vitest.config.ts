@@ -1,6 +1,9 @@
 import { defineConfig } from 'vitest/config';
 
+import angular from '@analogjs/vite-plugin-angular';
 export default defineConfig({
+
+  plugins: [angular()],
   test: {
     globals: true,
     environment: 'jsdom',
@@ -9,8 +12,18 @@ export default defineConfig({
     coverage: {
       enabled: true,
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: ['node_modules/', 'src/test-setup.ts'],
+      reporter: ['text', 'lcov'],
+      exclude: [
+        'node_modules/',
+        'dist/',
+        '**/*.spec.ts',
+        '**/*.stories.ts',
+        '**/*.stories.tsx',
+        '.storybook/**',
+        'src/test.ts',
+        'vitest.config.ts',
+        'eslint.config.js',
+      ],
     },
   },
   define: {
