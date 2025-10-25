@@ -4,7 +4,10 @@
       "Bash(npm run build)",
       "Bash(cat:*)",
       "Bash(npm run build-storybook:*)",
-      "Bash(ng lint:*)"
+      "Bash(ng lint:*)",
+      "Bash(npm test:*)",
+      "Bash(find:*)",
+      "Bash(Select-Object -First 10)"
     ],
     "deny": [],
     "ask": []
