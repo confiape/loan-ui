@@ -11,7 +11,7 @@
     "build-storybook": "ng run loan-ui:build-storybook",
     "lint": "ng lint",
     "coverage": "vitest run --coverage",
-    "sonarqube": "sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.token=$SONAR_TOKEN -Dsonar.projectKey=loan-ui",
+    "sonarqube": "sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.token=$SONARQUBE_TOKEN -Dsonar.projectKey=loan-ui",
     "analyze": "npm run coverage && npm run sonarqube"
   },
   "prettier": {
