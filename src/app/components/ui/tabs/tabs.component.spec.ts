@@ -305,5 +305,23 @@ describe('TabsComponent', () => {
 
       expect(component.tabListClasses()).toContain('tabs-list-full-width');
     });
+
+    it('getBadgeClass should return correct class for variant', () => {
+      fixture.componentRef.setInput('tabs', mockTabs);
+      fixture.detectChanges();
+
+      expect(component.getBadgeClass('success')).toBe('badge badge-success');
+      expect(component.getBadgeClass('error')).toBe('badge badge-error');
+      expect(component.getBadgeClass('warning')).toBe('badge badge-warning');
+    });
+
+    it('getBadgeClass should return default class when no variant', () => {
+      fixture.componentRef.setInput('tabs', mockTabs);
+      fixture.detectChanges();
+
+      expect(component.getBadgeClass()).toBe('badge badge-primary');
+      expect(component.getBadgeClass('')).toBe('badge badge-primary');
+    });
   });
+
 });

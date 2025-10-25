@@ -236,6 +236,70 @@ describe('MultiSelectComponent', () => {
 
       expect(component.isOpen()).toBe(false);
     });
+
+    it('should highlight first item with Home key', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.detectChanges();
+
+      component.open();
+      const event = new KeyboardEvent('keydown', { key: 'Home' });
+      component.onKeyDown(event);
+      fixture.detectChanges();
+
+      expect(component.highlightedIndex()).toBe(0);
+    });
+
+    it('should highlight last item with End key', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.detectChanges();
+
+      component.open();
+      const event = new KeyboardEvent('keydown', { key: 'End' });
+      component.onKeyDown(event);
+      fixture.detectChanges();
+
+      expect(component.highlightedIndex()).toBe(mockItems.length - 1);
+    });
+
+    it('should toggle highlighted item with Enter key', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.detectChanges();
+
+      component.open();
+      component.highlightedIndex.set(0);
+
+      const event = new KeyboardEvent('keydown', { key: 'Enter' });
+      component.onKeyDown(event);
+      fixture.detectChanges();
+
+      expect(component.selectedItems()).toContain(mockItems[0]);
+    });
+
+    it('should toggle highlighted item with Space key', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.detectChanges();
+
+      component.open();
+      component.highlightedIndex.set(1);
+
+      const event = new KeyboardEvent('keydown', { key: ' ' });
+      component.onKeyDown(event);
+      fixture.detectChanges();
+
+      expect(component.selectedItems()).toContain(mockItems[1]);
+    });
+
+    it('should check if item is highlighted', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.detectChanges();
+
+      component.open();
+      component.highlightedIndex.set(0);
+      fixture.detectChanges();
+
+      expect(component.isItemHighlighted(mockItems[0])).toBe(true);
+      expect(component.isItemHighlighted(mockItems[1])).toBe(false);
+    });
   });
 
   describe('Computed Properties', () => {

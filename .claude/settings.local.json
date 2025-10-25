@@ -7,7 +7,9 @@
       "Bash(ng lint:*)",
       "Bash(npm test:*)",
       "Bash(find:*)",
-      "Bash(Select-Object -First 10)"
+      "Bash(Select-Object -First 10)",
+      "Bash(npm run coverage:*)",
+      "Bash(npx vitest:*)"
     ],
     "deny": [],
     "ask": []

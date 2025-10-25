@@ -21,6 +21,7 @@ export default defineConfig({
         '**/*.stories.tsx',
         '.storybook/**',
         'src/test.ts',
+        'src/stories/**',
         'vitest.config.ts',
         'eslint.config.js',
       ],

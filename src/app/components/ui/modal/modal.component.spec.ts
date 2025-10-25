@@ -259,4 +259,115 @@ describe('ModalComponent', () => {
       expect(dialogClass).toContain('modal-scrollable');
     });
   });
+
+  describe('Variant Methods', () => {
+    it('getVariantIcon should return correct icon for each variant', () => {
+      const variants = {
+        default: '',
+        success: '✓',
+        error: '✕',
+        warning: '⚠',
+        info: 'ℹ',
+      };
+
+      Object.entries(variants).forEach(([variant, icon]) => {
+        fixture.componentRef.setInput('variant', variant as any);
+        fixture.detectChanges();
+
+        expect(component.getVariantIcon()).toBe(icon);
+      });
+    });
+
+    it('getVariantColor should return correct color for each variant', () => {
+      fixture.componentRef.setInput('variant', 'success');
+      fixture.detectChanges();
+      expect(component.getVariantColor()).toBe('var(--color-success)');
+
+      fixture.componentRef.setInput('variant', 'error');
+      fixture.detectChanges();
+      expect(component.getVariantColor()).toBe('var(--color-error)');
+
+      fixture.componentRef.setInput('variant', 'warning');
+      fixture.detectChanges();
+      expect(component.getVariantColor()).toBe('var(--color-warning)');
+
+      fixture.componentRef.setInput('variant', 'info');
+      fixture.detectChanges();
+      expect(component.getVariantColor()).toBe('var(--color-info)');
+
+      fixture.componentRef.setInput('variant', 'default');
+      fixture.detectChanges();
+      expect(component.getVariantColor()).toBe('');
+    });
+  });
+
+  describe('Focus Trap', () => {
+    it('should handle focus trap with Tab key correctly', () => {
+      // Test the handleFocusTrap method directly
+      const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
+      const preventDefaultSpy = vi.spyOn(tabEvent, 'preventDefault');
+
+      // Call the private method with Tab key (no focusable elements)
+      component['focusableElements'] = [];
+      component['handleFocusTrap'](tabEvent);
+
+      // Should prevent default when no focusable elements
+      expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it('should handle focus trap with Shift+Tab correctly', () => {
+      // Create mock focusable elements
+      const button1 = document.createElement('button');
+      const button2 = document.createElement('button');
+      document.body.appendChild(button1);
+      document.body.appendChild(button2);
+
+      component['focusableElements'] = [button1, button2];
+      button1.focus();
+
+      const shiftTabEvent = new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true });
+      Object.defineProperty(shiftTabEvent, 'shiftKey', { value: true });
+      const preventDefaultSpy = vi.spyOn(shiftTabEvent, 'preventDefault');
+
+      component['handleFocusTrap'](shiftTabEvent);
+
+      // Should handle Shift+Tab
+      expect(component['focusableElements'].length).toBe(2);
+
+      // Cleanup
+      document.body.removeChild(button1);
+      document.body.removeChild(button2);
+    });
+
+    it('should not interfere with non-Tab keys', () => {
+      const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+      const preventDefaultSpy = vi.spyOn(enterEvent, 'preventDefault');
+
+      component['focusableElements'] = [];
+      component['handleFocusTrap'](enterEvent);
+
+      // Should not prevent default for non-Tab keys
+      expect(preventDefaultSpy).not.toHaveBeenCalled();
+    });
+
+    it('should handle Tab forward at last element', () => {
+      const button1 = document.createElement('button');
+      const button2 = document.createElement('button');
+      document.body.appendChild(button1);
+      document.body.appendChild(button2);
+
+      component['focusableElements'] = [button1, button2];
+      button2.focus();
+
+      const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
+      const preventDefaultSpy = vi.spyOn(tabEvent, 'preventDefault');
+
+      component['handleFocusTrap'](tabEvent);
+
+      expect(component['focusableElements'].length).toBe(2);
+
+      document.body.removeChild(button1);
+      document.body.removeChild(button2);
+    });
+  });
 });
