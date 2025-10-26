@@ -1,7 +1,7 @@
 <nav class="h-16 flex items-center px-4 lg:px-6" role="navigation" aria-label="Main navigation">
-  <div class="flex items-center justify-between w-full max-w-full">
-    <!-- Left Section: Menu + Title -->
-    <div class="flex items-center gap-3 min-w-0">
+  <div class="flex items-center justify-between w-full max-w-full gap-4">
+    <!-- Left Section: Menu + Title + Search -->
+    <div class="flex items-center gap-3 min-w-0 flex-1">
       <!-- Menu Toggle Button -->
       <button
         class="inline-flex items-center justify-center p-2 rounded-md text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 transition-all duration-150 lg:hidden"
@@ -27,12 +27,62 @@
 
       <!-- Title -->
       <span
-        class="text-lg lg:text-xl font-semibold text-[var(--color-text-primary)] whitespace-nowrap overflow-hidden text-ellipsis">
+        class="text-lg lg:text-xl font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
         {{ appTitle() }}
       </span>
+
+      <!-- Search Bar (Desktop) -->
+      @if (showSearch()) {
+        <div class="hidden md:block flex-1 max-w-md">
+          <app-search-bar
+            [placeholder]="'Search'"
+            [size]="'md'"
+            (searchChange)="onSearchChange($event)"
+            (searchSubmit)="onSearchSubmit($event)"
+          />
+        </div>
+      }
     </div>
 
-    <!-- Right Section (empty for now) -->
-    <div class="flex items-center gap-2 ml-auto"></div>
+    <!-- Right Section: Search Toggle (Mobile) + Notifications + Apps + User -->
+    <div class="flex items-center gap-2 ml-auto">
+      <!-- Search Toggle (Mobile) -->
+      @if (showSearch()) {
+        <button
+          type="button"
+          class="p-2 text-[var(--color-text-secondary)] rounded-lg md:hidden hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] focus:ring-4 focus:ring-[var(--color-border)] transition-all"
+          aria-label="Toggle search"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path
+              clip-rule="evenodd"
+              fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+            ></path>
+          </svg>
+        </button>
+      }
+
+      <!-- Notifications -->
+      <app-notification-button
+        [notifications]="notifications()"
+        (notificationClick)="onNotificationClick($event)"
+      />
+
+      <!-- Apps Menu -->
+      <app-apps-menu
+        [apps]="apps()"
+        (appClick)="onAppClick($event)"
+      />
+
+      <!-- User Menu -->
+      <app-user-menu
+        [userName]="userName()"
+        [userEmail]="userEmail()"
+        [userAvatar]="userAvatar()"
+        [menuItems]="userMenuItems()"
+        (menuItemClick)="onUserMenuClick($event)"
+      />
+    </div>
   </div>
 </nav>

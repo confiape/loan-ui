@@ -1,0 +1,47 @@
+<div class="data-table-wrapper">
+  <!-- Toolbar -->
+  @if (showToolbar()) {
+    <app-table-toolbar
+      [searchPlaceholder]="searchPlaceholder()"
+      [showSearch]="showSearch()"
+      [showActions]="showActions()"
+      [showFilters]="showFilters()"
+      [primaryAction]="primaryAction()"
+      [bulkActions]="bulkActions()"
+      [filterGroups]="filterGroups()"
+      (searchChange)="onSearchChange($event)"
+      (primaryActionClick)="onPrimaryActionClick()"
+      (bulkActionClick)="onBulkActionClick($event)"
+      (filterChange)="onFilterChange($event)"
+    />
+  }
+
+  <!-- Table -->
+  <app-table
+    [columns]="columns()"
+    [data]="paginatedData()"
+    [rowActions]="rowActions()"
+    [striped]="striped()"
+    [hoverable]="hoverable()"
+    [bordered]="bordered()"
+    [compact]="compact()"
+    [loading]="loading()"
+    [emptyMessage]="emptyMessage()"
+    (rowClick)="onRowClick($event)"
+    (actionClick)="onActionClick($event)"
+    (sortChange)="onSortChange($event)"
+  />
+
+  <!-- Pagination -->
+  @if (showPagination() && totalItems() > 0) {
+    <app-table-pagination
+      [currentPage]="currentPage()"
+      [pageSize]="pageSize()"
+      [totalItems]="totalItems()"
+      [maxVisiblePages]="maxVisiblePages()"
+      [showInfo]="showPaginationInfo()"
+      [showPageNumbers]="showPageNumbers()"
+      (pageChange)="onPageChange($event)"
+    />
+  }
+</div>

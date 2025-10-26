@@ -1,0 +1,68 @@
+<nav class="pagination-wrapper" aria-label="Table navigation">
+  @if (showInfo()) {
+    <span class="pagination-info">
+      Showing
+      <span class="info-highlight">{{ startItem() }}-{{ endItem() }}</span>
+      of
+      <span class="info-highlight">{{ totalItems() }}</span>
+    </span>
+  }
+
+  @if (showPageNumbers() && totalPages() > 1) {
+    <ul class="pagination-list" role="list">
+      <!-- Previous Button -->
+      <li>
+        <button
+          type="button"
+          class="pagination-button pagination-arrow"
+          [class.disabled]="!canGoPrevious()"
+          [disabled]="!canGoPrevious()"
+          [attr.aria-label]="'Previous page'"
+          (click)="goToPrevious()"
+        >
+          <span class="sr-only">Previous</span>
+          <svg class="icon" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </li>
+
+      <!-- Page Numbers -->
+      @for (page of visiblePages(); track page) {
+        <li>
+          @if (page === '...') {
+            <span class="pagination-ellipsis">...</span>
+          } @else {
+            <button
+              type="button"
+              class="pagination-button pagination-number"
+              [class.active]="page === currentPage()"
+              [attr.aria-label]="'Page ' + page"
+              [attr.aria-current]="page === currentPage() ? 'page' : null"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          }
+        </li>
+      }
+
+      <!-- Next Button -->
+      <li>
+        <button
+          type="button"
+          class="pagination-button pagination-arrow"
+          [class.disabled]="!canGoNext()"
+          [disabled]="!canGoNext()"
+          [attr.aria-label]="'Next page'"
+          (click)="goToNext()"
+        >
+          <span class="sr-only">Next</span>
+          <svg class="icon" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </li>
+    </ul>
+  }
+</nav>

@@ -1,0 +1,14 @@
+/* ==================== DATA TABLE WRAPPER ==================== */
+.data-table-wrapper {
+  background-color: var(--color-bg-primary);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .data-table-wrapper {
+    border-radius: var(--border-radius-lg);
+  }
+}

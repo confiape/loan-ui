@@ -16,7 +16,10 @@ npm run build                # Production build
 npm run watch                # Development build with watch mode
 
 # Testing
-npm test                     # Run all tests with Karma
+npm test                     # Unit tests (Vitest)
+npm run coverage             # Coverage report
+npm run lint                 # ESLint + Prettier
+npm run analyze              # Coverage + SonarQube
 
 # Storybook
 npm run storybook            # Start Storybook (http://localhost:6006)
@@ -48,8 +51,9 @@ loan-ui/
 ├── src/
 │   ├── app/
 │   │   ├── components/ui/         # UI components
+│   │   ├── config/                # Centralized config (layout.config.ts)
 │   │   ├── features/              # Feature modules
-│   │   ├── layout/                # Layout components
+│   │   ├── layout/                # Layout components (main-layout, navbar, sidenav)
 │   │   ├── app.ts                 # Root component
 │   │   ├── app.config.ts          # App configuration
 │   │   └── app.routes.ts          # Routes
@@ -280,6 +284,53 @@ When adding new styles to the design system:
    - Index files: `_index.css` for module exports
    - Descriptive names: `_buttons.css`, `_colors.css`
 
+## Testing
+
+### Unit Tests (Vitest)
+```bash
+npm test                     # Run tests
+npm run coverage             # Coverage report
+```
+
+**Test Pattern:**
+```typescript
+await TestBed.configureTestingModule({
+  imports: [Component],
+  providers: [provideZonelessChangeDetection()],
+}).compileComponents();
+```
+
+**Config:** [vitest.config.ts](vitest.config.ts) - JSDOM environment, v8 coverage
+
+### E2E Tests (Playwright)
+**Config:** [playwright.config.ts](playwright.config.ts) | **Tests:** `./tests/`
+
+### Code Quality
+```bash
+npm run lint                 # ESLint + Prettier
+npm run analyze              # Coverage + SonarQube
+```
+
+**ESLint Rules:**
+- Angular + TypeScript + Prettier integration
+- `@typescript-eslint/no-explicit-any: 'error'`
+- Component prefix: 'app-'
+- Template accessibility checks
+
+## Layout Architecture
+
+**Main Layout:** [main-layout/](src/app/layout/main-layout/) - Navbar + Sidenav + Content
+**Navbar:** Search, apps menu, notifications, user menu
+**Sidenav:** Collapsible, nested navigation, router-integrated
+
+**Centralized Config:** [layout.config.ts](src/app/config/layout.config.ts)
+```typescript
+export const SIDENAV_ITEMS: SidenavItem[] = [...];     // Menu navigation
+export const APPS_MENU_ITEMS: AppMenuItem[] = [...];   // Apps grid
+export const USER_MENU_ITEMS: UserMenuItem[] = [...];  // User options
+export const MOCK_NOTIFICATIONS: Notification[] = [...]; // Notifications
+```
+
 ## Development Guidelines
 
 ### Component Development Essentials
@@ -312,11 +363,20 @@ this.onChange.emit('value');
 Reusable components in [src/app/components/ui/](src/app/components/ui/):
 
 **Available Components:**
-- **Dropdown** - Full keyboard nav, search, clearable, loading states
-- **MultiSelect** - Multi-selection with badges, search, select all
-- **Modal** - Dialog with backdrop, focus trap, keyboard close
+- **Dropdown** - Keyboard nav, search, clearable, loading
+- **MultiSelect** - Multi-selection, badges, search, select all
+- **Modal** - Backdrop, focus trap, keyboard close
 - **Tabs** - Multiple variants (pills, underline, vertical, justified)
-- **Sidenav** - Collapsible navigation with icons
+- **Sidenav** - Collapsible, nested navigation, router links
+- **Accordion** - Expandible panels, single/multiple mode
+- **AppsMenu** - Grid de apps con iconos
+- **UserMenu** - Avatar, opciones de usuario
+- **NotificationButton** - Badge de notificaciones, dropdown
+- **SearchBar** - Búsqueda con sugerencias
+- **Toast** - Notificaciones temporales
+- **Tooltip** - Tooltips con posicionamiento
+
+**Barrel Export:** Import from `src/app/components/ui/index.ts`
 
 **All components include:**
 - ✅ Full keyboard navigation
@@ -479,6 +539,7 @@ Before considering a component complete:
 - **Utilities**: [src/styles/utilities/](src/styles/utilities/) - Helper classes
 
 **Application:**
+- **Layout Config**: [src/app/config/layout.config.ts](src/app/config/layout.config.ts) - Centralized menu items
 - **Story Helpers**: [src/stories/story-helpers.ts](src/stories/story-helpers.ts)
 - **Root Component**: [src/app/app.ts](src/app/app.ts) - Live theming demo
 - **App Config**: [src/app/app.config.ts](src/app/app.config.ts)
@@ -493,19 +554,19 @@ Before considering a component complete:
 ### Stories de Referencia
 - [dropdown.stories.ts](src/stories/dropdown.stories.ts) - 17 stories
 - [multiselect.stories.ts](src/stories/multiselect.stories.ts) - 21 stories
-- [modal.stories.ts](src/stories/modal.stories.ts) - 17 stories with wrapper
+- [modal.stories.ts](src/stories/modal.stories.ts) - 17 stories
 - [tabs.stories.ts](src/stories/tabs.stories.ts) - 40+ stories
+- [sidenav.stories.ts](src/stories/sidenav.stories.ts), [apps-menu.stories.ts](src/stories/apps-menu.stories.ts), [user-menu.stories.ts](src/stories/user-menu.stories.ts), [notification-button.stories.ts](src/stories/notification-button.stories.ts), [search-bar.stories.ts](src/stories/search-bar.stories.ts)
 
 ## Notas Importantes
 
 ### Estado del Proyecto
 - ✅ Sistema de diseño modular con 600+ variables CSS organizadas
-- ✅ Arquitectura de estilos siguiendo mejores prácticas de Angular
-- ✅ Separación clara: tokens, componentes y utilidades
-- ✅ Dark mode funcionando en todos los componentes
-- ✅ Storybook configurado con comparación Light/Dark automática
-- ✅ 5 componentes UI completos (dropdown, multiselect, modal, tabs, sidenav)
-- ✅ Helper functions para crear stories fácilmente
+- ✅ 13 componentes UI completos + 3 layout components
+- ✅ Vitest + Playwright testing
+- ✅ ESLint + Prettier + SonarQube integration
+- ✅ Storybook con comparación Light/Dark automática
+- ✅ Configuración centralizada (layout.config.ts)
 - ✅ Angular 20 con signals y sintaxis moderna
 - ✅ Tailwind CSS v4 con PostCSS
 - ✅ TypeScript strict mode

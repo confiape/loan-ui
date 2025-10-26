@@ -1,0 +1,52 @@
+<div class="user-menu-container">
+  <!-- User Button -->
+  <button
+    type="button"
+    class="user-menu-button"
+    [class.user-menu-button-open]="isOpen()"
+    (click)="toggle()"
+    aria-label="Open user menu"
+    [attr.aria-expanded]="isOpen()"
+    aria-haspopup="true"
+  >
+    @if (userAvatar()) {
+      <img [src]="userAvatar()" [alt]="userName()" class="user-menu-avatar" />
+    } @else {
+      <div class="user-menu-avatar-placeholder">
+        {{ getUserInitials() }}
+      </div>
+    }
+  </button>
+
+  <!-- Dropdown -->
+  @if (isOpen()) {
+    <div class="user-menu-dropdown" role="menu" aria-label="User menu">
+      <!-- User Info -->
+      <div class="user-menu-info">
+        <span class="user-menu-name">{{ userName() }}</span>
+        @if (userEmail()) {
+          <span class="user-menu-email">{{ userEmail() }}</span>
+        }
+      </div>
+
+      <!-- Menu Items -->
+      @for (item of menuItems(); track item.id) {
+        @if (item.divider) {
+          <div class="user-menu-divider" role="separator"></div>
+        } @else {
+          <a
+            [href]="item.href || '#'"
+            class="user-menu-item"
+            (click)="onMenuItemClick(item, $event)"
+            role="menuitem"
+          >
+            @if (item.icon) {
+              <span class="user-menu-item-icon" [innerHTML]="item.icon"></span>
+            }
+            <span>{{ item.label }}</span>
+          </a>
+        }
+      }
+    </div>
+  }
+</div>

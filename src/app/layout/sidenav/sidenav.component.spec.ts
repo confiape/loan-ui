@@ -88,61 +88,122 @@ describe('SidenavComponent', () => {
   });
 
   describe('Rendering', () => {
-    it('should render sidenav with correct position class (left)', () => {
+    it('should render sidenav with base Tailwind classes', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.detectChanges();
+
+      const aside = fixture.nativeElement.querySelector('aside');
+      expect(aside.classList.contains('min-h-screen')).toBe(true);
+      expect(aside.classList.contains('flex')).toBe(true);
+      expect(aside.classList.contains('flex-col')).toBe(true);
+    });
+
+    it('should apply left border when position is left', () => {
       fixture.componentRef.setInput('items', mockItems);
       fixture.componentRef.setInput('position', 'left');
       fixture.detectChanges();
 
-      expect(component.sidenavClasses()).toContain('sidenav-left');
+      const aside = fixture.nativeElement.querySelector('aside');
+      expect(aside.classList.contains('left-0')).toBe(true);
+      expect(aside.classList.contains('border-r')).toBe(true);
     });
 
-    it('should render sidenav with correct position class (right)', () => {
+    it('should apply right border when position is right', () => {
       fixture.componentRef.setInput('items', mockItems);
       fixture.componentRef.setInput('position', 'right');
       fixture.detectChanges();
 
-      expect(component.sidenavClasses()).toContain('sidenav-right');
+      const aside = fixture.nativeElement.querySelector('aside');
+      expect(aside.classList.contains('right-0')).toBe(true);
+      expect(aside.classList.contains('border-l')).toBe(true);
     });
 
-    it('should render sidenav with correct variant class (default)', () => {
+    it('should apply shadow when variant is default', () => {
       fixture.componentRef.setInput('items', mockItems);
       fixture.componentRef.setInput('variant', 'default');
       fixture.detectChanges();
 
-      expect(component.sidenavClasses()).toContain('sidenav-variant-default');
-      expect(component.sidenavClasses()).toContain('sidenav-variant-default');
+      const aside = fixture.nativeElement.querySelector('aside');
+      expect(aside.classList.contains('shadow-sm')).toBe(true);
     });
 
-    it('should render sidenav with correct variant class (bordered)', () => {
+    it('should apply border-2 when variant is bordered', () => {
       fixture.componentRef.setInput('items', mockItems);
       fixture.componentRef.setInput('variant', 'bordered');
       fixture.detectChanges();
 
-      expect(component.sidenavClasses()).toContain('sidenav-variant-bordered');
+      const aside = fixture.nativeElement.querySelector('aside');
+      expect(aside.classList.contains('border-2')).toBe(true);
     });
 
-    it('should render sidenav with correct variant class (pills)', () => {
-      fixture.componentRef.setInput('items', mockItems);
-      fixture.componentRef.setInput('variant', 'pills');
-      fixture.detectChanges();
-
-      expect(component.sidenavClasses()).toContain('sidenav-variant-pills');
-    });
-
-    it('should render sidenav with collapsed class when collapsed', () => {
+    it('should apply overflow-visible when collapsed', () => {
       fixture.componentRef.setInput('items', mockItems);
       fixture.componentRef.setInput('collapsed', true);
       fixture.detectChanges();
 
-      expect(component.sidenavClasses()).toContain('sidenav-collapsed');
+      const aside = fixture.nativeElement.querySelector('aside');
+      expect(aside.classList.contains('overflow-visible')).toBe(true);
     });
 
-    it('should not render collapsed class when not collapsed', () => {
+    it('should not apply overflow-visible when not collapsed', () => {
       fixture.componentRef.setInput('items', mockItems);
       fixture.componentRef.setInput('collapsed', false);
       fixture.detectChanges();
 
-      expect(component.sidenavClasses()).not.toContain('sidenav-collapsed');
+      const aside = fixture.nativeElement.querySelector('aside');
+      expect(aside.classList.contains('overflow-visible')).toBe(false);
+    });
+
+    it('should render items with base Tailwind classes', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.detectChanges();
+
+      const itemLink = fixture.nativeElement.querySelector('a[role="menuitem"]');
+      expect(itemLink.classList.contains('flex')).toBe(true);
+      expect(itemLink.classList.contains('items-center')).toBe(true);
+      expect(itemLink.classList.contains('gap-3')).toBe(true);
+      expect(itemLink.classList.contains('px-4')).toBe(true);
+      expect(itemLink.classList.contains('py-3')).toBe(true);
+    });
+
+    it('should apply active Tailwind classes to selected items', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.componentRef.setInput('selectedValue', 'home');
+      fixture.detectChanges();
+
+      const activeItem = fixture.nativeElement.querySelector('[aria-current="page"]');
+      expect(activeItem).toBeTruthy();
+      expect(activeItem.classList.contains('text-white')).toBe(true);
+    });
+
+    it('should apply disabled Tailwind classes to disabled items', () => {
+      fixture.componentRef.setInput('items', mockItemsWithDisabled);
+      fixture.detectChanges();
+
+      const disabledItem = fixture.nativeElement.querySelector('[aria-disabled="true"]');
+      expect(disabledItem).toBeTruthy();
+      expect(disabledItem.classList.contains('opacity-50')).toBe(true);
+      expect(disabledItem.classList.contains('cursor-not-allowed')).toBe(true);
+    });
+
+    it('should apply font-semibold to items with children', () => {
+      fixture.componentRef.setInput('items', mockItemsWithChildren);
+      fixture.detectChanges();
+
+      const parentItem = fixture.nativeElement.querySelector('[aria-expanded]');
+      expect(parentItem).toBeTruthy();
+      expect(parentItem.classList.contains('font-semibold')).toBe(true);
+    });
+
+    it('should apply pills variant classes when variant is pills', () => {
+      fixture.componentRef.setInput('items', mockItems);
+      fixture.componentRef.setInput('variant', 'pills');
+      fixture.detectChanges();
+
+      const itemLink = fixture.nativeElement.querySelector('a[role="menuitem"]');
+      expect(itemLink.classList.contains('rounded-full')).toBe(true);
+      expect(itemLink.classList.contains('mx-2')).toBe(true);
+      expect(itemLink.classList.contains('my-1')).toBe(true);
     });
   });
 
@@ -371,63 +432,6 @@ describe('SidenavComponent', () => {
   });
 
   describe('Item States', () => {
-    it('should apply active class to selected items', () => {
-      fixture.componentRef.setInput('items', mockItems);
-      fixture.componentRef.setInput('selectedValue', 'home');
-      fixture.detectChanges();
-
-      const classes = component.getItemClasses(mockItems[0]);
-      expect(classes).toContain('sidenav-item-active');
-    });
-
-    it('should apply disabled class to disabled items', () => {
-      fixture.componentRef.setInput('items', mockItemsWithDisabled);
-      fixture.detectChanges();
-
-      const classes = component.getItemClasses(mockItemsWithDisabled[1]);
-      expect(classes).toContain('sidenav-item-disabled');
-    });
-
-    it('should apply parent class to items with children', () => {
-      fixture.componentRef.setInput('items', mockItemsWithChildren);
-      fixture.detectChanges();
-
-      const classes = component.getItemClasses(mockItemsWithChildren[1]);
-      expect(classes).toContain('sidenav-item-parent');
-    });
-
-    it('should apply correct classes to child items', () => {
-      const childItem: SidenavItem = { label: 'Child', value: 'child' };
-
-      fixture.componentRef.setInput('items', mockItems);
-      fixture.detectChanges();
-
-      const classes = component.getChildItemClasses(childItem);
-      expect(classes).toContain('sidenav-item');
-      expect(classes).toContain('sidenav-item-child');
-    });
-
-    it('should apply active class to selected child items', () => {
-      const childItem: SidenavItem = { label: 'Child', value: 'child' };
-
-      fixture.componentRef.setInput('items', mockItems);
-      fixture.componentRef.setInput('selectedValue', 'child');
-      fixture.detectChanges();
-
-      const classes = component.getChildItemClasses(childItem);
-      expect(classes).toContain('sidenav-item-active');
-    });
-
-    it('should apply disabled class to disabled child items', () => {
-      const childItem: SidenavItem = { label: 'Child', value: 'child', disabled: true };
-
-      fixture.componentRef.setInput('items', mockItems);
-      fixture.detectChanges();
-
-      const classes = component.getChildItemClasses(childItem);
-      expect(classes).toContain('sidenav-item-disabled');
-    });
-
     it('should return true for selected item', () => {
       fixture.componentRef.setInput('items', mockItems);
       fixture.componentRef.setInput('selectedValue', 'home');
@@ -615,20 +619,6 @@ describe('SidenavComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentWidth()).toBe('3rem');
-    });
-
-    it('should compute sidenavClasses correctly', () => {
-      fixture.componentRef.setInput('items', mockItems);
-      fixture.componentRef.setInput('position', 'right');
-      fixture.componentRef.setInput('variant', 'bordered');
-      fixture.componentRef.setInput('collapsed', true);
-      fixture.detectChanges();
-
-      const classes = component.sidenavClasses();
-      expect(classes).toContain('sidenav');
-      expect(classes).toContain('sidenav-right');
-      expect(classes).toContain('sidenav-variant-bordered');
-      expect(classes).toContain('sidenav-collapsed');
     });
   });
 

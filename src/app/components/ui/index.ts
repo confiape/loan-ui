@@ -14,3 +14,19 @@ export {
   type ToastPosition as ToastPos,
 } from './toast/toast.component';
 export { ToastContainerComponent } from './toast/toast-container.component';
+
+// Table Components
+export {
+  TableToolbarComponent,
+  type ToolbarAction,
+  type FilterOption,
+} from './table-toolbar/table-toolbar';
+export {
+  TableComponent,
+  type TableColumn,
+  type TableRowAction,
+  type SortDirection,
+  type SortState,
+} from './table/table';
+export { TablePaginationComponent, type PaginationInfo } from './table-pagination/table-pagination';
+export { DataTableComponent } from './data-table/data-table';

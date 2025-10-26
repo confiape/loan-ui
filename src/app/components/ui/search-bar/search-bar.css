@@ -1,0 +1,127 @@
+/* SearchBar Component Styles */
+
+/* Base Styles */
+.search-bar {
+  display: flex;
+  width: 100%;
+}
+
+.search-bar-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Icon */
+.search-bar-icon {
+  position: absolute;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: var(--spacing-3);
+  pointer-events: none;
+}
+
+/* Input */
+.search-bar-input {
+  width: 100%;
+  padding-left: var(--spacing-10);
+  padding-right: var(--spacing-10);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  transition-property: border-color, box-shadow;
+  transition-duration: var(--transition-duration-150);
+  transition-timing-function: var(--transition-timing-ease);
+}
+
+.search-bar-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.search-bar-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
+.search-bar-input:disabled {
+  background-color: var(--color-bg-tertiary);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Clear Button */
+.search-bar-clear {
+  position: absolute;
+  right: var(--spacing-2);
+  display: flex;
+  align-items: center;
+  justify-center: center;
+  padding: var(--spacing-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-duration-150) var(--transition-timing-ease);
+}
+
+.search-bar-clear:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.search-bar-clear:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Size Variants */
+.search-bar-sm .search-bar-input {
+  padding-top: var(--spacing-1);
+  padding-bottom: var(--spacing-1);
+  font-size: var(--font-size-xs);
+}
+
+.search-bar-sm .search-bar-icon {
+  padding-left: var(--spacing-2);
+}
+
+.search-bar-sm .search-bar-input {
+  padding-left: var(--spacing-8);
+}
+
+.search-bar-md .search-bar-input {
+  padding-top: var(--spacing-2);
+  padding-bottom: var(--spacing-2);
+  font-size: var(--font-size-sm);
+}
+
+.search-bar-lg .search-bar-input {
+  padding-top: var(--spacing-3);
+  padding-bottom: var(--spacing-3);
+  font-size: var(--font-size-base);
+}
+
+/* Mobile Variant */
+@media (max-width: 768px) {
+  .search-bar-mobile {
+    display: none;
+  }
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

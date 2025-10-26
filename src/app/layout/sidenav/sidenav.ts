@@ -1,5 +1,4 @@
 import { Component, input, output, signal, computed, effect } from '@angular/core';
-import { NgClass } from '@angular/common';
 
 export interface SidenavItem {
   label: string;
@@ -9,6 +8,8 @@ export interface SidenavItem {
   children?: SidenavItem[];
   disabled?: boolean;
   divider?: boolean;
+  routerLink?: string; // Router navigation support
+  external?: boolean; // External link (opens in new tab)
 }
 
 export type SidenavPosition = 'left' | 'right';
@@ -16,7 +17,7 @@ export type SidenavVariant = 'default' | 'bordered' | 'pills';
 
 @Component({
   selector: 'app-sidenav',
-  imports: [NgClass],
+  imports: [],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.css',
   standalone: true,
@@ -51,15 +52,6 @@ export class SidenavComponent {
   // Computed
   currentWidth = computed(() => {
     return this.isCollapsed() ? this.collapsedWidth() : this.width();
-  });
-
-  sidenavClasses = computed(() => {
-    const classes = ['sidenav'];
-    classes.push(`sidenav-${this.position()}`, `sidenav-variant-${this.variant()}`);
-    if (this.isCollapsed()) {
-      classes.push('sidenav-collapsed');
-    }
-    return classes.join(' ');
   });
 
   constructor() {
@@ -137,38 +129,6 @@ export class SidenavComponent {
 
   onItemMouseLeave(): void {
     this.hoveredItem.set(null);
-  }
-
-  getItemClasses(item: SidenavItem): string {
-    const classes = ['sidenav-item'];
-
-    if (this.isItemSelected(item.value)) {
-      classes.push('sidenav-item-active');
-    }
-
-    if (item.disabled) {
-      classes.push('sidenav-item-disabled');
-    }
-
-    if (item.children && item.children.length > 0) {
-      classes.push('sidenav-item-parent');
-    }
-
-    return classes.join(' ');
-  }
-
-  getChildItemClasses(item: SidenavItem): string {
-    const classes = ['sidenav-item', 'sidenav-item-child'];
-
-    if (this.isItemSelected(item.value)) {
-      classes.push('sidenav-item-active');
-    }
-
-    if (item.disabled) {
-      classes.push('sidenav-item-disabled');
-    }
-
-    return classes.join(' ');
   }
 
   // Keyboard navigation
