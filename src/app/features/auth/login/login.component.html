@@ -1,0 +1,76 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1 class="login-title">Bienvenido</h1>
+      <p class="login-subtitle">Inicia sesión en tu cuenta</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input
+          id="email"
+          type="email"
+          class="form-input"
+          [value]="email()"
+          (input)="email.set($any($event.target).value)"
+          placeholder="tu@email.com"
+          required
+          [disabled]="isLoading()"
+        />
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <div class="password-input-wrapper">
+          <input
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            class="form-input"
+            [value]="password()"
+            (input)="password.set($any($event.target).value)"
+            placeholder="••••••••"
+            required
+            [disabled]="isLoading()"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [disabled]="isLoading()"
+          >
+            @if (showPassword()) {
+              <span>👁️</span>
+            } @else {
+              <span>👁️‍🗨️</span>
+            }
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn btn-primary btn-lg login-button"
+        [disabled]="isLoading() || !email() || !password()"
+      >
+        @if (isLoading()) {
+          <span class="spinner"></span>
+          <span>Iniciando sesión...</span>
+        } @else {
+          <span>Iniciar Sesión</span>
+        }
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p class="text-sm">
+        ¿Olvidaste tu contraseña?
+        <a href="#" class="link">Recuperar</a>
+      </p>
+    </div>
+  </div>
+</div>

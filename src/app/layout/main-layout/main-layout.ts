@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidenavComponent, SidenavItem } from '../sidenav/sidenav';
 import { NavbarComponent } from '../navbar/navbar';
+import { ToastContainerComponent } from '../../components/ui';
 import { Notification } from '../../components/ui/notification-button/notification-button';
 import { AppMenuItem } from '../../components/ui/apps-menu/apps-menu';
 import { UserMenuItem } from '../../components/ui/user-menu/user-menu';
@@ -14,7 +15,7 @@ import {
 
 @Component({
   selector: 'app-main-layout',
-  imports: [RouterOutlet, SidenavComponent, NavbarComponent],
+  imports: [RouterOutlet, SidenavComponent, NavbarComponent, ToastContainerComponent],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
   standalone: true,

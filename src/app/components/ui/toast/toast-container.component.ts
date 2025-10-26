@@ -1,6 +1,7 @@
-import { Component, input } from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToastComponent, Toast, ToastPosition } from './toast.component';
+import { ToastComponent, ToastPosition } from './toast.component';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-toast-container',
@@ -8,8 +9,8 @@ import { ToastComponent, Toast, ToastPosition } from './toast.component';
   imports: [CommonModule, ToastComponent],
   template: `
     <div class="toast-container" [class]="positionClass">
-      @for (toast of toasts(); track toast.id) {
-        <app-toast [toast]="toast" (dismissed)="onDismiss($event)" />
+      @for (toast of toastService.toasts$(); track toast.id) {
+        <app-toast [toast]="toast" [position]="position()" (dismissed)="onDismiss($event)" />
       }
     </div>
   `,
@@ -20,6 +21,7 @@ import { ToastComponent, Toast, ToastPosition } from './toast.component';
         z-index: var(--z-50);
         display: flex;
         flex-direction: column;
+        gap: var(--spacing-2);
         pointer-events: none;
       }
 
@@ -62,12 +64,14 @@ import { ToastComponent, Toast, ToastPosition } from './toast.component';
   ],
 })
 export class ToastContainerComponent {
-  toasts = input.required<Toast[]>();
+  // Services
+  protected toastService = inject(ToastService);
+
+  // Inputs
   position = input<ToastPosition>('top-right');
 
-  onDismiss(id: string) {
-    // This would typically call a service to remove the toast
-    console.log('Toast dismissed:', id);
+  onDismiss(id: string): void {
+    this.toastService.dismiss(id);
   }
 
   get positionClass(): string {
