@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { SidenavComponent, SidenavItem } from '../app/components/ui/sidenav/sidenav';
+import { SidenavComponent, SidenavItem } from '../app/layout/sidenav/sidenav';
 
 const meta: Meta<SidenavComponent> = {
   title: 'UI/Sidenav',

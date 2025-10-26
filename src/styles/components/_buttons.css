@@ -1,0 +1,220 @@
+/* ============================================
+   BUTTON COMPONENTS
+   ============================================ */
+
+@layer components {
+  /* Button Base */
+  .btn {
+    @apply font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:ring-4 focus:outline-none transition-colors;
+  }
+
+  /* Button Variants - Solid */
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-primary:focus {
+    --tw-ring-color: var(--color-primary-focus-ring);
+  }
+
+  .btn-secondary {
+    background-color: var(--color-white);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-dark);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-primary);
+  }
+
+  .btn-secondary:focus {
+    --tw-ring-color: var(--color-border);
+  }
+
+  .btn-success {
+    background-color: var(--color-success);
+    color: var(--color-white);
+  }
+
+  .btn-success:hover {
+    background-color: var(--color-success-hover);
+  }
+
+  .btn-success:focus {
+    --tw-ring-color: var(--color-success-focus-ring);
+  }
+
+  .btn-error {
+    background-color: var(--color-error);
+    color: var(--color-white);
+  }
+
+  .btn-error:hover {
+    background-color: var(--color-error-hover);
+  }
+
+  .btn-error:focus {
+    --tw-ring-color: var(--color-error-focus-ring);
+  }
+
+  .btn-warning {
+    background-color: var(--color-warning);
+    color: var(--color-white);
+  }
+
+  .btn-warning:hover {
+    background-color: var(--color-warning-hover);
+  }
+
+  .btn-warning:focus {
+    --tw-ring-color: var(--color-warning-focus-ring);
+  }
+
+  .btn-info {
+    background-color: var(--color-info);
+    color: var(--color-white);
+  }
+
+  .btn-info:hover {
+    background-color: var(--color-info-hover);
+  }
+
+  .btn-info:focus {
+    --tw-ring-color: var(--color-info-focus-ring);
+  }
+
+  .btn-dark {
+    background-color: var(--color-dark);
+    color: var(--color-white);
+  }
+
+  .btn-dark:hover {
+    background-color: var(--color-dark-hover);
+  }
+
+  .btn-dark:focus {
+    --tw-ring-color: var(--color-dark-focus-ring);
+  }
+
+  /* Button Variants - Outline */
+  .btn-outline-primary {
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    background-color: transparent;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  .btn-outline-primary:focus {
+    --tw-ring-color: var(--color-primary-focus-ring);
+  }
+
+  .btn-outline-secondary {
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border-dark);
+    background-color: transparent;
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: var(--color-bg-hover);
+  }
+
+  .btn-outline-secondary:focus {
+    --tw-ring-color: var(--color-border);
+  }
+
+  .btn-outline-success {
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+    background-color: transparent;
+  }
+
+  .btn-outline-success:hover {
+    background-color: var(--color-success);
+    color: var(--color-white);
+  }
+
+  .btn-outline-success:focus {
+    --tw-ring-color: var(--color-success-focus-ring);
+  }
+
+  .btn-outline-error {
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
+    background-color: transparent;
+  }
+
+  .btn-outline-error:hover {
+    background-color: var(--color-error);
+    color: var(--color-white);
+  }
+
+  .btn-outline-error:focus {
+    --tw-ring-color: var(--color-error-focus-ring);
+  }
+
+  .btn-outline-warning {
+    color: var(--color-warning-text);
+    border: 1px solid var(--color-warning);
+    background-color: transparent;
+  }
+
+  .btn-outline-warning:hover {
+    background-color: var(--color-warning);
+    color: var(--color-white);
+  }
+
+  .btn-outline-warning:focus {
+    --tw-ring-color: var(--color-warning-focus-ring);
+  }
+
+  .btn-outline-info {
+    color: var(--color-info);
+    border: 1px solid var(--color-info);
+    background-color: transparent;
+  }
+
+  .btn-outline-info:hover {
+    background-color: var(--color-info);
+    color: var(--color-white);
+  }
+
+  .btn-outline-info:focus {
+    --tw-ring-color: var(--color-info-focus-ring);
+  }
+
+  /* Button Sizes */
+  .btn-xs {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .btn-sm {
+    @apply px-3 py-2 text-sm;
+  }
+
+  .btn-md {
+    @apply px-5 py-2.5 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-5 py-3 text-base;
+  }
+
+  .btn-xl {
+    @apply px-6 py-3.5 text-base;
+  }
+
+  /* Button Modifiers */
+  .btn-pill {
+    @apply rounded-full;
+  }
+}

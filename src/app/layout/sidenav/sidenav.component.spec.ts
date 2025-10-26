@@ -110,6 +110,7 @@ describe('SidenavComponent', () => {
       fixture.detectChanges();
 
       expect(component.sidenavClasses()).toContain('sidenav-variant-default');
+      expect(component.sidenavClasses()).toContain('sidenav-variant-default');
     });
 
     it('should render sidenav with correct variant class (bordered)', () => {

@@ -1,0 +1,231 @@
+<aside
+  [style.width]="currentWidth()"
+  [ngClass]="sidenavClasses()"
+  class="bg-[var(--color-sidebar-bg,#ffffff)] min-h-screen h-screen flex flex-col relative top-0 transition-[width] duration-300 ease-in-out z-40 overflow-hidden"
+  [class.left-0]="position() === 'left'"
+  [class.border-r]="position() === 'left'"
+  [class.border-[var(--color-sidebar-border,#e5e7eb)]]="position() === 'left'"
+  [class.right-0]="position() === 'right'"
+  [class.border-l]="position() === 'right'"
+  [class.shadow-sm]="variant() === 'default'"
+  [class.border-2]="variant() === 'bordered'"
+  [class.overflow-visible]="isCollapsed()"
+  role="navigation"
+  aria-label="Sidebar navigation"
+>
+  <!-- Header with Logo and Toggle -->
+  @if (header() || logo() || (collapsible() && showToggle())) {
+    <div class="flex items-center justify-between p-4 border-b border-[var(--color-border)] gap-3 flex-shrink-0">
+      <!-- Logo -->
+      @if (logo() || logoCollapsed()) {
+        <div class="flex items-center justify-center text-2xl font-bold text-[var(--color-primary)]">
+          @if (!isCollapsed() && logo()) {
+            <span [innerHTML]="logo()"></span>
+          }
+          @if (isCollapsed() && logoCollapsed()) {
+            <span [innerHTML]="logoCollapsed()"></span>
+          }
+          @if (isCollapsed() && !logoCollapsed() && logo()) {
+            <span [innerHTML]="logo()"></span>
+          }
+        </div>
+      }
+
+      <!-- Header Text -->
+      @if (header() && !isCollapsed()) {
+        <h2 class="text-lg font-semibold text-[var(--color-text-primary)] m-0 whitespace-nowrap overflow-hidden text-ellipsis flex-1">
+          {{ header() }}
+        </h2>
+      }
+
+      <!-- Toggle Button -->
+      @if (collapsible() && showToggle()) {
+        <button
+          type="button"
+          class="bg-transparent border-none text-[var(--color-sidebar-text-secondary)] cursor-pointer p-2 rounded-md flex items-center justify-center transition-all duration-200 ease-in-out hover:bg-[var(--color-sidebar-hover)] hover:text-[var(--color-sidebar-text)] focus:outline focus:outline-2 focus:outline-[var(--color-primary)] focus:outline-offset-2 flex-shrink-0"
+          (click)="toggleCollapse()"
+          [attr.aria-expanded]="!isCollapsed()"
+          aria-label="Toggle sidebar"
+        >
+          <svg
+            class="w-5 h-5 transition-transform duration-300 ease-in-out"
+            [class.rotate-180]="isCollapsed()"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              [attr.d]="
+                position() === 'left'
+                  ? isCollapsed()
+                    ? 'M13 5l7 7-7 7M5 5l7 7-7 7'
+                    : 'M11 19l-7-7 7-7m8 14l-7-7 7-7'
+                  : isCollapsed()
+                    ? 'M11 19l-7-7 7-7m8 14l-7-7 7-7'
+                    : 'M13 5l7 7-7 7M5 5l7 7-7 7'
+              "
+            ></path>
+          </svg>
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Navigation Menu -->
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden p-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[var(--color-border)] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-[var(--color-border-dark)]">
+    <ul class="list-none m-0 p-0 flex flex-col gap-1" role="menu">
+      @for (item of items(); track item.value; let i = $index) {
+        <!-- Divider -->
+        @if (item.divider) {
+          <li class="h-px bg-[var(--color-border)] my-3 mx-2 list-none" role="separator" [attr.aria-hidden]="true"></li>
+        }
+
+        <!-- Regular Item -->
+        @if (!item.divider) {
+          <li class="list-none relative" role="none">
+            <a
+              [ngClass]="getItemClasses(item)"
+              class="flex items-center gap-3 px-4 py-3 text-[var(--color-sidebar-text)] no-underline rounded-lg transition-all duration-200 ease-in-out cursor-pointer relative text-sm font-medium whitespace-nowrap hover:bg-[var(--color-sidebar-hover)] hover:text-[var(--color-sidebar-text)] focus:outline focus:outline-2 focus:outline-[var(--color-primary)] focus:-outline-offset-2"
+              [class.bg-[var(--color-primary)]]="isItemSelected(item.value)"
+              [class.text-white]="isItemSelected(item.value)"
+              [class.hover:bg-[var(--color-primary-hover)]]="isItemSelected(item.value)"
+              [class.opacity-50]="item.disabled"
+              [class.cursor-not-allowed]="item.disabled"
+              [class.pointer-events-none]="item.disabled"
+              [class.font-semibold]="item.children && item.children.length > 0"
+              [class.rounded-full]="variant() === 'pills'"
+              [class.mx-2]="variant() === 'pills'"
+              [class.my-1]="variant() === 'pills'"
+              (click)="onItemClick(item, $event)"
+              (keydown)="onKeyDown($event, item)"
+              (mouseenter)="onItemMouseEnter(item.value)"
+              (mouseleave)="onItemMouseLeave()"
+              [attr.aria-disabled]="item.disabled"
+              [attr.aria-current]="isItemSelected(item.value) ? 'page' : null"
+              [attr.aria-expanded]="
+                item.children && item.children.length > 0 ? isItemExpanded(item.value) : null
+              "
+              [attr.href]="item.disabled ? null : '#'"
+              [attr.tabindex]="item.disabled ? -1 : 0"
+              role="menuitem"
+            >
+              <!-- Icon -->
+              @if (item.icon) {
+                <span class="flex items-center justify-center w-5 h-5 flex-shrink-0 text-lg" [innerHTML]="item.icon"></span>
+              }
+
+              <!-- Label -->
+              @if (!isCollapsed()) {
+                <span [class]="'flex-1 overflow-hidden text-ellipsis whitespace-nowrap transition-[opacity,width] duration-300 ease-in-out ' + (isCollapsed() ? 'opacity-0 w-0' : '')">
+                  {{ item.label }}
+                </span>
+              }
+
+              <!-- Badge -->
+              @if (item.badge && !isCollapsed()) {
+                <span [class]="'px-2 py-1 rounded-full text-xs font-semibold leading-none flex-shrink-0 transition-[opacity,width] duration-300 ease-in-out ' +
+                  (isItemSelected(item.value) ? 'bg-white text-[var(--color-primary)]' : 'bg-[var(--color-primary-100)] text-[var(--color-primary-800)]') + ' ' +
+                  (isCollapsed() ? 'opacity-0 w-0' : '')">
+                  {{ item.badge }}
+                </span>
+              }
+
+              <!-- Expand Icon for items with children -->
+              @if (item.children && item.children.length > 0 && !isCollapsed()) {
+                <svg
+                  [class]="'w-4 h-4 flex-shrink-0 transition-transform duration-200 ease-in-out ' + (isItemExpanded(item.value) ? 'rotate-180' : '')"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              }
+            </a>
+
+            <!-- Tooltip for collapsed state -->
+            @if (isCollapsed() && isItemHovered(item.value)) {
+              <div
+                [class]="'absolute top-1/2 -translate-y-1/2 bg-[var(--color-tooltip-bg)] text-[var(--color-tooltip-text)] px-3 py-2 rounded-md text-sm whitespace-nowrap shadow-lg z-50 pointer-events-none animate-[tooltipFadeIn_200ms_ease-in-out]'"
+                [style.left]="position() === 'left' ? 'calc(100% + 0.5rem)' : 'auto'"
+                [style.right]="position() === 'right' ? 'calc(100% + 0.5rem)' : 'auto'"
+              >
+                {{ item.label }}
+                @if (item.badge) {
+                  <span class="bg-[var(--color-primary)] text-white px-2 py-1 rounded-full text-xs ml-2">{{ item.badge }}</span>
+                }
+              </div>
+            }
+
+            <!-- Children (Submenu) -->
+            @if (
+              item.children &&
+              item.children.length > 0 &&
+              isItemExpanded(item.value) &&
+              !isCollapsed()
+            ) {
+              <ul class="list-none mt-2 p-0 pl-6 flex flex-col gap-1 border-l-2 border-[var(--color-border)] ml-6" role="menu" [attr.aria-label]="item.label + ' submenu'">
+                @for (child of item.children; track child.value) {
+                  <li class="list-none relative" role="none">
+                    <a
+                      [ngClass]="getChildItemClasses(child)"
+                      class="flex items-center gap-3 px-3 py-2 text-[var(--color-sidebar-text)] no-underline rounded-lg transition-all duration-200 ease-in-out cursor-pointer relative text-sm font-normal whitespace-nowrap hover:bg-[var(--color-sidebar-hover)] hover:text-[var(--color-sidebar-text)] focus:outline focus:outline-2 focus:outline-[var(--color-primary)] focus:-outline-offset-2"
+                      [class.bg-[var(--color-primary)]]="isItemSelected(child.value)"
+                      [class.text-white]="isItemSelected(child.value)"
+                      [class.hover:bg-[var(--color-primary-hover)]]="isItemSelected(child.value)"
+                      [class.opacity-50]="child.disabled"
+                      [class.cursor-not-allowed]="child.disabled"
+                      [class.pointer-events-none]="child.disabled"
+                      (click)="onItemClick(child, $event)"
+                      (keydown)="onKeyDown($event, child)"
+                      [attr.aria-disabled]="child.disabled"
+                      [attr.aria-current]="isItemSelected(child.value) ? 'page' : null"
+                      [attr.href]="child.disabled ? null : '#'"
+                      [attr.tabindex]="child.disabled ? -1 : 0"
+                      role="menuitem"
+                    >
+                      <!-- Icon -->
+                      @if (child.icon) {
+                        <span class="flex items-center justify-center w-4 h-4 flex-shrink-0 text-base" [innerHTML]="child.icon"></span>
+                      }
+
+                      <!-- Label -->
+                      <span class="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+                        {{ child.label }}
+                      </span>
+
+                      <!-- Badge -->
+                      @if (child.badge) {
+                        <span [class]="'px-2 py-1 rounded-full text-xs font-semibold leading-none flex-shrink-0 ' +
+                          (isItemSelected(child.value) ? 'bg-white text-[var(--color-primary)]' : 'bg-[var(--color-primary-100)] text-[var(--color-primary-800)]')">
+                          {{ child.badge }}
+                        </span>
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+        }
+      }
+    </ul>
+  </nav>
+
+  <!-- Footer -->
+  @if (footer() && !isCollapsed()) {
+    <div class="p-4 border-t border-[var(--color-border)] text-[var(--color-sidebar-text-secondary)] text-sm flex-shrink-0">
+      <span [innerHTML]="footer()"></span>
+    </div>
+  }
+</aside>

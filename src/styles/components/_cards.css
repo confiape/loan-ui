@@ -1,0 +1,45 @@
+/* ============================================
+   CARD COMPONENTS
+   ============================================ */
+
+@layer components {
+  .card {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    @apply max-w-sm p-6 rounded-lg shadow-sm;
+  }
+
+  .card-link {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    @apply block max-w-sm p-6 rounded-lg shadow-sm;
+  }
+
+  .card-link:hover {
+    background-color: var(--color-bg-hover);
+  }
+
+  .card-title {
+    color: var(--color-text-primary);
+    @apply mb-2 text-2xl font-bold tracking-tight;
+  }
+
+  .card-text {
+    color: var(--color-text-secondary);
+    @apply font-normal;
+  }
+
+  .card-btn {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    @apply inline-flex items-center px-3 py-2 text-sm font-medium text-center rounded-lg focus:ring-4 focus:outline-none;
+  }
+
+  .card-btn:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .card-btn:focus {
+    --tw-ring-color: var(--color-primary-focus-ring);
+  }
+}

@@ -1,0 +1,146 @@
+/* ============================================
+   NAVIGATION COMPONENTS
+   ============================================ */
+
+@layer components {
+  /* Navbar */
+  .navbar {
+    background-color: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border);
+    @apply px-4 py-3 flex items-center justify-between gap-4;
+  }
+
+  .navbar-brand {
+    color: var(--color-text-primary);
+    @apply text-xl font-semibold;
+  }
+
+  .navbar-link {
+    color: var(--color-text-secondary);
+    @apply px-3 py-2 rounded-lg transition-colors;
+  }
+
+  .navbar-link:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-primary);
+  }
+
+  .navbar-link-active {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background-color: var(--color-bg-primary);
+    border-right: 1px solid var(--color-border);
+    @apply w-64 min-h-screen p-4;
+  }
+
+  .sidebar-nav {
+    @apply space-y-2;
+  }
+
+  .sidebar-link {
+    color: var(--color-text-secondary);
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors;
+  }
+
+  .sidebar-link:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-primary);
+  }
+
+  .sidebar-link-active {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  .sidebar-icon {
+    @apply w-5 h-5;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    @apply flex items-center gap-2 flex-wrap;
+  }
+
+  .breadcrumb-item {
+    color: var(--color-text-secondary);
+    @apply flex items-center gap-2 text-sm;
+  }
+
+  .breadcrumb-item a {
+    color: var(--color-text-secondary);
+    @apply transition-colors;
+  }
+
+  .breadcrumb-item a:hover {
+    color: var(--color-primary);
+  }
+
+  .breadcrumb-item:hover {
+    color: var(--color-primary-bg);
+  }
+
+  .breadcrumb-item-active {
+    color: var(--color-text-primary);
+    @apply font-medium;
+  }
+
+  .breadcrumb-separator {
+    color: var(--color-text-tertiary);
+  }
+
+  /* Pagination */
+  .pagination {
+    @apply flex items-center gap-1;
+  }
+
+  .pagination-item {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    @apply px-3 py-2 text-sm rounded-lg transition-colors;
+  }
+
+  .pagination-item:hover:not(.pagination-item-active):not(:disabled) {
+    background-color: var(--color-bg-hover);
+    color: var(--color-primary);
+  }
+
+  .pagination-item-active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  .pagination-item:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .pagination-btn {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border-dark);
+    color: var(--color-text-secondary);
+    @apply px-3 py-2 leading-tight;
+  }
+
+  .pagination-btn:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+  }
+
+  .pagination-btn-active {
+    background-color: var(--color-primary-50);
+    border: 1px solid var(--color-primary-300);
+    color: var(--color-primary-600);
+    @apply z-10 px-3 py-2 leading-tight;
+  }
+
+  .pagination-btn-active:hover {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary);
+  }
+}

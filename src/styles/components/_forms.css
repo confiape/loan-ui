@@ -1,0 +1,82 @@
+/* ============================================
+   FORM COMPONENTS
+   ============================================ */
+
+@layer components {
+  /* Form Labels */
+  .form-label {
+    color: var(--color-text-primary);
+    @apply block mb-2 text-sm font-medium;
+  }
+
+  /* Form Inputs */
+  .form-input {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-dark);
+    color: var(--color-text-primary);
+    @apply text-sm rounded-lg block w-full p-2.5;
+  }
+
+  .form-input::placeholder {
+    color: var(--color-text-tertiary);
+  }
+
+  .form-input:focus {
+    --tw-ring-color: var(--color-primary-light);
+    border-color: var(--color-primary-light);
+    @apply ring-2 outline-none;
+  }
+
+  /* Form Input States */
+  .form-input-success {
+    background-color: var(--color-success-lighter);
+    border-color: var(--color-success-light);
+    color: var(--color-success-700);
+  }
+
+  .form-input-success:focus {
+    --tw-ring-color: var(--color-success-light);
+    border-color: var(--color-success-light);
+    @apply ring-2;
+  }
+
+  .form-input-error {
+    background-color: var(--color-error-lighter);
+    border-color: var(--color-error-light);
+    color: var(--color-error-700);
+  }
+
+  .form-input-error:focus {
+    --tw-ring-color: var(--color-error-light);
+    border-color: var(--color-error-light);
+    @apply ring-2;
+  }
+
+  /* Checkbox */
+  .form-checkbox {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-dark);
+    @apply w-4 h-4 rounded focus:ring-3;
+  }
+
+  .form-checkbox:focus {
+    --tw-ring-color: var(--color-primary-focus-ring);
+    --tw-ring-offset-color: var(--color-bg-primary);
+  }
+
+  /* Floating Label Input */
+  .floating-input {
+    color: var(--color-text-primary);
+    border-bottom: 2px solid var(--color-border-dark);
+    @apply block py-2.5 px-0 w-full text-sm bg-transparent border-0 appearance-none focus:outline-none focus:ring-0;
+  }
+
+  .floating-input:focus {
+    border-bottom-color: var(--color-primary-bg);
+  }
+
+  .floating-label {
+    color: var(--color-text-secondary);
+    @apply absolute text-sm duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0];
+  }
+}

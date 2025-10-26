@@ -1,0 +1,12 @@
+/* ============================================
+   DESIGN TOKENS - Main Index
+   All design system variables (CSS Custom Properties)
+   ============================================ */
+
+@import './_colors.css';
+@import './_spacing.css';
+@import './_typography.css';
+@import './_borders.css';
+@import './_shadows.css';
+@import './_transitions.css';
+@import './_layout.css';

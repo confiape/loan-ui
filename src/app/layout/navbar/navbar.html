@@ -1,16 +1,16 @@
-<nav class="navbar" role="navigation" aria-label="Main navigation">
-  <div class="navbar-container">
-    <!-- Left Section: Menu + Logo + Title -->
-    <div class="navbar-left">
-      <!-- Mobile Menu Toggle -->
+<nav class="h-16 flex items-center px-4 lg:px-6" role="navigation" aria-label="Main navigation">
+  <div class="flex items-center justify-between w-full max-w-full">
+    <!-- Left Section: Menu + Title -->
+    <div class="flex items-center gap-3 min-w-0">
+      <!-- Menu Toggle Button -->
       <button
-        class="navbar-btn navbar-menu-btn lg:hidden"
+        class="inline-flex items-center justify-center p-2 rounded-md text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 transition-all duration-150 lg:hidden"
         (click)="onMenuToggle()"
-        aria-label="Toggle mobile menu"
+        aria-label="Toggle menu"
         type="button"
       >
         <svg
-          class="navbar-icon"
+          class="w-6 h-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -25,149 +25,14 @@
         </svg>
       </button>
 
-      <!-- Desktop Sidenav Toggle -->
-      <button
-        class="navbar-btn navbar-sidenav-toggle-btn hidden lg:flex"
-        (click)="onSidenavToggle()"
-        aria-label="Toggle sidenav"
-        type="button"
-      >
-        <svg
-          class="navbar-icon"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          ></path>
-        </svg>
-      </button>
-
-      <!-- Logo & Title -->
-      <div class="navbar-brand">
-        <svg
-          class="navbar-logo"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"
-          ></path>
-        </svg>
-        <span class="navbar-title">{{ appTitle() }}</span>
-      </div>
+      <!-- Title -->
+      <span
+        class="text-lg lg:text-xl font-semibold text-[var(--color-text-primary)] whitespace-nowrap overflow-hidden text-ellipsis">
+        {{ appTitle() }}
+      </span>
     </div>
 
-    <!-- Center Section: Search (optional) -->
-    @if (showSearch()) {
-      <div class="navbar-center hidden md:flex">
-        <div class="navbar-search-container">
-          <svg
-            class="navbar-search-icon"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            ></path>
-          </svg>
-          <input
-            type="search"
-            class="navbar-search-input"
-            placeholder="Buscar..."
-            [(ngModel)]="searchQuery"
-            (focus)="onSearchFocus()"
-            (blur)="onSearchBlur()"
-            (keyup.enter)="onSearchSubmit()"
-            aria-label="Search"
-          />
-        </div>
-      </div>
-    }
-
-    <!-- Right Section: Actions + Notifications + User -->
-    <div class="navbar-right">
-      <!-- Custom Actions -->
-      @for (action of actions(); track action.value) {
-        <button
-          class="navbar-btn navbar-action-btn"
-          [disabled]="action.disabled"
-          (click)="onActionClick(action)"
-          [attr.aria-label]="action.label"
-          type="button"
-        >
-          @if (action.icon) {
-            <span class="navbar-icon">{{ action.icon }}</span>
-          }
-          <span class="hidden lg:inline">{{ action.label }}</span>
-          @if (action.badge) {
-            <span class="navbar-badge">{{ action.badge }}</span>
-          }
-        </button>
-      }
-
-      <!-- Notifications -->
-      @if (showNotifications()) {
-        <button
-          class="navbar-btn navbar-notification-btn"
-          aria-label="Notifications"
-          type="button"
-        >
-          <svg
-            class="navbar-icon"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-            ></path>
-          </svg>
-          @if (notificationCount() > 0) {
-            <span class="navbar-notification-badge">{{ notificationCount() }}</span>
-          }
-        </button>
-      }
-
-      <!-- User Menu -->
-      <div class="navbar-user-menu">
-        @if (userInfo()) {
-          <app-dropdown
-            [items]="userMenuItems()"
-            [placeholder]="userInfo()!.name"
-            variant="outline"
-            size="sm"
-            (selectionChange)="onUserMenuSelect($event)"
-            [clearable]="false"
-            [searchable]="false"
-          >
-            <div class="navbar-user-avatar">
-              @if (userInfo()!.avatar) {
-                <img [src]="userInfo()!.avatar" [alt]="userInfo()!.name" class="navbar-avatar-img" />
-              } @else {
-                <span class="navbar-avatar-initials">{{ userInitials() }}</span>
-              }
-            </div>
-          </app-dropdown>
-        } @else {
-          <button class="btn btn-primary btn-sm" type="button">Iniciar Sesión</button>
-        }
-      </div>
-    </div>
+    <!-- Right Section (empty for now) -->
+    <div class="flex items-center gap-2 ml-auto"></div>
   </div>
 </nav>

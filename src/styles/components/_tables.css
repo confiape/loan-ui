@@ -1,0 +1,38 @@
+/* ============================================
+   TABLE COMPONENTS
+   ============================================ */
+
+@layer components {
+  .table {
+    background-color: var(--color-bg-primary);
+    @apply w-full text-sm text-left;
+  }
+
+  .table-header {
+    background-color: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    @apply text-xs uppercase tracking-wider;
+  }
+
+  .table-header th {
+    @apply px-6 py-3 font-medium;
+  }
+
+  .table-row {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .table-row:hover {
+    background-color: var(--color-table-row-hover);
+  }
+
+  .table-cell {
+    color: var(--color-text-primary);
+    @apply px-6 py-4;
+  }
+
+  .table-striped .table-row:nth-child(even) {
+    background-color: var(--color-bg-secondary);
+  }
+}

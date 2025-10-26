@@ -1,159 +1,51 @@
 <div class="dashboard">
-  <!-- Header -->
-  <header class="dashboard-header">
-    <div>
-      <h1 class="heading-1">Dashboard</h1>
-      <p class="text-large" style="color: var(--color-text-secondary)">
-        Bienvenido al panel de control de préstamos
-      </p>
-    </div>
-    <div class="dashboard-actions">
-      <button class="btn btn-outline-primary" type="button">
-        <span>📊</span>
-        Exportar
-      </button>
-      <button class="btn btn-primary" type="button">
-        <span>➕</span>
-        Nuevo Préstamo
-      </button>
-    </div>
-  </header>
+  <h1 class="heading-1">Dashboard</h1>
+  <p class="text-large" style="color: var(--color-text-secondary)">Contenido principal de la aplicación</p>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <p class="text-large" style="color: var(--color-text-secondary)">Contenido principal de la aplicación</p>
 
-  <!-- Stats Grid -->
-  <section class="stats-grid">
-    @for (stat of stats(); track stat.title) {
-      <div class="card stat-card stat-card-{{ stat.variant }}">
-        <div class="stat-card-header">
-          <span class="stat-card-icon">{{ stat.icon }}</span>
-          <h3 class="stat-card-title">{{ stat.title }}</h3>
-        </div>
-        <div class="stat-card-body">
-          <div class="stat-card-value">{{ stat.value }}</div>
-          @if (stat.change) {
-            <div class="stat-card-change" [ngClass]="getTrendClass(stat.trend)">
-              <span class="trend-icon">{{ getTrendIcon(stat.trend) }}</span>
-              <span>{{ stat.change }}</span>
-            </div>
-          }
-        </div>
-      </div>
-    }
-  </section>
-
-  <!-- Content Grid - 2 Columns -->
-  <section class="content-grid-2col">
-    <!-- Recent Loans Table -->
-    <div class="card">
-      <div class="card-header">
-        <h2 class="card-title">Préstamos Recientes</h2>
-        <button class="btn btn-sm btn-outline-secondary" type="button">Ver Todos</button>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table">
-            <thead class="table-header">
-              <tr>
-                <th class="table-cell">ID</th>
-                <th class="table-cell">Cliente</th>
-                <th class="table-cell">Monto</th>
-                <th class="table-cell">Estado</th>
-                <th class="table-cell">Fecha</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (loan of recentLoans(); track loan.id) {
-                <tr class="table-row">
-                  <td class="table-cell">{{ loan.id }}</td>
-                  <td class="table-cell font-medium">{{ loan.client }}</td>
-                  <td class="table-cell">{{ loan.amount }}</td>
-                  <td class="table-cell">
-                    <span [class]="'badge ' + getStatusClass(loan.status)">
-                      {{ loan.status }}
-                    </span>
-                  </td>
-                  <td class="table-cell text-small">{{ loan.date }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- Activity Feed -->
-    <div class="card">
-      <div class="card-header">
-        <h2 class="card-title">Actividad Reciente</h2>
-      </div>
-      <div class="card-body">
-        <div class="activity-feed">
-          <div class="activity-item">
-            <div class="activity-icon activity-icon-success">✓</div>
-            <div class="activity-content">
-              <p class="activity-title">Préstamo Aprobado</p>
-              <p class="activity-description">Juan Pérez - $15,000</p>
-              <p class="activity-time">Hace 2 horas</p>
-            </div>
-          </div>
-
-          <div class="activity-item">
-            <div class="activity-icon activity-icon-warning">⏳</div>
-            <div class="activity-content">
-              <p class="activity-title">Pendiente de Revisión</p>
-              <p class="activity-description">María García - $25,000</p>
-              <p class="activity-time">Hace 4 horas</p>
-            </div>
-          </div>
-
-          <div class="activity-item">
-            <div class="activity-icon activity-icon-info">📄</div>
-            <div class="activity-content">
-              <p class="activity-title">Documentos Recibidos</p>
-              <p class="activity-description">Carlos López - Solicitud #003</p>
-              <p class="activity-time">Hace 6 horas</p>
-            </div>
-          </div>
-
-          <div class="activity-item">
-            <div class="activity-icon activity-icon-error">✗</div>
-            <div class="activity-content">
-              <p class="activity-title">Préstamo Rechazado</p>
-              <p class="activity-description">Pedro Sánchez - $18,000</p>
-              <p class="activity-time">Hace 8 horas</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Quick Actions Grid - 3 Columns -->
-  <section class="content-grid-3col">
-    <div class="card card-hover">
-      <div class="card-body text-center">
-        <div class="quick-action-icon">📝</div>
-        <h3 class="card-title">Nueva Solicitud</h3>
-        <p class="card-text">Registrar una nueva solicitud de préstamo</p>
-        <button class="btn btn-primary btn-block mt-4" type="button">Iniciar</button>
-      </div>
-    </div>
-
-    <div class="card card-hover">
-      <div class="card-body text-center">
-        <div class="quick-action-icon">👤</div>
-        <h3 class="card-title">Nuevo Cliente</h3>
-        <p class="card-text">Agregar un nuevo cliente al sistema</p>
-        <button class="btn btn-primary btn-block mt-4" type="button">Crear</button>
-      </div>
-    </div>
-
-    <div class="card card-hover">
-      <div class="card-body text-center">
-        <div class="quick-action-icon">📊</div>
-        <h3 class="card-title">Generar Reporte</h3>
-        <p class="card-text">Crear reportes financieros detallados</p>
-        <button class="btn btn-primary btn-block mt-4" type="button">Generar</button>
-      </div>
-    </div>
-  </section>
 </div>

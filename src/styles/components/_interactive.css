@@ -1,0 +1,80 @@
+/* ============================================
+   INTERACTIVE COMPONENTS
+   ============================================ */
+
+@layer components {
+  /* Dropdown */
+  .dropdown {
+    @apply relative inline-block;
+  }
+
+  .dropdown-toggle {
+    @apply inline-flex items-center gap-2;
+  }
+
+  .dropdown-menu {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    @apply absolute mt-2 rounded-lg shadow-lg py-1 z-10 min-w-48;
+  }
+
+  .dropdown-item {
+    color: var(--color-text-primary);
+    @apply block px-4 py-2 text-sm transition-colors;
+  }
+
+  .dropdown-item:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-primary);
+  }
+
+  .dropdown-divider {
+    border-top: 1px solid var(--color-border);
+    @apply my-1;
+  }
+
+  /* Accordion */
+  .accordion {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    @apply rounded-lg overflow-hidden;
+  }
+
+  .accordion-item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .accordion-item:last-child {
+    border-bottom: none;
+  }
+
+  .accordion-header {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    @apply w-full px-5 py-4 text-left font-medium flex items-center justify-between transition-colors;
+  }
+
+  .accordion-header:hover {
+    background-color: var(--color-bg-hover);
+  }
+
+  .accordion-header:focus {
+    --tw-ring-color: var(--color-border);
+  }
+
+  .accordion-icon {
+    color: var(--color-text-secondary);
+    @apply w-5 h-5 transition-transform;
+  }
+
+  .accordion-icon-open {
+    @apply rotate-180;
+  }
+
+  .accordion-body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-secondary);
+    border-top: 1px solid var(--color-border);
+    @apply px-5 py-4;
+  }
+}

@@ -1,0 +1,38 @@
+/* ============================================
+   ALERT COMPONENTS
+   ============================================ */
+
+@layer components {
+  .alert {
+    @apply flex items-center p-4 mb-4 text-sm rounded-lg;
+  }
+
+  .alert-icon {
+    @apply flex-shrink-0 inline w-4 h-4 me-3;
+  }
+
+  .alert-primary {
+    background-color: var(--color-alert-primary-bg);
+    color: var(--color-alert-primary-text);
+  }
+
+  .alert-success {
+    background-color: var(--color-alert-success-bg);
+    color: var(--color-alert-success-text);
+  }
+
+  .alert-warning {
+    background-color: var(--color-alert-warning-bg);
+    color: var(--color-alert-warning-text);
+  }
+
+  .alert-error {
+    background-color: var(--color-alert-error-bg);
+    color: var(--color-alert-error-text);
+  }
+
+  .alert-info {
+    background-color: var(--color-alert-info-bg);
+    color: var(--color-alert-info-text);
+  }
+}

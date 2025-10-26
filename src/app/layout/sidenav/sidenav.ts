@@ -1,5 +1,5 @@
 import { Component, input, output, signal, computed, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 export interface SidenavItem {
   label: string;
@@ -16,7 +16,7 @@ export type SidenavVariant = 'default' | 'bordered' | 'pills';
 
 @Component({
   selector: 'app-sidenav',
-  imports: [CommonModule],
+  imports: [NgClass],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.css',
   standalone: true,

@@ -1,0 +1,67 @@
+/* ============================================
+   MODAL & OVERLAY COMPONENTS
+   ============================================ */
+
+@layer components {
+  /* Modal */
+  .modal {
+    @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+  }
+
+  .modal-backdrop {
+    background-color: var(--color-modal-backdrop);
+    @apply fixed inset-0;
+  }
+
+  .modal-content {
+    background-color: var(--color-bg-primary);
+    @apply relative rounded-lg shadow;
+  }
+
+  .modal-dialog {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    @apply rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden;
+  }
+
+  .modal-header {
+    border-bottom: 1px solid var(--color-border);
+    @apply px-6 py-4 flex items-center justify-between;
+  }
+
+  .modal-title {
+    color: var(--color-text-primary);
+    @apply text-xl font-semibold;
+  }
+
+  .modal-close {
+    color: var(--color-text-secondary);
+    @apply transition-colors;
+  }
+
+  .modal-close:hover {
+    color: var(--color-error);
+  }
+
+  .modal-body {
+    color: var(--color-text-primary);
+    @apply px-6 py-4 overflow-y-auto;
+  }
+
+  .modal-footer {
+    border-top: 1px solid var(--color-border);
+    @apply px-6 py-4 flex items-center justify-end gap-3;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    background-color: var(--color-gray-900);
+    color: var(--color-white);
+    @apply absolute px-3 py-2 text-xs rounded-lg shadow-lg z-50 whitespace-nowrap;
+  }
+
+  .tooltip-arrow {
+    @apply absolute w-2 h-2 rotate-45;
+    background-color: var(--color-gray-900);
+  }
+}

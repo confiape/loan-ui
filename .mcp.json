@@ -16,9 +16,9 @@
       ],
       "env": {}
     },
-    "browsermcp": {
+    "playwright": {
       "command": "npx",
-      "args": ["@browsermcp/mcp@latest"]
+      "args": ["@playwright/mcp@latest", "--isolated", "--storage-state={path/to/storage.json}"]
     }
   }
 }

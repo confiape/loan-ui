@@ -48,12 +48,41 @@ loan-ui/
 ├── src/
 │   ├── app/
 │   │   ├── components/ui/         # UI components
+│   │   ├── features/              # Feature modules
+│   │   ├── layout/                # Layout components
 │   │   ├── app.ts                 # Root component
 │   │   ├── app.config.ts          # App configuration
 │   │   └── app.routes.ts          # Routes
 │   ├── stories/                   # Storybook stories
 │   │   └── story-helpers.ts       # Helper functions
-│   └── styles.css                 # Design system (600+ CSS variables)
+│   ├── styles/                    # Design system (modular)
+│   │   ├── tokens/                # Design tokens (CSS variables)
+│   │   │   ├── _colors.css        # Color palette
+│   │   │   ├── _spacing.css       # Spacing scale
+│   │   │   ├── _typography.css    # Font sizes, weights, line heights
+│   │   │   ├── _borders.css       # Border radius and widths
+│   │   │   ├── _shadows.css       # Shadow definitions
+│   │   │   ├── _transitions.css   # Animation timings
+│   │   │   ├── _layout.css        # Z-index, containers
+│   │   │   └── _index.css         # Tokens index
+│   │   ├── components/            # Component styles
+│   │   │   ├── _buttons.css       # Button variants
+│   │   │   ├── _forms.css         # Form elements
+│   │   │   ├── _cards.css         # Card components
+│   │   │   ├── _badges.css        # Badge variants
+│   │   │   ├── _alerts.css        # Alert messages
+│   │   │   ├── _navigation.css    # Navbar, sidebar, breadcrumb, pagination
+│   │   │   ├── _tables.css        # Table styles
+│   │   │   ├── _modals.css        # Modal and tooltip
+│   │   │   ├── _interactive.css   # Dropdown, accordion
+│   │   │   ├── _feedback.css      # Progress, spinner
+│   │   │   ├── _avatar.css        # Avatar components
+│   │   │   └── _index.css         # Components index
+│   │   ├── utilities/             # Utility classes
+│   │   │   ├── _helpers.css       # Helper utilities
+│   │   │   └── _index.css         # Utilities index
+│   │   └── themes/                # Theme variations (reserved)
+│   └── styles.css                 # Main stylesheet (imports)
 ├── .storybook/                    # Storybook config
 └── CLAUDE.md                      # This file
 ```
@@ -72,10 +101,87 @@ Angular application builder ([angular.json](angular.json)):
 
 ## Styling System
 
+### Architecture Overview
+
+The styling system is organized following Angular and CSS best practices with a **modular architecture**:
+
+```
+src/styles/
+├── tokens/         # Design tokens (CSS variables)
+├── components/     # Component-specific styles
+├── utilities/      # Utility classes
+└── themes/         # Theme variations (reserved for future use)
+```
+
+**Main Entry Point:** [src/styles.css](src/styles.css) - imports all modules
+
 ### Tailwind CSS v4 with PostCSS
 - Configured via [.postcssrc.json](.postcssrc.json)
 - Uses `@tailwindcss/postcss` plugin
 - Global import in [src/styles.css](src/styles.css): `@import "tailwindcss";`
+
+### Design Tokens (CSS Variables)
+
+All design tokens are organized in separate files within `src/styles/tokens/`:
+
+1. **[_colors.css](src/styles/tokens/_colors.css)** - Complete color palette with light/dark mode variants
+   - Semantic colors: primary, secondary, success, error, warning, info, dark
+   - Gray scale: 50-900
+   - Text, border, background colors
+   - Component-specific colors
+
+2. **[_spacing.css](src/styles/tokens/_spacing.css)** - Spacing scale (0-32)
+   - Based on 4px/8px grid system
+   - Variables: `--spacing-{n}` (0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 16, 20, 24, 32)
+
+3. **[_typography.css](src/styles/tokens/_typography.css)** - Typography system
+   - Font sizes: xs to 6xl
+   - Line heights: none to loose
+   - Font weights: thin to black
+
+4. **[_borders.css](src/styles/tokens/_borders.css)** - Border system
+   - Border radius: none to full
+   - Border widths: 0, 1px, 2px, 4px, 8px
+
+5. **[_shadows.css](src/styles/tokens/_shadows.css)** - Shadow definitions
+   - Shadow scale: sm, base, md, lg, xl, 2xl, inner, none
+
+6. **[_transitions.css](src/styles/tokens/_transitions.css)** - Animation tokens
+   - Durations: 75ms to 1000ms
+   - Timing functions: linear, ease, ease-in, ease-out, ease-in-out
+
+7. **[_layout.css](src/styles/tokens/_layout.css)** - Layout tokens
+   - Z-index scale: 0, 10, 20, 30, 40, 50
+   - Container max widths: sm, md, lg, xl, 2xl
+
+### Component Styles
+
+All component styles are organized in `src/styles/components/` using `@layer components`:
+
+- **[_buttons.css](src/styles/components/_buttons.css)** - Button variants (solid, outline), sizes, modifiers
+- **[_forms.css](src/styles/components/_forms.css)** - Labels, inputs, checkboxes, floating labels
+- **[_cards.css](src/styles/components/_cards.css)** - Card layouts and elements
+- **[_badges.css](src/styles/components/_badges.css)** - Badge variants and pills
+- **[_alerts.css](src/styles/components/_alerts.css)** - Alert messages with icons
+- **[_navigation.css](src/styles/components/_navigation.css)** - Navbar, sidebar, breadcrumb, pagination
+- **[_tables.css](src/styles/components/_tables.css)** - Table styles with hover and striped rows
+- **[_modals.css](src/styles/components/_modals.css)** - Modal dialogs and tooltips
+- **[_interactive.css](src/styles/components/_interactive.css)** - Dropdowns and accordions
+- **[_feedback.css](src/styles/components/_feedback.css)** - Progress bars and spinners
+- **[_avatar.css](src/styles/components/_avatar.css)** - Avatar components with status
+
+### Utility Classes
+
+Custom utilities in `src/styles/utilities/` using `@layer utilities`:
+
+- **[_helpers.css](src/styles/utilities/_helpers.css)** - Helper classes
+  - Scrollbar utilities
+  - Responsive containers
+  - Shadow utilities
+  - Background and text color utilities
+  - Border utilities
+  - Border radius utilities
+  - Transition utilities
 
 ### Dark Mode & Theming
 All colors are CSS variables that automatically change with the `.dark` class:
@@ -102,45 +208,77 @@ document.documentElement.style.setProperty('--color-primary', '#ff0000');
 
 ### Semantic Component System
 
-Comprehensive design system in [src/styles.css](src/styles.css) with 600+ CSS variables.
+Comprehensive design system organized in modular files with 600+ CSS variables.
 
 **Color Variants**: `primary`, `secondary`, `success`, `error`, `warning`, `info`, `dark`
 
-**Key Components:**
+**Available Component Classes:**
 - **Buttons**: `.btn`, `.btn-{variant}`, `.btn-outline-{variant}`, sizes: `xs`, `sm`, `md`, `lg`, `xl`
 - **Forms**: `.form-label`, `.form-input`, `.form-checkbox`, `.floating-input`
 - **Cards**: `.card`, `.card-title`, `.card-text`, `.card-btn`
 - **Badges/Alerts**: `.badge-{variant}`, `.alert-{variant}`
 - **Navigation**: `.navbar`, `.breadcrumb`, `.sidebar`, `.pagination`
 - **Tables**: `.table`, `.table-header`, `.table-row`, `.table-cell`
-- **UI Elements**: `.spinner`, `.tabs`, `.toast`, `.tooltip`, `.dropdown`, `.accordion`, `.modal`
-- **Typography**: `.heading-{1-6}`, `.text-{lead|large|small|tiny}`, `.link`
+- **Interactive**: `.dropdown`, `.accordion`, `.modal`, `.tooltip`
+- **Feedback**: `.spinner`, `.progress-bar`, `.progress-fill`
+- **Avatar**: `.avatar`, `.avatar-sm`, `.avatar-lg`, `.avatar-dot`
 
-**Key CSS Variables:**
+**Key CSS Variable Examples:**
 ```css
-/* Colors */
+/* Colors - see src/styles/tokens/_colors.css */
 var(--color-primary), var(--color-success), var(--color-error)
 var(--color-text-primary), var(--color-bg-primary), var(--color-border)
 
-/* Spacing */
+/* Spacing - see src/styles/tokens/_spacing.css */
 var(--spacing-2)    /* 8px */
 var(--spacing-4)    /* 16px */
 
-/* Typography */
+/* Typography - see src/styles/tokens/_typography.css */
 var(--font-size-sm), var(--font-size-base), var(--font-size-lg)
+var(--font-weight-medium), var(--line-height-normal)
 
-/* Borders & Shadows */
+/* Borders & Shadows - see src/styles/tokens/_borders.css and _shadows.css */
 var(--border-radius-md), var(--shadow-lg)
+var(--border-width-1), var(--border-width-2)
 
-/* Transitions */
+/* Transitions - see src/styles/tokens/_transitions.css */
 var(--transition-duration-150), var(--transition-timing-ease)
+
+/* Layout - see src/styles/tokens/_layout.css */
+var(--z-50), var(--container-lg)
 ```
 
 **Styling Rules:**
-- ✅ ALWAYS use CSS variables from design system
+- ✅ ALWAYS use CSS variables from design tokens
 - ❌ NEVER use hardcoded colors (`#fff`, `rgb()`, etc.)
 - ✅ Use semantic class names (`.btn-success` not `.btn-green`)
 - ✅ Extend with Tailwind utilities as needed
+- ✅ Follow modular architecture when adding new styles
+
+### Style Organization Best Practices
+
+When adding new styles to the design system:
+
+1. **Adding Design Tokens (Variables):**
+   - Add to appropriate file in `src/styles/tokens/`
+   - Follow existing naming conventions
+   - Document both light and dark mode values in `_colors.css`
+
+2. **Adding Component Styles:**
+   - Create new file in `src/styles/components/` if needed
+   - Use `@layer components { ... }`
+   - Import in `src/styles/components/_index.css`
+   - Always use CSS variables, never hardcoded values
+
+3. **Adding Utility Classes:**
+   - Add to `src/styles/utilities/_helpers.css`
+   - Use `@layer utilities { ... }`
+   - Follow Tailwind naming conventions when possible
+
+4. **File Naming Convention:**
+   - Use underscore prefix: `_filename.css`
+   - Index files: `_index.css` for module exports
+   - Descriptive names: `_buttons.css`, `_colors.css`
 
 ## Development Guidelines
 
@@ -326,7 +464,21 @@ Before considering a component complete:
 - **Angular Signals**: https://angular.dev/guide/signals
 
 ### Archivos Clave del Proyecto
-- **Design System**: [src/styles.css](src/styles.css) - 600+ CSS variables
+
+**Design System (Modular):**
+- **Main Stylesheet**: [src/styles.css](src/styles.css) - Entry point with imports
+- **Design Tokens**: [src/styles/tokens/](src/styles/tokens/) - CSS variables organized by category
+  - [_colors.css](src/styles/tokens/_colors.css) - Color palette
+  - [_spacing.css](src/styles/tokens/_spacing.css) - Spacing scale
+  - [_typography.css](src/styles/tokens/_typography.css) - Typography tokens
+  - [_borders.css](src/styles/tokens/_borders.css) - Border system
+  - [_shadows.css](src/styles/tokens/_shadows.css) - Shadow definitions
+  - [_transitions.css](src/styles/tokens/_transitions.css) - Animation tokens
+  - [_layout.css](src/styles/tokens/_layout.css) - Layout tokens
+- **Component Styles**: [src/styles/components/](src/styles/components/) - Semantic component classes
+- **Utilities**: [src/styles/utilities/](src/styles/utilities/) - Helper classes
+
+**Application:**
 - **Story Helpers**: [src/stories/story-helpers.ts](src/stories/story-helpers.ts)
 - **Root Component**: [src/app/app.ts](src/app/app.ts) - Live theming demo
 - **App Config**: [src/app/app.config.ts](src/app/app.config.ts)
@@ -347,7 +499,9 @@ Before considering a component complete:
 ## Notas Importantes
 
 ### Estado del Proyecto
-- ✅ Sistema de diseño completo con 600+ variables CSS
+- ✅ Sistema de diseño modular con 600+ variables CSS organizadas
+- ✅ Arquitectura de estilos siguiendo mejores prácticas de Angular
+- ✅ Separación clara: tokens, componentes y utilidades
 - ✅ Dark mode funcionando en todos los componentes
 - ✅ Storybook configurado con comparación Light/Dark automática
 - ✅ 5 componentes UI completos (dropdown, multiselect, modal, tabs, sidenav)
@@ -371,10 +525,12 @@ Before considering a component complete:
 ### Tips Rápidos
 
 1. **Preview colores**: Abre [src/app/app.html](src/app/app.html) para demo interactivo con color pickers
-2. **Ver variables CSS**: Busca `:root {` en [src/styles.css](src/styles.css)
-3. **Crear componente rápido**: Copia [dropdown/](src/app/components/ui/dropdown/) y modifica
-4. **Debug Storybook**: Verifica `layout: 'fullscreen'` en parameters
-5. **Test dark mode**: Añade clase `.dark` a cualquier elemento padre
+2. **Ver variables CSS**: Revisa archivos en [src/styles/tokens/](src/styles/tokens/)
+3. **Agregar nuevos tokens**: Edita el archivo apropiado en `src/styles/tokens/` (ej: `_colors.css` para colores)
+4. **Agregar componente style**: Crea archivo en `src/styles/components/` e importa en `_index.css`
+5. **Crear componente rápido**: Copia [dropdown/](src/app/components/ui/dropdown/) y modifica
+6. **Debug Storybook**: Verifica `layout: 'fullscreen'` en parameters
+7. **Test dark mode**: Añade clase `.dark` a cualquier elemento padre
 
 ---
 

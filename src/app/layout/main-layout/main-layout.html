@@ -1,36 +1,42 @@
-<div [class]="layoutClasses()">
+<div class="h-screen grid grid-rows-[auto_1fr] ">
   <!-- Navbar -->
-  <header class="main-layout-navbar">
+  <nav class="bg-[var(--color-bg-primary)] border-b border-[var(--color-border)]">
     <app-navbar
       [appTitle]="appTitle()"
-      [userInfo]="userInfo()"
       (menuToggle)="toggleMobileMenu()"
-      (sidenavToggle)="toggleSidenav()"
     />
-  </header>
+  </nav>
 
-  <!-- Sidenav -->
-  <aside [class]="sidenavClasses()">
-    <app-sidenav
-      [items]="sidenavItems()"
-      [collapsed]="!isSidenavOpen()"
-      [collapsible]="true"
-      variant="default"
-      (itemClick)="onSidenavItemClick($event)"
-    />
-  </aside>
+  <!-- Sidenav + Content -->
+  <div class="grid grid-cols-1 lg:grid-cols-[16rem_1fr] overflow-hidden">
+    <!-- Sidenav: hidden on mobile, visible on desktop -->
+    <aside class="hidden lg:block bg-[var(--color-bg-primary)] border-r border-[var(--color-border)] h-full overflow-y-auto">
+      <app-sidenav
+        [items]="sidenavItems()"
+        (itemClick)="onSidenavItemClick($event)"
+      />
+    </aside>
 
-  <!-- Backdrop for mobile -->
-  @if (isMobileMenuOpen()) {
-    <div
-      class="main-layout-backdrop"
-      (click)="closeMobileMenu()"
-      aria-label="Close menu"
-    ></div>
-  }
+    <!-- Mobile Sidenav Overlay -->
+    @if (isMobileMenuOpen()) {
+      <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-[var(--color-bg-primary)] border-r border-[var(--color-border)] lg:hidden overflow-y-auto shadow-2xl">
+        <app-sidenav
+          [items]="sidenavItems()"
+          (itemClick)="onSidenavItemClick($event)"
+        />
+      </aside>
 
-  <!-- Main Content -->
-  <main class="main-layout-content">
-    <router-outlet />
-  </main>
+      <button
+        type="button"
+        class="fixed inset-0 bg-black/50 z-40 border-none p-0 cursor-pointer lg:hidden"
+        (click)="closeMobileMenu()"
+        aria-label="Close menu"
+      ></button>
+    }
+
+    <!-- Main Content -->
+    <main class="bg-[var(--color-bg-secondary)] p-4 lg:p-6 overflow-y-auto">
+      <router-outlet />
+    </main>
+  </div>
 </div>

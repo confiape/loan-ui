@@ -1,0 +1,46 @@
+/* ============================================
+   AVATAR COMPONENTS
+   ============================================ */
+
+@layer components {
+  .avatar {
+    @apply w-10 h-10 rounded-full;
+  }
+
+  .avatar-sm {
+    @apply w-8 h-8;
+  }
+
+  .avatar-lg {
+    @apply w-20 h-20;
+  }
+
+  .avatar-bordered {
+    border: 2px solid var(--color-border-dark);
+    @apply p-1 ring-2;
+    --tw-ring-color: var(--color-border-dark);
+  }
+
+  .avatar-placeholder {
+    background-color: var(--color-bg-hover);
+    @apply relative inline-flex items-center justify-center overflow-hidden rounded-full;
+  }
+
+  .avatar-text {
+    color: var(--color-text-secondary);
+    @apply font-medium;
+  }
+
+  .avatar-dot {
+    border: 2px solid var(--color-bg-primary);
+    @apply absolute w-3.5 h-3.5 rounded-full;
+  }
+
+  .avatar-dot-online {
+    background-color: var(--color-online);
+  }
+
+  .avatar-dot-offline {
+    background-color: var(--color-offline);
+  }
+}
