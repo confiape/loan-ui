@@ -38,7 +38,7 @@
         }
       }
     },
-        {
+    {
       "type": "npm",
       "script": "storybook",
       "isBackground": true,
@@ -55,7 +55,24 @@
           }
         }
       }
+    },
+    {
+      "type": "npm",
+      "script": "analyze",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "typescript",
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": {
+            "regexp": "(.*?)"
+          },
+          "endsPattern": {
+            "regexp": "bundle generation complete"
+          }
+        }
+      }
     }
-
   ]
 }

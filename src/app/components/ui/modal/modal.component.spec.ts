@@ -271,7 +271,7 @@ describe('ModalComponent', () => {
       };
 
       Object.entries(variants).forEach(([variant, icon]) => {
-        fixture.componentRef.setInput('variant', variant as any);
+        fixture.componentRef.setInput('variant', variant);
         fixture.detectChanges();
 
         expect(component.getVariantIcon()).toBe(icon);
@@ -327,7 +327,6 @@ describe('ModalComponent', () => {
 
       const shiftTabEvent = new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true });
       Object.defineProperty(shiftTabEvent, 'shiftKey', { value: true });
-      const preventDefaultSpy = vi.spyOn(shiftTabEvent, 'preventDefault');
 
       component['handleFocusTrap'](shiftTabEvent);
 
@@ -360,7 +359,6 @@ describe('ModalComponent', () => {
       button2.focus();
 
       const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
-      const preventDefaultSpy = vi.spyOn(tabEvent, 'preventDefault');
 
       component['handleFocusTrap'](tabEvent);
 

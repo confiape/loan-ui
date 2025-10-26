@@ -55,8 +55,7 @@ export class SidenavComponent {
 
   sidenavClasses = computed(() => {
     const classes = ['sidenav'];
-    classes.push(`sidenav-${this.position()}`);
-    classes.push(`sidenav-variant-${this.variant()}`);
+    classes.push(`sidenav-${this.position()}`, `sidenav-variant-${this.variant()}`);
     if (this.isCollapsed()) {
       classes.push('sidenav-collapsed');
     }

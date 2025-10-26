@@ -9,13 +9,24 @@
     [attr.aria-expanded]="isOpen()"
     [attr.aria-label]="placeholder()"
     [attr.aria-controls]="'dropdown-menu-' + placeholder()"
-    role="combobox"
   >
     <span class="dropdown-button-content">
       @if (loading()) {
         <svg class="spinner spinner-sm" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+            fill="none"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
         </svg>
       }
       <span class="dropdown-button-text">{{ selectedItem()?.label || placeholder() }}</span>
@@ -29,24 +40,31 @@
           class="dropdown-clear-icon"
           (click)="clearSelection($event)"
           aria-label="Clear selection"
-          style="background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center;"
+          style="
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+          "
         >
           <svg
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
-            style="width: 1em; height: 1em;"
+            style="width: 1em; height: 1em"
           >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
           </svg>
         </button>
       }
-      <svg
-        class="dropdown-arrow"
-        [class.rotate]="isOpen()"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-      >
+      <svg class="dropdown-arrow" [class.rotate]="isOpen()" fill="currentColor" viewBox="0 0 20 20">
         <path
           fill-rule="evenodd"
           d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -70,7 +88,12 @@
       @if (searchable()) {
         <div class="dropdown-search-wrapper">
           <svg class="dropdown-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
           </svg>
           <input
             type="text"
@@ -113,7 +136,11 @@
                 </span>
                 @if (isItemSelected(item)) {
                   <svg class="dropdown-check-icon" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                    ></path>
                   </svg>
                 }
               </button>

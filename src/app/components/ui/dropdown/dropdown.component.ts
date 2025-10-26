@@ -69,7 +69,7 @@ export class DropdownComponent {
     });
   });
 
-  private elementRef = inject(ElementRef);
+  private readonly elementRef = inject(ElementRef);
 
   // Click outside to close
   @HostListener('document:click', ['$event'])

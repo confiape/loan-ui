@@ -1,15 +1,15 @@
+import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   Component,
-  input,
-  output,
-  signal,
   computed,
   effect,
   ElementRef,
-  AfterViewInit,
   inject,
+  input,
+  output,
+  signal,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 export type ModalVariant = 'default' | 'success' | 'error' | 'warning' | 'info';
@@ -45,7 +45,7 @@ export class ModalComponent implements AfterViewInit {
   // State
   private previousActiveElement: HTMLElement | null = null;
   private focusableElements: HTMLElement[] = [];
-  modalId = signal(`modal-${Math.random().toString(36).substr(2, 9)}`);
+  modalId = signal(`modal-${Math.random().toString(36).slice(2, 11)}`);
 
   // Computed
   sizeClass = computed(() => {
@@ -75,7 +75,7 @@ export class ModalComponent implements AfterViewInit {
     return classes.filter(Boolean).join(' ');
   });
 
-  private elementRef = inject(ElementRef);
+  private readonly elementRef = inject(ElementRef);
 
   constructor() {
     // Handle body scroll when modal opens/closes
@@ -191,18 +191,17 @@ export class ModalComponent implements AfterViewInit {
     }
 
     const firstElement = this.focusableElements[0];
-    const lastElement = this.focusableElements[this.focusableElements.length - 1];
+    const lastElement = this.focusableElements.at(-1);
     const activeElement = document.activeElement;
-
-    if (event.shiftKey) {
-      // Shift + Tab
-      if (activeElement === firstElement) {
-        event.preventDefault();
-        lastElement.focus();
-      }
-    } else {
-      // Tab
-      if (activeElement === lastElement) {
+    if (lastElement) {
+      if (event.shiftKey) {
+        // Shift + Tab
+        if (activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        }
+      } else if (activeElement === lastElement) {
+        // Tab
         event.preventDefault();
         firstElement.focus();
       }

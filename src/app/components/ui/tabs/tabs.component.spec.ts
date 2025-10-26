@@ -323,5 +323,4 @@ describe('TabsComponent', () => {
       expect(component.getBadgeClass('')).toBe('badge badge-primary');
     });
   });
-
 });

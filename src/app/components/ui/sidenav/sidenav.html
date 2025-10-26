@@ -72,11 +72,7 @@
       @for (item of items(); track item.value; let i = $index) {
         <!-- Divider -->
         @if (item.divider) {
-          <li
-            class="sidenav-divider"
-            role="separator"
-            [attr.aria-hidden]="true"
-          ></li>
+          <li class="sidenav-divider" role="separator" [attr.aria-hidden]="true"></li>
         }
 
         <!-- Regular Item -->
@@ -90,7 +86,9 @@
               (mouseleave)="onItemMouseLeave()"
               [attr.aria-disabled]="item.disabled"
               [attr.aria-current]="isItemSelected(item.value) ? 'page' : null"
-              [attr.aria-expanded]="item.children && item.children.length > 0 ? isItemExpanded(item.value) : null"
+              [attr.aria-expanded]="
+                item.children && item.children.length > 0 ? isItemExpanded(item.value) : null
+              "
               [attr.href]="item.disabled ? null : '#'"
               [attr.tabindex]="item.disabled ? -1 : 0"
               role="menuitem"
@@ -149,12 +147,13 @@
             }
 
             <!-- Children (Submenu) -->
-            @if (item.children && item.children.length > 0 && isItemExpanded(item.value) && !isCollapsed()) {
-              <ul
-                class="sidenav-submenu"
-                role="menu"
-                [attr.aria-label]="item.label + ' submenu'"
-              >
+            @if (
+              item.children &&
+              item.children.length > 0 &&
+              isItemExpanded(item.value) &&
+              !isCollapsed()
+            ) {
+              <ul class="sidenav-submenu" role="menu" [attr.aria-label]="item.label + ' submenu'">
                 @for (child of item.children; track child.value) {
                   <li class="sidenav-item-wrapper" role="none">
                     <a
@@ -169,7 +168,10 @@
                     >
                       <!-- Icon -->
                       @if (child.icon) {
-                        <span class="sidenav-item-icon sidenav-item-icon-child" [innerHTML]="child.icon"></span>
+                        <span
+                          class="sidenav-item-icon sidenav-item-icon-child"
+                          [innerHTML]="child.icon"
+                        ></span>
                       }
 
                       <!-- Label -->

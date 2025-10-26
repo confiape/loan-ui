@@ -10,7 +10,8 @@
       "Bash(Select-Object -First 10)",
       "Bash(npm run coverage:*)",
       "Bash(npx vitest:*)",
-      "mcp__sonarqube__search_my_sonarqube_projects"
+      "mcp__sonarqube__search_my_sonarqube_projects",
+      "Bash(cp:*)"
     ],
     "deny": [],
     "ask": []

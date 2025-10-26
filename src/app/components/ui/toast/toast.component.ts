@@ -37,7 +37,7 @@ export class ToastComponent {
   constructor() {
     effect(() => {
       const toastData = this.toast();
-      if (toastData && toastData.duration && toastData.duration > 0) {
+      if (toastData?.duration && toastData.duration > 0) {
         setTimeout(() => {
           this.dismiss();
         }, toastData.duration);

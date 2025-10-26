@@ -6,7 +6,6 @@ import { SidenavComponent, SidenavItem } from './sidenav';
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
   let fixture: ComponentFixture<SidenavComponent>;
-  let compiled: HTMLElement;
 
   const mockItems: SidenavItem[] = [
     { label: 'Home', value: 'home', icon: '🏠' },
@@ -46,7 +45,6 @@ describe('SidenavComponent', () => {
 
     fixture = TestBed.createComponent(SidenavComponent);
     component = fixture.componentInstance;
-    compiled = fixture.nativeElement;
   });
 
   describe('Component Initialization', () => {

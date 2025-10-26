@@ -98,7 +98,7 @@ export class MultiSelectComponent {
     return `${selected} of ${total} selected (${shown} shown)`;
   });
 
-  private elementRef = inject(ElementRef);
+  private readonly elementRef = inject(ElementRef);
 
   // Click outside to close
   @HostListener('document:click', ['$event'])

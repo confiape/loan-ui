@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
 
 describe('main.ts - Application Bootstrap', () => {
   it('should have correct file structure', () => {
@@ -15,6 +14,7 @@ describe('main.ts - Application Bootstrap', () => {
       expect(mainContent).toContain('App');
       expect(mainContent).toContain('appConfig');
     } catch (error) {
+      console.log(error);
       // File read might fail in some test environments
       // In that case, we just verify the test can run
       expect(true).toBe(true);
@@ -28,6 +28,7 @@ describe('main.ts - Application Bootstrap', () => {
 
       expect(mainContent).toContain('app-root');
     } catch (error) {
+      console.log(error);
       expect(true).toBe(true);
     }
   });
@@ -39,6 +40,7 @@ describe('main.ts - Application Bootstrap', () => {
 
       expect(mainContent).toContain('@angular/platform-browser');
     } catch (error) {
+      console.log(error);
       expect(true).toBe(true);
     }
   });
@@ -51,6 +53,7 @@ describe('main.ts - Application Bootstrap', () => {
       // Verify error handling exists
       expect(mainContent).toContain('catch');
     } catch (error) {
+      console.log(error);
       expect(true).toBe(true);
     }
   });
@@ -64,6 +67,7 @@ describe('main.ts - Application Bootstrap', () => {
       expect(mainContent.length).toBeGreaterThan(0);
       expect(mainContent).toContain('import');
     } catch (error) {
+      console.log(error);
       expect(true).toBe(true);
     }
   });

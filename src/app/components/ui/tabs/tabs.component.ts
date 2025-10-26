@@ -41,7 +41,7 @@ export class TabsComponent implements OnInit {
   activeTab = signal<string>('');
   focusedTabIndex = signal<number>(0);
 
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
   // Computed properties
   activeTabItem = computed(() => {
@@ -66,8 +66,7 @@ export class TabsComponent implements OnInit {
 
   tabListClasses = computed(() => {
     const classes = ['tabs-list'];
-    classes.push(`tabs-list-${this.variant()}`);
-    classes.push(`tabs-list-${this.orientation()}`);
+    classes.push(`tabs-list-${this.variant()}`, `tabs-list-${this.orientation()}`);
 
     if (this.justified()) {
       classes.push('tabs-list-justified');
