@@ -1,0 +1,36 @@
+<div [class]="layoutClasses()">
+  <!-- Navbar -->
+  <header class="main-layout-navbar">
+    <app-navbar
+      [appTitle]="appTitle()"
+      [userInfo]="userInfo()"
+      (menuToggle)="toggleMobileMenu()"
+      (sidenavToggle)="toggleSidenav()"
+    />
+  </header>
+
+  <!-- Sidenav -->
+  <aside [class]="sidenavClasses()">
+    <app-sidenav
+      [items]="sidenavItems()"
+      [collapsed]="!isSidenavOpen()"
+      [collapsible]="true"
+      variant="default"
+      (itemClick)="onSidenavItemClick($event)"
+    />
+  </aside>
+
+  <!-- Backdrop for mobile -->
+  @if (isMobileMenuOpen()) {
+    <div
+      class="main-layout-backdrop"
+      (click)="closeMobileMenu()"
+      aria-label="Close menu"
+    ></div>
+  }
+
+  <!-- Main Content -->
+  <main class="main-layout-content">
+    <router-outlet />
+  </main>
+</div>

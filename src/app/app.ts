@@ -1,21 +1,11 @@
 import { Component } from '@angular/core';
-import { DropdownComponent, DropdownItem } from './components/ui';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [DropdownComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
+  standalone: true,
 })
-export class App {
-  items: DropdownItem[] = [
-    {
-      label: 'test',
-      value: 1,
-    },
-    {
-      label: 'test2',
-      value: 2,
-    },
-  ];
-}
+export class App {}

@@ -14,9 +14,11 @@
         "SONARQUBE_URL",
         "mcp/sonarqube"
       ],
-      "env": {
-
-      }
+      "env": {}
+    },
+    "browsermcp": {
+      "command": "npx",
+      "args": ["@browsermcp/mcp@latest"]
     }
   }
 }

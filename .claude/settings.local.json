@@ -11,7 +11,13 @@
       "Bash(npm run coverage:*)",
       "Bash(npx vitest:*)",
       "mcp__sonarqube__search_my_sonarqube_projects",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(mkdir:*)",
+      "Bash(ng generate:*)",
+      "mcp__browsermcp__browser_screenshot",
+      "mcp__browsermcp__browser_click",
+      "mcp__browsermcp__browser_get_console_logs",
+      "mcp__browsermcp__browser_snapshot"
     ],
     "deny": [],
     "ask": []
