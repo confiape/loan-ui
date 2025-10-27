@@ -21,7 +21,11 @@ describe('tokenRetryInterceptor', () => {
   };
 
   const mockLoginResponse: LoginResponse = {
-    user: { id: 1, email: 'test@test.com' } as any,
+    user: {
+      name: 'Test User',
+      dni: '12345678',
+      phoneNumber: '123456789',
+    },
     accessToken: 'new-access-token',
     tokenType: 'Bearer',
   };
@@ -79,8 +83,12 @@ describe('tokenRetryInterceptor', () => {
       authService.refreshToken!.mockReturnValue(throwError(() => new Error('Refresh failed')));
 
       httpClient.get('/api/users').subscribe({
-        next: () => {},
-        error: () => {},
+        next: () => {
+          // Expected path
+        },
+        error: () => {
+          // Error case
+        },
       });
 
       // First request fails with 401
@@ -120,8 +128,12 @@ describe('tokenRetryInterceptor', () => {
       authService.refreshToken!.mockReturnValue(throwError(() => new Error('Refresh failed')));
 
       httpClient.get('/api/users').subscribe({
-        next: () => {},
-        error: () => {},
+        next: () => {
+          // Expected path
+        },
+        error: () => {
+          // Error case
+        },
       });
 
       // First request fails with 403
@@ -139,7 +151,9 @@ describe('tokenRetryInterceptor', () => {
   describe('Other HTTP Errors', () => {
     it('should not retry on 404 error', () => {
       httpClient.get('/api/users').subscribe({
-        next: () => {},
+        next: () => {
+          // Expected path
+        },
         error: (error) => {
           expect(error.status).toBe(404);
         },
@@ -153,7 +167,9 @@ describe('tokenRetryInterceptor', () => {
 
     it('should not retry on 500 error', () => {
       httpClient.get('/api/users').subscribe({
-        next: () => {},
+        next: () => {
+          // Expected path
+        },
         error: (error) => {
           expect(error.status).toBe(500);
         },
@@ -172,7 +188,9 @@ describe('tokenRetryInterceptor', () => {
   describe('Authentication Endpoints', () => {
     it('should not retry authentication endpoints on 401', () => {
       httpClient.post('/api/Authentication/LogIn', {}).subscribe({
-        next: () => {},
+        next: () => {
+          // Expected path
+        },
         error: (error) => {
           expect(error.status).toBe(401);
         },
@@ -186,7 +204,9 @@ describe('tokenRetryInterceptor', () => {
 
     it('should not retry GetAuthorizationToken endpoint on 401', () => {
       httpClient.post('/api/Authentication/GetAuthorizationToken', {}).subscribe({
-        next: () => {},
+        next: () => {
+          // Expected path
+        },
         error: (error) => {
           expect(error.status).toBe(401);
         },
@@ -200,7 +220,9 @@ describe('tokenRetryInterceptor', () => {
 
     it('should not retry IsAuthenticated endpoint on 401', () => {
       httpClient.get('/api/Authentication/IsAuthenticated').subscribe({
-        next: () => {},
+        next: () => {
+          // Expected path
+        },
         error: (error) => {
           expect(error.status).toBe(401);
         },

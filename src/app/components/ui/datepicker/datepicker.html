@@ -1,7 +1,7 @@
 <div class="datepicker-container" [class.datepicker-inline]="displayMode() === 'inline'">
   <!-- Label -->
   @if (label()) {
-    <label class="datepicker-label">{{ label() }}</label>
+    <label class="datepicker-label" [attr.for]="displayMode() === 'popup' ? 'datepicker-input' : null">{{ label() }}</label>
   }
 
   <!-- Input field (only for popup mode) -->
@@ -9,6 +9,7 @@
     <div class="datepicker-input-wrapper" [class]="'datepicker-' + size()">
       <input
         #dateInput
+        id="datepicker-input"
         type="text"
         class="datepicker-input"
         [value]="displayValue()"

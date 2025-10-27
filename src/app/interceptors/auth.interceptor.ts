@@ -1,8 +1,8 @@
-import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { catchError, switchMap } from 'rxjs/operators';
-import { throwError, of } from 'rxjs';
+import { throwError } from 'rxjs';
 
 /**
  * Public endpoints that don't require authentication

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { Datepicker } from '../app/components/ui/datepicker/datepicker';
-import { createLightDarkComparison, wrapInLightDarkComparison } from './story-helpers';
+import { wrapInLightDarkComparison } from './story-helpers';
 
 // Mock function for action logging
 const fn = () => (value: unknown) => console.log('Action:', value);
@@ -67,8 +67,8 @@ const meta: Meta<Datepicker> = {
     dateChange: fn(),
     rangeChange: fn(),
     multipleChange: fn(),
-    onOpen: fn(),
-    onClose: fn(),
+    datePickerOpen: fn(),
+    datePickerClose: fn(),
   },
 };
 

@@ -1,6 +1,7 @@
 import { Component, input, output, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface TableColumn<T = any> {
   key: string;
   label: string;
@@ -14,7 +15,7 @@ export interface TableRowAction {
   label: string;
   icon?: string;
   variant?: 'default' | 'danger';
-  onClick?: (row: any) => void;
+  onClick?: (row: unknown) => void;
 }
 
 export type SortDirection = 'asc' | 'desc' | null;
@@ -31,6 +32,7 @@ export interface SortState {
   templateUrl: './table.html',
   styleUrl: './table.css',
 })
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class TableComponent<T = any> {
   // ==================== INPUTS ====================
   columns = input.required<TableColumn<T>[]>();
@@ -66,7 +68,7 @@ export class TableComponent<T = any> {
 
       if (aVal === bVal) return 0;
 
-      const comparison = aVal > bVal ? 1 : -1;
+      const comparison = (aVal as string | number) > (bVal as string | number) ? 1 : -1;
       return state.direction === 'asc' ? comparison : -comparison;
     });
   });
@@ -113,8 +115,13 @@ export class TableComponent<T = any> {
     return this.getNestedValue(row, column.key)?.toString() ?? '';
   }
 
-  private getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((acc, part) => acc?.[part], obj);
+  private getNestedValue(obj: T, path: string): unknown {
+    return path.split('.').reduce((acc: unknown, part: string) => {
+      if (acc && typeof acc === 'object' && part in acc) {
+        return (acc as Record<string, unknown>)[part];
+      }
+      return undefined;
+    }, obj as unknown);
   }
 
   getSortIcon(column: TableColumn<T>): string {

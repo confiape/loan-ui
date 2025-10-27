@@ -23,7 +23,11 @@ describe('authInterceptor', () => {
   };
 
   const mockLoginResponse: LoginResponse = {
-    user: { id: 1, email: 'test@test.com' } as any,
+    user: {
+      name: 'Test User',
+      dni: '12345678',
+      phoneNumber: '123456789',
+    },
     accessToken: 'mock-access-token',
     tokenType: 'Bearer',
   };
@@ -113,8 +117,12 @@ describe('authInterceptor', () => {
       authService.checkAuthentication!.mockReturnValue(of(false));
 
       httpClient.get('/api/users').subscribe({
-        next: () => {},
-        error: () => {},
+        next: () => {
+          // Expected path
+        },
+        error: () => {
+          // Error case
+        },
       });
 
       expect(authService.checkAuthentication).toHaveBeenCalled();
@@ -126,7 +134,9 @@ describe('authInterceptor', () => {
       authService.checkAuthentication!.mockReturnValue(of(false));
 
       httpClient.get('/api/users').subscribe({
-        next: () => {},
+        next: () => {
+          // Expected path
+        },
         error: (error) => {
           expect(error.message).toBe('Not authenticated');
         },
@@ -158,8 +168,12 @@ describe('authInterceptor', () => {
       );
 
       httpClient.get('/api/users').subscribe({
-        next: () => {},
-        error: () => {},
+        next: () => {
+          // Expected path
+        },
+        error: () => {
+          // Error case
+        },
       });
 
       expect(authService.navigateToLogin).toHaveBeenCalled();
@@ -174,7 +188,9 @@ describe('authInterceptor', () => {
       );
 
       httpClient.get('/api/users').subscribe({
-        next: () => {},
+        next: () => {
+          // Expected path
+        },
         error: (error) => {
           expect(error.message).toBe('Auth check failed');
         },

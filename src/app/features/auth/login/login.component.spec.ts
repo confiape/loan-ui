@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { of, throwError, firstValueFrom } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { vi, Mock } from 'vitest';
 import { LoginComponent } from './login.component';
 import { AuthenticationApiService } from '../../../core/openapi/api/authentication.service';
@@ -28,7 +28,11 @@ describe('LoginComponent', () => {
   };
 
   const mockLoginResponse: LoginResponse = {
-    user: { id: 1, email: 'test@test.com' } as any,
+    user: {
+      name: 'Test User',
+      dni: '12345678',
+      phoneNumber: '123456789',
+    },
     accessToken: 'mock-access-token',
     tokenType: 'Bearer',
   };

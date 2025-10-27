@@ -19,7 +19,11 @@ describe('AuthService', () => {
   };
 
   const mockLoginResponse: LoginResponse = {
-    user: { id: 1, email: 'test@test.com' } as any,
+    user: {
+      name: 'Test User',
+      dni: '12345678',
+      phoneNumber: '123456789',
+    },
     accessToken: 'mock-access-token',
     tokenType: 'Bearer',
   };

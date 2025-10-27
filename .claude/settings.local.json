@@ -20,7 +20,9 @@
       "mcp__browsermcp__browser_snapshot",
       "Bash(wc:*)",
       "mcp__sonarqube__search_sonar_issues_in_projects",
-      "Read(//home/warren/ConfiaPe.Loans/src/ConfiaPe.Loans.Frontend/src/app/core/api/openapi/api/**)"
+      "Read(//home/warren/ConfiaPe.Loans/src/ConfiaPe.Loans.Frontend/src/app/core/api/openapi/api/**)",
+      "Bash(timeout 30 npm run build:*)",
+      "Bash(timeout 20 npm run storybook:*)"
     ],
     "deny": [],
     "ask": []

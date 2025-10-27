@@ -257,7 +257,6 @@ describe('NotificationButton', () => {
     it('should close on Escape key', () => {
       component.isOpen.set(true);
 
-      const event = new KeyboardEvent('keydown', { key: 'Escape' });
       component.onEscapeKey();
 
       expect(component.isOpen()).toBe(false);

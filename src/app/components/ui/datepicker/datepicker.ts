@@ -68,8 +68,8 @@ export class Datepicker {
   dateChange = output<Date | null>();
   rangeChange = output<DateRange>();
   multipleChange = output<Date[]>();
-  onOpen = output<void>();
-  onClose = output<void>();
+  datePickerOpen = output<void>();
+  datePickerClose = output<void>();
 
   // ========================================
   // STATE
@@ -106,7 +106,6 @@ export class Datepicker {
     const month = date.getMonth();
 
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
 
@@ -448,7 +447,7 @@ export class Datepicker {
     if (this.disabled() || this.readonly()) return;
 
     this.isOpen.set(true);
-    this.onOpen.emit();
+    this.datePickerOpen.emit();
   }
 
   close(): void {
@@ -456,7 +455,7 @@ export class Datepicker {
 
     this.isOpen.set(false);
     this.viewMode.set('days');
-    this.onClose.emit();
+    this.datePickerClose.emit();
   }
 
   clear(): void {

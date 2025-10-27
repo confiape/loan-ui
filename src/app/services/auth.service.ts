@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, of, BehaviorSubject } from 'rxjs';
 import { AuthenticationApiService } from '../core/openapi/api/authentication.service';

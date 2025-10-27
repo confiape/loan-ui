@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -38,8 +38,12 @@ describe('httpNotificationInterceptor', () => {
       const errorMessage = 'Usuario no encontrado';
 
       httpClient.get('/api/users/1').subscribe({
-        next: () => {},
-        error: () => {},
+        next: () => {
+          // Expected path
+        },
+        error: () => {
+          // Error case
+        },
       });
 
       const req = httpTestingController.expectOne('/api/users/1');
@@ -54,8 +58,12 @@ describe('httpNotificationInterceptor', () => {
 
     it('should show error message when no message field in error object', () => {
       httpClient.get('/api/users/1').subscribe({
-        next: () => {},
-        error: () => {},
+        next: () => {
+          // Expected path
+        },
+        error: () => {
+          // Error case
+        },
       });
 
       const req = httpTestingController.expectOne('/api/users/1');
@@ -70,8 +78,12 @@ describe('httpNotificationInterceptor', () => {
 
     it('should use error.message as fallback', () => {
       httpClient.get('/api/users/1').subscribe({
-        next: () => {},
-        error: () => {},
+        next: () => {
+          // Expected path
+        },
+        error: () => {
+          // Error case
+        },
       });
 
       const req = httpTestingController.expectOne('/api/users/1');
@@ -84,8 +96,12 @@ describe('httpNotificationInterceptor', () => {
 
     it('should include status code in title', () => {
       httpClient.get('/api/users/1').subscribe({
-        next: () => {},
-        error: () => {},
+        next: () => {
+          // Expected path
+        },
+        error: () => {
+          // Error case
+        },
       });
 
       const req = httpTestingController.expectOne('/api/users/1');
@@ -180,7 +196,9 @@ describe('httpNotificationInterceptor', () => {
       let errorCaught = false;
 
       httpClient.get('/api/users/1').subscribe({
-        next: () => {},
+        next: () => {
+          // Expected path
+        },
         error: (error) => {
           errorCaught = true;
           expect(error.status).toBe(404);
@@ -197,12 +215,20 @@ describe('httpNotificationInterceptor', () => {
   describe('Multiple Requests', () => {
     it('should handle multiple errors correctly', () => {
       httpClient.get('/api/users/1').subscribe({
-        next: () => {},
-        error: () => {},
+        next: () => {
+          // Expected path
+        },
+        error: () => {
+          // Error case
+        },
       });
       httpClient.get('/api/posts/1').subscribe({
-        next: () => {},
-        error: () => {},
+        next: () => {
+          // Expected path
+        },
+        error: () => {
+          // Error case
+        },
       });
 
       const req1 = httpTestingController.expectOne('/api/users/1');
