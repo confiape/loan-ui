@@ -2,6 +2,7 @@ import { SidenavItem } from '../layout/sidenav/sidenav';
 import { AppMenuItem } from '../components/ui/apps-menu/apps-menu';
 import { UserMenuItem } from '../components/ui/user-menu/user-menu';
 import { Notification } from '../components/ui/notification-button/notification-button';
+import { BottomNavItem } from '../layout/bottom-navigation/bottom-navigation';
 
 // Sidenav Items Configuration
 export const SIDENAV_ITEMS: SidenavItem[] = [
@@ -188,5 +189,33 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
     time: '1 day ago',
     read: true,
     iconColor: 'var(--color-warning)',
+  },
+];
+
+// Bottom Navigation Items Configuration (Mobile)
+export const BOTTOM_NAV_ITEMS: BottomNavItem[] = [
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>',
+    routerLink: '/dashboard',
+  },
+  {
+    id: 'loans',
+    label: 'Loans',
+    icon: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path></svg>',
+    routerLink: '/loans',
+  },
+  {
+    id: 'customers',
+    label: 'Customers',
+    icon: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>',
+    routerLink: '/customers',
+  },
+  {
+    id: 'reports',
+    label: 'Reports',
+    icon: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path></svg>',
+    routerLink: '/reports',
   },
 ];

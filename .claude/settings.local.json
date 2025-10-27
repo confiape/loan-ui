@@ -26,6 +26,7 @@
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "sonarqube"
+    "sonarqube",
+    "playwright"
   ]
 }
