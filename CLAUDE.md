@@ -6,6 +6,82 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is an Angular 20 application named "loan-ui" - a loan management UI with a semantic component design system built on Tailwind CSS v4. The application uses Angular's zoneless change detection and standalone components architecture.
 
+---
+
+## Table of Contents
+
+- [Quick Reference](#quick-reference) ⚡ Start here
+- [Core Conventions](#core-conventions) ⚠️ CRITICAL - Must follow
+- [Development Commands](#development-commands)
+- [Architecture](#architecture)
+- [Styling System](#styling-system)
+- [Component Development Workflow](#component-development-workflow)
+- [Testing](#testing)
+- [Services & Interceptors](#services--interceptors)
+- [Complete Component Library](#complete-component-library)
+- [Storybook Guidelines](#storybook-guidelines)
+- [Resources & References](#resources--references)
+- [Appendix: Design System Details](#appendix-design-system-details)
+
+---
+
+## Quick Reference
+
+### Most Used Commands
+```bash
+npm start          # Dev server (http://localhost:4200)
+npm test           # Run 500 tests (~5 seconds)
+npm run storybook  # Component library (http://localhost:6006)
+npm run lint       # ESLint + Prettier
+npm run build      # Production build
+```
+
+### The 4 Golden Rules
+
+1**🎨 Tailwind first, CSS only if complex** → 90% Tailwind, 10% CSS files
+2**⚡ Signals, not decorators** → `input()`, `output()`, `signal()`
+3**🆕 Modern syntax** → `@if`, `@for` (not `*ngIf`, `*ngFor`)
+
+---
+
+## Core Conventions ⚠️ CRITICAL - MUST FOLLOW
+
+### 🔴 Absolute Rules (Non-Negotiable)
+
+#### 1. Styling Policy
+
+**Prefer Tailwind CSS in templates. Use separate CSS files ONLY for complex cases.**
+
+**Create a `.css` file ONLY for:**
+- Complex animations with `@keyframes`
+- Intricate hover/focus states that can't be done with Tailwind
+- Dynamic positioning (tooltips, dropdowns, modals)
+- Complex pseudo-selectors (`:nth-child`, `::before`, `::after`)
+- Component-specific z-index management
+- Grid/flex layouts with 10+ lines of CSS
+
+**CSS File Checklist:**
+- [ ] Can this be done with Tailwind classes? → Use Tailwind
+- [ ] Does it have complex animations? → CSS file OK
+- [ ] Is it dynamic positioning? → CSS file OK
+- [ ] Is it more than 50 lines? → CSS file OK
+- [ ] Is it less than 10 lines? → Use Tailwind instead
+
+
+#### 2. Generated Code Exclusion
+
+**ALWAYS IGNORE** the following directories when analyzing, modifying, or reviewing code:
+- ❌ `src/app/core/openapi/**` - Auto-generated OpenAPI client code
+- ❌ `src/app/core/api/openapi/**` - Auto-generated API services
+
+**Why ignore?**
+- These files are auto-generated from OpenAPI specifications
+- Any manual changes will be overwritten on next generation
+- They follow their own patterns and conventions
+- Not relevant for Angular best practices analysis
+
+---
+
 ## Development Commands
 
 ```bash
@@ -16,7 +92,7 @@ npm run build                # Production build
 npm run watch                # Development build with watch mode
 
 # Testing
-npm test                     # Unit tests (Vitest)
+npm test                     # Unit tests (Vitest) - 500 tests
 npm run coverage             # Coverage report
 npm run lint                 # ESLint + Prettier
 npm run analyze              # Coverage + SonarQube
@@ -36,6 +112,8 @@ ng generate --help           # See all schematics
 - Single quotes
 - Angular parser for HTML files
 
+---
+
 ## Architecture
 
 ### Angular Configuration
@@ -45,67 +123,29 @@ ng generate --help           # See all schematics
 - **Components**: Standalone components (no NgModules)
 - **TypeScript**: Strict mode enabled with all strictness flags
 
-### IMPORTANT: Generated Code Exclusion
-**ALWAYS IGNORE** the following directories when analyzing, modifying, or reviewing code:
-- ❌ `src/app/core/openapi/**` - Auto-generated OpenAPI client code
-- ❌ `src/app/core/api/openapi/**` - Auto-generated API services
-
-**Why ignore?**
-- These files are auto-generated from OpenAPI specifications
-- Any manual changes will be overwritten on next generation
-- They follow their own patterns and conventions
-- Not relevant for Angular best practices analysis
-
-**What to focus on instead:**
-- ✅ Components in `src/app/components/ui/`
-- ✅ Layout components in `src/app/layout/`
-- ✅ Features in `src/app/features/`
-- ✅ Services in `src/app/services/`
-- ✅ Interceptors in `src/app/interceptors/`
-- ✅ Configuration files (`*.config.ts`, `*.routes.ts`)
-
 ### Application Structure
 ```
 loan-ui/
 ├── src/
 │   ├── app/
-│   │   ├── components/ui/         # UI components
+│   │   ├── components/ui/         # 17 UI components
 │   │   ├── config/                # Centralized config (layout.config.ts)
-│   │   ├── features/              # Feature modules
-│   │   ├── layout/                # Layout components (main-layout, navbar, sidenav)
+│   │   ├── core/openapi/          # Auto-generated (IGNORE)
+│   │   ├── features/              # Feature modules (auth, dashboard)
+│   │   ├── interceptors/          # 3 HTTP interceptors
+│   │   ├── layout/                # 4 layout components
+│   │   ├── services/              # 2 core services
 │   │   ├── app.ts                 # Root component
 │   │   ├── app.config.ts          # App configuration
 │   │   └── app.routes.ts          # Routes
-│   ├── stories/                   # Storybook stories
+│   ├── stories/                   # Storybook stories (17 files)
 │   │   └── story-helpers.ts       # Helper functions
 │   ├── styles/                    # Design system (modular)
 │   │   ├── tokens/                # Design tokens (CSS variables)
-│   │   │   ├── _colors.css        # Color palette
-│   │   │   ├── _spacing.css       # Spacing scale
-│   │   │   ├── _typography.css    # Font sizes, weights, line heights
-│   │   │   ├── _borders.css       # Border radius and widths
-│   │   │   ├── _shadows.css       # Shadow definitions
-│   │   │   ├── _transitions.css   # Animation timings
-│   │   │   ├── _layout.css        # Z-index, containers
-│   │   │   └── _index.css         # Tokens index
 │   │   ├── components/            # Component styles
-│   │   │   ├── _buttons.css       # Button variants
-│   │   │   ├── _forms.css         # Form elements
-│   │   │   ├── _cards.css         # Card components
-│   │   │   ├── _badges.css        # Badge variants
-│   │   │   ├── _alerts.css        # Alert messages
-│   │   │   ├── _navigation.css    # Navbar, sidebar, breadcrumb, pagination
-│   │   │   ├── _tables.css        # Table styles
-│   │   │   ├── _modals.css        # Modal and tooltip
-│   │   │   ├── _interactive.css   # Dropdown, accordion
-│   │   │   ├── _feedback.css      # Progress, spinner
-│   │   │   ├── _avatar.css        # Avatar components
-│   │   │   └── _index.css         # Components index
 │   │   ├── utilities/             # Utility classes
-│   │   │   ├── _helpers.css       # Helper utilities
-│   │   │   └── _index.css         # Utilities index
 │   │   └── themes/                # Theme variations (reserved)
-│   └── styles.css                 # Main stylesheet (imports)
+│   └── styles.css                 # Main stylesheet
 ├── .storybook/                    # Storybook config
 └── CLAUDE.md                      # This file
 ```
@@ -122,89 +162,59 @@ Angular application builder ([angular.json](angular.json)):
 - **Builder**: `@angular/build:application`
 - **Bundle Budgets**: Initial 500kB warning / 1MB error
 
+---
+
 ## Styling System
 
-### Architecture Overview
+### Stack
+- **Tailwind CSS v4** (90% of styling - utility classes in HTML)
+- **CSS Variables** (600+ design tokens)
+- **PostCSS** for processing
 
-The styling system is organized following Angular and CSS best practices with a **modular architecture**:
+### Philosophy
+1. **Tailwind First**: Use utility classes in HTML
+2. **CSS Variables for Tokens**: Colors, spacing, typography
+3. **Separate CSS Only for**: Animations, complex positioning, 50+ lines
 
+### Design Tokens Location
+- **Colors**: `src/styles/tokens/_colors.css` (200+ variables)
+  - Semantic colors: primary, secondary, success, error, warning, info, dark
+  - Gray scale: 50-900
+  - Text, border, background colors
+  - Light/dark mode support
+- **Spacing**: `src/styles/tokens/_spacing.css` (15 scales: 0-32)
+- **Typography**: `src/styles/tokens/_typography.css` (sizes xs-6xl, weights, line-heights)
+- **Borders**: `src/styles/tokens/_borders.css` (radius, widths)
+- **Shadows**: `src/styles/tokens/_shadows.css` (sm-2xl)
+- **Transitions**: `src/styles/tokens/_transitions.css` (durations, timings)
+- **Layout**: `src/styles/tokens/_layout.css` (z-index, containers)
+
+### Usage Example
+```html
+<!-- ✅ Tailwind classes (preferred) -->
+<div class="flex items-center gap-4 p-4 bg-white rounded-lg shadow-md">
+  <button class="btn btn-primary">Click me</button>
+</div>
 ```
-src/styles/
-├── tokens/         # Design tokens (CSS variables)
-├── components/     # Component-specific styles
-├── utilities/      # Utility classes
-└── themes/         # Theme variations (reserved for future use)
+
+```css
+/* ✅ CSS variables (when needed) */
+.custom-component {
+  color: var(--color-primary);
+  padding: var(--spacing-4);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+}
 ```
 
-**Main Entry Point:** [src/styles.css](src/styles.css) - imports all modules
+**Styling Rules:**
+- ✅ ALWAYS use CSS variables from design tokens
+- ❌ NEVER use hardcoded colors (`#fff`, `rgb()`, etc.)
+- ✅ Use semantic class names (`.btn-success` not `.btn-green`)
+- ✅ Extend with Tailwind utilities as needed
+- ✅ Follow modular architecture when adding new styles
 
-### Tailwind CSS v4 with PostCSS
-- Configured via [.postcssrc.json](.postcssrc.json)
-- Uses `@tailwindcss/postcss` plugin
-- Global import in [src/styles.css](src/styles.css): `@import "tailwindcss";`
-
-### Design Tokens (CSS Variables)
-
-All design tokens are organized in separate files within `src/styles/tokens/`:
-
-1. **[_colors.css](src/styles/tokens/_colors.css)** - Complete color palette with light/dark mode variants
-   - Semantic colors: primary, secondary, success, error, warning, info, dark
-   - Gray scale: 50-900
-   - Text, border, background colors
-   - Component-specific colors
-
-2. **[_spacing.css](src/styles/tokens/_spacing.css)** - Spacing scale (0-32)
-   - Based on 4px/8px grid system
-   - Variables: `--spacing-{n}` (0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 16, 20, 24, 32)
-
-3. **[_typography.css](src/styles/tokens/_typography.css)** - Typography system
-   - Font sizes: xs to 6xl
-   - Line heights: none to loose
-   - Font weights: thin to black
-
-4. **[_borders.css](src/styles/tokens/_borders.css)** - Border system
-   - Border radius: none to full
-   - Border widths: 0, 1px, 2px, 4px, 8px
-
-5. **[_shadows.css](src/styles/tokens/_shadows.css)** - Shadow definitions
-   - Shadow scale: sm, base, md, lg, xl, 2xl, inner, none
-
-6. **[_transitions.css](src/styles/tokens/_transitions.css)** - Animation tokens
-   - Durations: 75ms to 1000ms
-   - Timing functions: linear, ease, ease-in, ease-out, ease-in-out
-
-7. **[_layout.css](src/styles/tokens/_layout.css)** - Layout tokens
-   - Z-index scale: 0, 10, 20, 30, 40, 50
-   - Container max widths: sm, md, lg, xl, 2xl
-
-### Component Styles
-
-All component styles are organized in `src/styles/components/` using `@layer components`:
-
-- **[_buttons.css](src/styles/components/_buttons.css)** - Button variants (solid, outline), sizes, modifiers
-- **[_forms.css](src/styles/components/_forms.css)** - Labels, inputs, checkboxes, floating labels
-- **[_cards.css](src/styles/components/_cards.css)** - Card layouts and elements
-- **[_badges.css](src/styles/components/_badges.css)** - Badge variants and pills
-- **[_alerts.css](src/styles/components/_alerts.css)** - Alert messages with icons
-- **[_navigation.css](src/styles/components/_navigation.css)** - Navbar, sidebar, breadcrumb, pagination
-- **[_tables.css](src/styles/components/_tables.css)** - Table styles with hover and striped rows
-- **[_modals.css](src/styles/components/_modals.css)** - Modal dialogs and tooltips
-- **[_interactive.css](src/styles/components/_interactive.css)** - Dropdowns and accordions
-- **[_feedback.css](src/styles/components/_feedback.css)** - Progress bars and spinners
-- **[_avatar.css](src/styles/components/_avatar.css)** - Avatar components with status
-
-### Utility Classes
-
-Custom utilities in `src/styles/utilities/` using `@layer utilities`:
-
-- **[_helpers.css](src/styles/utilities/_helpers.css)** - Helper classes
-  - Scrollbar utilities
-  - Responsive containers
-  - Shadow utilities
-  - Background and text color utilities
-  - Border utilities
-  - Border radius utilities
-  - Transition utilities
+**Full details**: See [Appendix: Design System Details](#appendix-design-system-details)
 
 ### Dark Mode & Theming
 All colors are CSS variables that automatically change with the `.dark` class:
@@ -229,325 +239,7 @@ document.documentElement.style.setProperty('--color-primary', '#ff0000');
 
 **Live demo:** [src/app/app.html](src/app/app.html) contains interactive color picker demo
 
-### Semantic Component System
-
-Comprehensive design system organized in modular files with 600+ CSS variables.
-
-**Color Variants**: `primary`, `secondary`, `success`, `error`, `warning`, `info`, `dark`
-
-**Available Component Classes:**
-- **Buttons**: `.btn`, `.btn-{variant}`, `.btn-outline-{variant}`, sizes: `xs`, `sm`, `md`, `lg`, `xl`
-- **Forms**: `.form-label`, `.form-input`, `.form-checkbox`, `.floating-input`
-- **Cards**: `.card`, `.card-title`, `.card-text`, `.card-btn`
-- **Badges/Alerts**: `.badge-{variant}`, `.alert-{variant}`
-- **Navigation**: `.navbar`, `.breadcrumb`, `.sidebar`, `.pagination`
-- **Tables**: `.table`, `.table-header`, `.table-row`, `.table-cell`
-- **Interactive**: `.dropdown`, `.accordion`, `.modal`, `.tooltip`
-- **Feedback**: `.spinner`, `.progress-bar`, `.progress-fill`
-- **Avatar**: `.avatar`, `.avatar-sm`, `.avatar-lg`, `.avatar-dot`
-
-**Key CSS Variable Examples:**
-```css
-/* Colors - see src/styles/tokens/_colors.css */
-var(--color-primary), var(--color-success), var(--color-error)
-var(--color-text-primary), var(--color-bg-primary), var(--color-border)
-
-/* Spacing - see src/styles/tokens/_spacing.css */
-var(--spacing-2)    /* 8px */
-var(--spacing-4)    /* 16px */
-
-/* Typography - see src/styles/tokens/_typography.css */
-var(--font-size-sm), var(--font-size-base), var(--font-size-lg)
-var(--font-weight-medium), var(--line-height-normal)
-
-/* Borders & Shadows - see src/styles/tokens/_borders.css and _shadows.css */
-var(--border-radius-md), var(--shadow-lg)
-var(--border-width-1), var(--border-width-2)
-
-/* Transitions - see src/styles/tokens/_transitions.css */
-var(--transition-duration-150), var(--transition-timing-ease)
-
-/* Layout - see src/styles/tokens/_layout.css */
-var(--z-50), var(--container-lg)
-```
-
-**Styling Rules:**
-- ✅ ALWAYS use CSS variables from design tokens
-- ❌ NEVER use hardcoded colors (`#fff`, `rgb()`, etc.)
-- ✅ Use semantic class names (`.btn-success` not `.btn-green`)
-- ✅ Extend with Tailwind utilities as needed
-- ✅ Follow modular architecture when adding new styles
-
-### Style Organization Best Practices
-
-When adding new styles to the design system:
-
-1. **Adding Design Tokens (Variables):**
-   - Add to appropriate file in `src/styles/tokens/`
-   - Follow existing naming conventions
-   - Document both light and dark mode values in `_colors.css`
-
-2. **Adding Component Styles:**
-   - Create new file in `src/styles/components/` if needed
-   - Use `@layer components { ... }`
-   - Import in `src/styles/components/_index.css`
-   - Always use CSS variables, never hardcoded values
-
-3. **Adding Utility Classes:**
-   - Add to `src/styles/utilities/_helpers.css`
-   - Use `@layer utilities { ... }`
-   - Follow Tailwind naming conventions when possible
-
-4. **File Naming Convention:**
-   - Use underscore prefix: `_filename.css`
-   - Index files: `_index.css` for module exports
-   - Descriptive names: `_buttons.css`, `_colors.css`
-
-## Testing
-
-### Unit Tests (Vitest)
-```bash
-npm test                     # Run tests
-npm run coverage             # Coverage report
-```
-
-**Test Pattern:**
-```typescript
-await TestBed.configureTestingModule({
-  imports: [Component],
-  providers: [provideZonelessChangeDetection()],
-}).compileComponents();
-```
-
-**Config:** [vitest.config.ts](vitest.config.ts) - JSDOM environment, v8 coverage
-
-### E2E Tests (Playwright)
-**Config:** [playwright.config.ts](playwright.config.ts) | **Tests:** `./tests/`
-
-### Code Quality
-```bash
-npm run lint                 # ESLint + Prettier
-npm run analyze              # Coverage + SonarQube
-```
-
-**ESLint Rules:**
-- Angular + TypeScript + Prettier integration
-- `@typescript-eslint/no-explicit-any: 'error'`
-- Component prefix: 'app-'
-- Template accessibility checks
-
-## Layout Architecture
-
-**Main Layout:** [main-layout/](src/app/layout/main-layout/) - Navbar + Sidenav + Content
-**Navbar:** Search, apps menu, notifications, user menu
-**Sidenav:** Collapsible, nested navigation, router-integrated
-
-**Centralized Config:** [layout.config.ts](src/app/config/layout.config.ts)
-```typescript
-export const SIDENAV_ITEMS: SidenavItem[] = [...];     // Menu navigation
-export const APPS_MENU_ITEMS: AppMenuItem[] = [...];   // Apps grid
-export const USER_MENU_ITEMS: UserMenuItem[] = [...];  // User options
-export const MOCK_NOTIFICATIONS: Notification[] = [...]; // Notifications
-```
-
-## Development Guidelines
-
-### File Naming Conventions (CRITICAL)
-
-**ALWAYS use MODERN nomenclature (without `.component`):**
-
-✅ **CORRECT:**
-```
-my-component/
-├── my-component.ts          # Component class
-├── my-component.html        # Template
-├── my-component.css         # Styles (only if complex)
-```
-
-❌ **INCORRECT (Old Angular CLI style):**
-```
-my-component/
-├── my-component.component.ts      # ❌ Remove .component
-├── my-component.component.html    # ❌ Remove .component
-├── my-component.component.css     # ❌ Remove .component
-```
-
-**Rules:**
-- ❌ NEVER use `.component.ts` - use `.ts` instead
-- ❌ NEVER use `.component.html` - use `.html` instead
-- ❌ NEVER use `.component.css` - use `.css` instead
-- ✅ Use kebab-case for file names: `user-menu.ts`, not `UserMenu.ts`
-- ✅ Folder name must match component name: `user-menu/user-menu.ts`
-
-### Component Styling Policy (CRITICAL)
-
-**Prefer Tailwind CSS in templates. Use separate CSS files ONLY for complex cases.**
-
-#### When to use Tailwind (90% of cases):
-
-✅ **Use Tailwind classes directly in HTML:**
-```html
-<div class="flex items-center gap-2 p-4 bg-white rounded-lg shadow-md">
-  <button class="btn btn-primary">Click me</button>
-</div>
-```
-
-✅ **DO NOT create a CSS file for:**
-- Simple layouts (flex, grid, padding, margin)
-- Background colors, borders, shadows
-- Text styling (size, weight, color)
-- Basic responsive design
-- Spacing and sizing
-
-❌ **If your CSS file only has comments or 1-5 lines:**
-```css
-/* This is bad - DELETE this file */
-.container {
-  padding: var(--spacing-4);
-}
-```
-**Solution:** Use `class="p-4"` in HTML instead
-
-#### When to use separate CSS files (10% of cases):
-
-✅ **Create a `.css` file ONLY for:**
-- Complex animations with `@keyframes`
-- Intricate hover/focus states that can't be done with Tailwind
-- Dynamic positioning (tooltips, dropdowns, modals)
-- Complex pseudo-selectors (`:nth-child`, `::before`, `::after`)
-- Component-specific z-index management
-- Grid/flex layouts with 10+ lines of CSS
-
-✅ **Examples of JUSTIFIED CSS files:**
-- `dropdown.css` (312 lines) - Positioning, animations, states
-- `modal.css` (338 lines) - Backdrop, sizes, transitions
-- `datepicker.css` (522 lines) - Calendar grid, date selection
-- `tooltip.css` (87 lines) - Dynamic positioning
-
-❌ **Examples of UNJUSTIFIED CSS files (use Tailwind instead):**
-- Single padding/margin rules
-- Basic color/background changes
-- Simple borders and shadows
-- Container width/height
-
-#### CSS File Checklist:
-
-Before creating a `.css` file, ask:
-- [ ] Can this be done with Tailwind classes? → Use Tailwind
-- [ ] Does it have complex animations? → CSS file OK
-- [ ] Is it dynamic positioning? → CSS file OK
-- [ ] Is it more than 50 lines? → CSS file OK
-- [ ] Is it less than 10 lines? → Use Tailwind instead
-
-### Component Development Essentials
-- Create standalone components only (no NgModules)
-- Use Angular signals: `input()`, `output()`, `signal()`, `computed()`
-- Use modern template syntax: `@if`, `@for`, `@else`, `@empty`
-- Import dependencies in component's `imports` array
-- Implement ARIA attributes and keyboard navigation
-- **ALWAYS create Storybook stories** for UI components
-- File structure: `.ts`, `.html`, `.css` (no inline templates/styles)
-- **File naming:** Use `.ts` NOT `.component.ts`
-- **Styling:** Prefer Tailwind, use `.css` only for complex cases
-
-**Angular Signals Pattern:**
-```typescript
-// Inputs/Outputs
-variant = input<string>('primary');
-onChange = output<string>();
-
-// State & Computed
-isOpen = signal(false);
-displayValue = computed(() => this.isOpen() ? 'Open' : 'Closed');
-
-// Updates
-this.isOpen.set(true);
-this.isOpen.update(v => !v);
-this.onChange.emit('value');
-```
-
-### UI Components Library
-
-Reusable components in [src/app/components/ui/](src/app/components/ui/):
-
-**Available Components:**
-- **Dropdown** - Keyboard nav, search, clearable, loading
-- **MultiSelect** - Multi-selection, badges, search, select all
-- **Modal** - Backdrop, focus trap, keyboard close
-- **Tabs** - Multiple variants (pills, underline, vertical, justified)
-- **Sidenav** - Collapsible, nested navigation, router links
-- **Accordion** - Expandible panels, single/multiple mode
-- **AppsMenu** - Grid de apps con iconos
-- **UserMenu** - Avatar, opciones de usuario
-- **NotificationButton** - Badge de notificaciones, dropdown
-- **SearchBar** - Búsqueda con sugerencias
-- **Toast** - Notificaciones temporales
-- **Tooltip** - Tooltips con posicionamiento
-
-**Barrel Export:** Import from `src/app/components/ui/index.ts`
-
-**All components include:**
-- ✅ Full keyboard navigation
-- ✅ WCAG accessibility (ARIA)
-- ✅ Multiple variants & sizes
-- ✅ Dark mode support
-- ✅ Storybook stories
-
-**Reference:** See existing components for implementation patterns. Copy and modify for new components.
-
-### Storybook Guidelines
-
-**CRITICAL:** All UI components MUST have stories with Light/Dark comparison using helpers from [src/stories/story-helpers.ts](src/stories/story-helpers.ts).
-
-**Basic Story Template:**
-```typescript
-import type { Meta, StoryObj } from '@storybook/angular';
-import { fn } from '@storybook/test';
-import { YourComponent } from '../app/components/ui/your-component/your-component.component';
-import { createLightDarkComparison } from './story-helpers';
-
-const meta: Meta<YourComponent> = {
-  title: 'UI/YourComponent',
-  component: YourComponent,
-  tags: ['autodocs'],
-  parameters: { layout: 'fullscreen' },  // Required!
-  argTypes: {
-    variant: { control: 'select', options: ['primary', 'secondary'] },
-    size: { control: 'select', options: ['sm', 'md', 'lg'] },
-  },
-  args: { onChange: fn() },
-};
-
-export default meta;
-type Story = StoryObj<YourComponent>;
-
-export const Default: Story = {
-  args: { variant: 'primary', size: 'md' },
-  render: (args) => ({
-    props: args,
-    template: createLightDarkComparison(
-      'app-your-component',
-      `[variant]="variant" [size]="size"`
-    ),
-  }),
-};
-```
-
-**Helper Functions:**
-- `createLightDarkComparison(tag, bindings)` - For simple components
-- `wrapInLightDarkComparison(template)` - For complex templates
-- `createLightDarkRender(tag, bindings)` - Shorthand for render functions
-
-**Story Coverage Checklist:**
-- ✅ Default/basic usage
-- ✅ All variants (primary, secondary, outline, etc.)
-- ✅ All sizes (xs, sm, md, lg, xl)
-- ✅ States (disabled, loading, error, success)
-- ✅ Edge cases (empty, long content, overflow)
-- ✅ Feature combinations
-- ✅ Keyboard navigation demos
-
-**Examples:** See [dropdown.stories.ts](src/stories/dropdown.stories.ts), [multiselect.stories.ts](src/stories/multiselect.stories.ts), [modal.stories.ts](src/stories/modal.stories.ts)
+---
 
 ## Component Development Workflow
 
@@ -564,7 +256,7 @@ ng generate component components/ui/component-name --standalone
 cd src/app/components/ui/component-name/
 mv component-name.component.ts component-name.ts
 mv component-name.component.html component-name.html
-# Only keep .css if needed for complex styling (see CSS policy below)
+# Only keep .css if needed for complex styling (see CSS policy)
 ```
 
 #### 2. Implement Component
@@ -618,7 +310,7 @@ npm run storybook
 - ✅ Focus states visible
 
 #### 7. Document
-Add section to this CLAUDE.md under "UI Components Library" with:
+Add section to this CLAUDE.md under "Complete Component Library" with:
 - Features list
 - Basic usage example
 - Link to Storybook stories
@@ -661,107 +353,856 @@ Before considering a component complete:
 - [ ] TypeScript interfaces defined
 - [ ] ArgTypes have descriptions
 
-## Recursos y Links Útiles
+---
 
-### Documentación Oficial
-- **Angular 20**: https://angular.dev
-- **Tailwind CSS v4**: https://tailwindcss.com/docs
-- **Storybook Angular**: https://storybook.js.org/docs/angular
-- **Angular Signals**: https://angular.dev/guide/signals
+## Testing
 
-### Archivos Clave del Proyecto
+### Unit Tests (Vitest)
 
-**Design System (Modular):**
-- **Main Stylesheet**: [src/styles.css](src/styles.css) - Entry point with imports
-- **Design Tokens**: [src/styles/tokens/](src/styles/tokens/) - CSS variables organized by category
-  - [_colors.css](src/styles/tokens/_colors.css) - Color palette
-  - [_spacing.css](src/styles/tokens/_spacing.css) - Spacing scale
-  - [_typography.css](src/styles/tokens/_typography.css) - Typography tokens
-  - [_borders.css](src/styles/tokens/_borders.css) - Border system
-  - [_shadows.css](src/styles/tokens/_shadows.css) - Shadow definitions
-  - [_transitions.css](src/styles/tokens/_transitions.css) - Animation tokens
-  - [_layout.css](src/styles/tokens/_layout.css) - Layout tokens
-- **Component Styles**: [src/styles/components/](src/styles/components/) - Semantic component classes
-- **Utilities**: [src/styles/utilities/](src/styles/utilities/) - Helper classes
+**Current Status:**
+- ✅ **500 tests** passing
+- ✅ **30 test suites** complete
+- ✅ **100% components** tested
+- ⚡ **~5 seconds** total execution time
 
-**Application:**
-- **Layout Config**: [src/app/config/layout.config.ts](src/app/config/layout.config.ts) - Centralized menu items
-- **Story Helpers**: [src/stories/story-helpers.ts](src/stories/story-helpers.ts)
-- **Root Component**: [src/app/app.ts](src/app/app.ts) - Live theming demo
-- **App Config**: [src/app/app.config.ts](src/app/app.config.ts)
+```bash
+npm test                     # Run all tests
+npm run coverage             # Coverage report
+```
 
-### Componentes de Referencia
-- **Dropdown**: [src/app/components/ui/dropdown/](src/app/components/ui/dropdown/)
-- **MultiSelect**: [src/app/components/ui/multiselect/](src/app/components/ui/multiselect/)
-- **Modal**: [src/app/components/ui/modal/](src/app/components/ui/modal/)
-- **Tabs**: [src/app/components/ui/tabs/](src/app/components/ui/tabs/)
-- **Sidenav**: [src/app/components/ui/sidenav/](src/app/components/ui/sidenav/)
+**Test Pattern:**
+```typescript
+await TestBed.configureTestingModule({
+  imports: [Component],
+  providers: [provideZonelessChangeDetection()],
+}).compileComponents();
+```
 
-### Stories de Referencia
+**Config:** [vitest.config.ts](vitest.config.ts) - JSDOM environment, v8 coverage
+
+### E2E Tests (Playwright)
+**Config:** [playwright.config.ts](playwright.config.ts) | **Tests:** `./tests/`
+
+### Code Quality
+```bash
+npm run lint                 # ESLint + Prettier
+npm run analyze              # Coverage + SonarQube
+```
+
+**ESLint Rules:**
+- Angular + TypeScript + Prettier integration
+- `@typescript-eslint/no-explicit-any: 'error'`
+- Component prefix: 'app-'
+- Template accessibility checks
+
+---
+
+## Services & Interceptors
+
+### Core Services
+
+The application uses 2 core services with signal-based state management:
+
+#### 1. ToastService (`src/app/services/toast.service.ts`)
+Signal-based notification system.
+
+**Features:**
+- Multiple toasts simultaneously
+- Auto-dismiss with configurable timeouts
+- 4 types: success, error, warning, info
+- 6 positions: top/bottom + left/center/right
+
+**Methods:**
+```typescript
+toastService.success('Operation completed!', 'Success');
+toastService.error('Something went wrong', 'Error');
+toastService.warning('Be careful!', 'Warning');
+toastService.info('FYI: Important information', 'Info');
+toastService.dismiss(toastId);
+toastService.clear(); // Dismiss all
+```
+
+**State:**
+```typescript
+toastService.toasts$(); // Signal<Toast[]> - readonly
+```
+
+#### 2. AuthService (`src/app/services/auth.service.ts`)
+Authentication and token management.
+
+**Features:**
+- Token storage with signals
+- Login/Logout flow
+- Automatic token refresh
+- Authentication verification
+- Integration with interceptors
+
+**Methods:**
+```typescript
+authService.getToken();          // Current token
+authService.setToken(token);     // Store token
+authService.clearToken();        // Remove token
+authService.checkAuthentication(); // Verify auth
+authService.refreshToken();      // Refresh expired token
+authService.logout();            // Logout user
+authService.navigateToLogin();   // Redirect to login
+```
+
+**State:**
+```typescript
+authService.token$();            // Signal<string | null>
+authService.isAuthenticated$();  // Signal<boolean>
+```
+
+### HTTP Interceptors
+
+The application uses 3 functional HTTP interceptors for authentication and user feedback:
+
+#### 1. authInterceptor (`src/app/interceptors/auth.interceptor.ts`)
+Adds Bearer token to authenticated requests.
+
+**Features:**
+- Automatically adds `Authorization: Bearer {token}` header
+- Whitelist of public endpoints (login, logout, auth)
+- Verifies authentication before sending requests
+- Redirects to login if user is not authenticated
+
+**Public endpoints (no token required):**
+- `/api/auth/login`
+- `/api/auth/logout`
+- `/api/auth/**`
+
+#### 2. tokenRetryInterceptor (`src/app/interceptors/token-retry.interceptor.ts`)
+Handles token expiration and automatic refresh.
+
+**Features:**
+- Intercepts 401/403 errors (unauthorized)
+- Automatically refreshes access token
+- Retries original request with new token
+- Shows error toast if refresh fails
+- Prevents retry for certain endpoints (login, register)
+
+**Endpoints that will NOT retry:**
+- `/api/auth/login`
+- `/api/auth/register`
+- `/api/auth/refresh`
+
+#### 3. httpNotificationInterceptor (`src/app/interceptors/http-notification.interceptor.ts`)
+Provides automatic user feedback for HTTP operations.
+
+**Features:**
+- Shows success toast for successful mutations (POST/PUT/PATCH/DELETE)
+- Shows error toast for any HTTP error
+- Extracts error message from server response
+- Automatic feedback without manual toast calls
+
+**Example:**
+```typescript
+// Automatic success toast after POST
+this.http.post('/api/users', userData).subscribe();
+// → Shows: "Operación exitosa" ✅
+
+// Automatic error toast on failure
+this.http.get('/api/users/999').subscribe();
+// → Shows: "Error message from server" ❌
+```
+
+### Integration Example
+
+```typescript
+@Component({...})
+export class MyComponent {
+  private http = inject(HttpClient);
+  private authService = inject(AuthService);
+  private toastService = inject(ToastService);
+
+  performAction() {
+    // authInterceptor adds token automatically
+    // httpNotificationInterceptor shows success/error toast automatically
+    // tokenRetryInterceptor handles token refresh if needed
+    this.http.post('/api/action', data).subscribe({
+      next: () => console.log('Success!'),
+      error: (err) => console.error('Error:', err)
+    });
+  }
+}
+```
+
+---
+
+## Complete Component Library
+
+### Overview
+**Total: 17 UI Components + 4 Layout Components = 21 Components**
+
+**All components include:**
+- ✅ Full keyboard navigation
+- ✅ WCAG accessibility (ARIA)
+- ✅ Multiple variants & sizes
+- ✅ Dark mode support
+- ✅ Storybook stories
+- ✅ Modern file naming (no `.component`)
+- ✅ Angular 20 signals
+
+**Barrel Export:** Import from `src/app/components/ui/index.ts`
+
+---
+
+### 📝 Form Controls (3 components)
+
+#### Dropdown
+**File:** [src/app/components/ui/dropdown/dropdown.ts](src/app/components/ui/dropdown/)
+
+Single selection dropdown with advanced features.
+
+**Features:**
+- Searchable options
+- Clearable selection
+- Loading state
+- Disabled options
+- Grouped options
+- Custom icons
+- Keyboard navigation (Arrow keys, Enter, Escape)
+
+**Storybook:** [dropdown.stories.ts](src/stories/dropdown.stories.ts) - 17 stories
+
+#### MultiSelect
+**File:** [src/app/components/ui/multiselect/multiselect.ts](src/app/components/ui/multiselect/)
+
+Multi-selection dropdown with badges.
+
+**Features:**
+- Multiple selections
+- Selected items as badges
+- Select all / Clear all
+- Searchable options
+- Grouped options
+- Max selections limit
+- Keyboard navigation
+
+**Storybook:** [multiselect.stories.ts](src/stories/multiselect.stories.ts) - 21 stories
+
+#### Datepicker
+**File:** [src/app/components/ui/datepicker/datepicker.ts](src/app/components/ui/datepicker/)
+
+Advanced date picker with multiple modes.
+
+**Features:**
+- Single date selection
+- Date range selection
+- Multiple dates selection
+- Time picker integration
+- Month/year picker
+- Min/max date validation
+- Disabled dates
+- Custom date format
+- Keyboard navigation
+
+**Storybook:** [datepicker.stories.ts](src/stories/datepicker.stories.ts)
+
+---
+
+### 🗂️ Data Display (4 components)
+
+#### Table
+**File:** [src/app/components/ui/table/table.ts](src/app/components/ui/table/)
+
+Flexible table with sorting and custom templates.
+
+**Features:**
+- Column sorting (asc/desc)
+- Custom cell templates
+- Row actions (edit, delete, etc.)
+- Striped rows
+- Hoverable rows
+- Empty state
+- Loading state
+
+**Storybook:** [table.stories.ts](src/stories/table.stories.ts)
+
+#### TableToolbar
+**File:** [src/app/components/ui/table-toolbar/table-toolbar.ts](src/app/components/ui/table-toolbar/)
+
+Toolbar for tables with search and actions.
+
+**Features:**
+- Search input
+- Primary actions
+- Bulk actions
+- Filter chips
+- Responsive layout
+
+**Storybook:** [table-toolbar.stories.ts](src/stories/table-toolbar.stories.ts)
+
+#### TablePagination
+**File:** [src/app/components/ui/table-pagination/table-pagination.ts](src/app/components/ui/table-pagination/)
+
+Pagination with page info and navigation.
+
+**Features:**
+- Page navigation (prev/next)
+- Page numbers with ellipsis
+- Items per page selector
+- Total items info
+- Configurable visible pages
+
+**Storybook:** [table-pagination.stories.ts](src/stories/table-pagination.stories.ts)
+
+#### DataTable
+**File:** [src/app/components/ui/data-table/data-table.ts](src/app/components/ui/data-table/)
+
+Complete table integration: Toolbar + Table + Pagination.
+
+**Features:**
+- All-in-one solution
+- Integrated search, sort, and pagination
+- Configurable columns
+- Bulk actions
+- Export functionality
+
+**Storybook:** [data-table.stories.ts](src/stories/data-table.stories.ts)
+
+---
+
+### 🧭 Navigation (6 components)
+
+#### Tabs
+**File:** [src/app/components/ui/tabs/tabs.ts](src/app/components/ui/tabs/)
+
+Tabs with multiple variants and router integration.
+
+**Features:**
+- 5 variants: default, pills, underline, boxed, segmented
+- Horizontal and vertical orientation
+- Router integration
+- Badges on tabs
+- Icons support
+- Disabled tabs
+- Keyboard navigation (Arrow keys, Home, End)
+
+**Storybook:** [tabs.stories.ts](src/stories/tabs.stories.ts) - 40+ stories
+
+#### Sidenav
+**File:** [src/app/components/ui/sidenav/sidenav.ts](src/app/components/ui/sidenav/)
+
+Collapsible sidebar with nested navigation.
+
+**Features:**
+- Collapsible sidebar
+- Nested menu items
+- Router link integration
+- Active state highlighting
+- Icons support
+- 3 variants: default, bordered, pills
+- Keyboard navigation
+
+**Storybook:** [sidenav.stories.ts](src/stories/sidenav.stories.ts)
+
+#### BottomNavigation
+**File:** [src/app/layout/bottom-navigation/bottom-navigation.ts](src/app/layout/bottom-navigation/)
+
+Mobile-first bottom navigation bar.
+
+**Features:**
+- Router link integration
+- Active state
+- Icons and labels
+- Fixed position
+- Mobile optimized
+
+**Storybook:** [bottom-navigation.stories.ts](src/stories/bottom-navigation.stories.ts)
+
+#### AppsMenu
+**File:** [src/app/components/ui/apps-menu/apps-menu.ts](src/app/components/ui/apps-menu/)
+
+Grid of applications launcher.
+
+**Features:**
+- Grid layout
+- App icons and labels
+- Click outside to close
+- ESC key to close
+- Dropdown positioning
+
+**Storybook:** [apps-menu.stories.ts](src/stories/apps-menu.stories.ts)
+
+#### UserMenu
+**File:** [src/app/components/ui/user-menu/user-menu.ts](src/app/components/ui/user-menu/)
+
+User menu with avatar and options.
+
+**Features:**
+- Avatar with image or initials
+- User name and email
+- Menu items with icons
+- Dividers
+- Click outside to close
+- ESC key to close
+
+**Storybook:** [user-menu.stories.ts](src/stories/user-menu.stories.ts)
+
+#### SearchBar
+**File:** [src/app/components/ui/search-bar/search-bar.ts](src/app/components/ui/search-bar/)
+
+Search input with submit and clear.
+
+**Features:**
+- Search icon
+- Clear button
+- Submit on Enter
+- Loading state
+- Responsive design
+
+**Storybook:** [search-bar.stories.ts](src/stories/search-bar.stories.ts)
+
+---
+
+### 💬 Feedback & Overlays (4 components)
+
+#### Modal
+**File:** [src/app/components/ui/modal/modal.ts](src/app/components/ui/modal/)
+
+Modal dialog with backdrop and focus trap.
+
+**Features:**
+- 5 sizes: sm, md, lg, xl, full
+- 5 variants: default, success, error, warning, info
+- Backdrop with blur
+- Focus trap
+- ESC key to close
+- Loading state
+- Custom footer actions
+
+**Storybook:** [modal.stories.ts](src/stories/modal.stories.ts) - 17 stories
+
+#### Toast
+**File:** [src/app/components/ui/toast/toast.ts](src/app/components/ui/toast/)
+
+Temporary notification messages.
+
+**Features:**
+- 4 types: success, error, warning, info
+- Auto-dismiss with timeout
+- Dismissible manually
+- Progress bar
+- Icons
+
+**Related:** ToastContainer and ToastService
+
+**Storybook:** [toast.stories.ts](src/stories/toast.stories.ts)
+
+#### Tooltip
+**File:** [src/app/components/ui/tooltip/tooltip.ts](src/app/components/ui/tooltip/)
+
+Tooltips with dynamic positioning.
+
+**Features:**
+- 4 positions: top, bottom, left, right
+- Show delay configurable
+- Hover trigger
+- Dark theme
+
+**Storybook:** [tooltip.stories.ts](src/stories/tooltip.stories.ts)
+
+#### NotificationButton
+**File:** [src/app/components/ui/notification-button/notification-button.ts](src/app/components/ui/notification-button/)
+
+Notification button with badge and dropdown.
+
+**Features:**
+- Badge with count
+- Unread notifications highlight
+- Mark as read
+- Max display count
+- Click outside to close
+- Empty state
+
+**Storybook:** [notification-button.stories.ts](src/stories/notification-button.stories.ts)
+
+---
+
+### 📦 Layout (1 component)
+
+#### Accordion
+**File:** [src/app/components/ui/accordion/accordion.ts](src/app/components/ui/accordion/)
+
+Expandable panels with single or multiple mode.
+
+**Features:**
+- Single mode (only one open at a time)
+- Multiple mode (multiple open)
+- Animated transitions
+- Disabled panels
+- Icons
+
+**Storybook:** [accordion.stories.ts](src/stories/accordion.stories.ts)
+
+---
+
+### 🏗️ Layout Components (4 components)
+
+#### MainLayout
+**File:** [src/app/layout/main-layout/main-layout.ts](src/app/layout/main-layout/)
+
+Main application layout with navbar, sidenav, and content.
+
+**Features:**
+- Responsive layout
+- Mobile menu toggle
+- RouterOutlet for content
+- ToastContainer integration
+
+#### Navbar
+**File:** [src/app/layout/navbar/navbar.ts](src/app/layout/navbar/)
+
+Top navigation bar.
+
+**Features:**
+- App title/logo
+- Search bar
+- Apps menu
+- Notifications
+- User menu
+
+#### Sidenav (listed above in Navigation)
+
+#### BottomNavigation (listed above in Navigation)
+
+---
+
+### Layout Configuration
+
+**Centralized Config:** [src/app/config/layout.config.ts](src/app/config/layout.config.ts)
+
+All navigation items are configured in one place:
+
+```typescript
+export const SIDENAV_ITEMS: SidenavItem[] = [...];        // 7 items with children
+export const APPS_MENU_ITEMS: AppMenuItem[] = [...];      // 6 apps
+export const USER_MENU_ITEMS: UserMenuItem[] = [...];     // 5 items with dividers
+export const MOCK_NOTIFICATIONS: Notification[] = [...];  // 4 notifications
+export const BOTTOM_NAV_ITEMS: BottomNavItem[] = [...];   // 4 items for mobile
+```
+
+---
+
+## Storybook Guidelines
+
+**CRITICAL:** All UI components MUST have stories with Light/Dark comparison using helpers from [src/stories/story-helpers.ts](src/stories/story-helpers.ts).
+
+### Basic Story Template
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/angular';
+import { fn } from '@storybook/test';
+import { YourComponent } from '../app/components/ui/your-component/your-component'; // ✅ NO .component
+import { createLightDarkComparison } from './story-helpers';
+
+const meta: Meta<YourComponent> = {
+  title: 'UI/YourComponent',
+  component: YourComponent,
+  tags: ['autodocs'],
+  parameters: { layout: 'fullscreen' },  // ⚠️ Required!
+  argTypes: {
+    variant: { control: 'select', options: ['primary', 'secondary'] },
+    size: { control: 'select', options: ['sm', 'md', 'lg'] },
+  },
+  args: { onChange: fn() },
+};
+
+export default meta;
+type Story = StoryObj<YourComponent>;
+
+export const Default: Story = {
+  args: { variant: 'primary', size: 'md' },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison(
+      'app-your-component',
+      `[variant]="variant" [size]="size"`
+    ),
+  }),
+};
+```
+
+### Helper Functions
+- `createLightDarkComparison(tag, bindings)` - For simple components
+- `wrapInLightDarkComparison(template)` - For complex templates
+- `createLightDarkRender(tag, bindings)` - Shorthand for render functions
+
+### Story Coverage Checklist
+- ✅ Default/basic usage
+- ✅ All variants (primary, secondary, outline, etc.)
+- ✅ All sizes (xs, sm, md, lg, xl)
+- ✅ States (disabled, loading, error, success)
+- ✅ Edge cases (empty, long content, overflow)
+- ✅ Feature combinations
+- ✅ Keyboard navigation demos
+
+### Examples
 - [dropdown.stories.ts](src/stories/dropdown.stories.ts) - 17 stories
 - [multiselect.stories.ts](src/stories/multiselect.stories.ts) - 21 stories
 - [modal.stories.ts](src/stories/modal.stories.ts) - 17 stories
 - [tabs.stories.ts](src/stories/tabs.stories.ts) - 40+ stories
-- [sidenav.stories.ts](src/stories/sidenav.stories.ts), [apps-menu.stories.ts](src/stories/apps-menu.stories.ts), [user-menu.stories.ts](src/stories/user-menu.stories.ts), [notification-button.stories.ts](src/stories/notification-button.stories.ts), [search-bar.stories.ts](src/stories/search-bar.stories.ts)
-
-## Notas Importantes
-
-### Estado del Proyecto
-- ✅ Sistema de diseño modular con 600+ variables CSS organizadas
-- ✅ 13 componentes UI completos + 3 layout components
-- ✅ Vitest + Playwright testing
-- ✅ ESLint + Prettier + SonarQube integration
-- ✅ Storybook con comparación Light/Dark automática
-- ✅ Configuración centralizada (layout.config.ts)
-- ✅ Angular 20 con signals y sintaxis moderna
-- ✅ Tailwind CSS v4 con PostCSS
-- ✅ TypeScript strict mode
-- ✅ Standalone components (no NgModules)
-
-### Convenciones del Proyecto (CRITICAL - MUST FOLLOW)
-
-#### Nomenclatura de Archivos
-- ❌ **NUNCA** usar `.component.ts` - usar `.ts`
-- ❌ **NUNCA** usar `.component.html` - usar `.html`
-- ❌ **NUNCA** usar `.component.css` - usar `.css`
-- ✅ **SIEMPRE** usar kebab-case: `user-menu.ts`, no `UserMenu.ts`
-- ✅ camelCase para variables, PascalCase para clases/interfaces
-
-#### Política de Estilos
-- ✅ **PREFERIR Tailwind** en HTML (90% de casos)
-- ❌ **NO crear `.css`** para estilos simples (padding, colors, borders)
-- ✅ **Crear `.css` SOLO si:**
-  - Tiene animaciones complejas (`@keyframes`)
-  - Posicionamiento dinámico (dropdowns, modals)
-  - Más de 50 líneas de estilos
-- ✅ Si existe `.css`: SOLO variables CSS, NUNCA hardcoded
-
-#### Angular 20 Standards
-- ✅ **Standalone**: Todos los componentes son standalone (no NgModules)
-- ✅ **Signals**: Usar `input()`, `output()`, `signal()`, `computed()`
-- ❌ **No decorators**: No usar `@Input()`, `@Output()`, `@ViewChild()`
-- ✅ **Templates**: Sintaxis moderna (`@if`, `@for`) no directivas (`*ngIf`, `*ngFor`)
-- ✅ **DI**: Usar `inject()`, no constructor injection
-
-#### Otros Standards
-- **Idioma**: Español en contenido de ejemplo, inglés en código
-- **Imports**: Usar rutas relativas, no alias
-- **Storybook**: SIEMPRE crear stories con comparación Light/Dark
-- **Accessibility**: SIEMPRE implementar ARIA attributes y keyboard navigation
-- **Generated Code**: IGNORAR `src/app/core/openapi/**` (auto-generated)
-
-### Tips Rápidos
-
-1. **Preview colores**: Abre [src/app/app.html](src/app/app.html) para demo interactivo con color pickers
-2. **Ver variables CSS**: Revisa archivos en [src/styles/tokens/](src/styles/tokens/)
-3. **Agregar nuevos tokens**: Edita el archivo apropiado en `src/styles/tokens/` (ej: `_colors.css` para colores)
-4. **Agregar componente style**: Crea archivo en `src/styles/components/` e importa en `_index.css`
-5. **Crear componente rápido**: Copia [dropdown/](src/app/components/ui/dropdown/) y modifica
-6. **Debug Storybook**: Verifica `layout: 'fullscreen'` en parameters
-7. **Test dark mode**: Añade clase `.dark` a cualquier elemento padre
 
 ---
 
-**Última actualización**: Octubre 2024
-**Mantenedores**: Claude Code AI
-**Licencia**: MIT
+## Resources & References
+
+### Official Documentation
+- **Angular 20**: https://angular.dev
+- **Tailwind CSS v4**: https://tailwindcss.com/docs
+- **Storybook Angular**: https://storybook.js.org/docs/angular
+- **Angular Signals**: https://angular.dev/guide/signals
+- **Vitest**: https://vitest.dev
+- **Playwright**: https://playwright.dev
+
+### Key Project Files
+
+**Application:**
+- **App Config**: [src/app/app.config.ts](src/app/app.config.ts) - Providers and configuration
+- **Routes**: [src/app/app.routes.ts](src/app/app.routes.ts) - Application routes
+- **Layout Config**: [src/app/config/layout.config.ts](src/app/config/layout.config.ts) - Navigation items
+- **Root Component**: [src/app/app.ts](src/app/app.ts) - Root component with theming demo
+
+**Testing:**
+- **Vitest Config**: [vitest.config.ts](vitest.config.ts)
+- **Playwright Config**: [playwright.config.ts](playwright.config.ts)
+
+**Styling:**
+- **Main Stylesheet**: [src/styles.css](src/styles.css) - Entry point
+- **Design Tokens**: [src/styles/tokens/](src/styles/tokens/) - CSS variables
+- **PostCSS Config**: [.postcssrc.json](.postcssrc.json)
+
+**Storybook:**
+- **Story Helpers**: [src/stories/story-helpers.ts](src/stories/story-helpers.ts)
+- **Storybook Config**: [.storybook/](.storybook/)
+
+### Component Reference Examples
+- **Dropdown**: [src/app/components/ui/dropdown/](src/app/components/ui/dropdown/)
+- **MultiSelect**: [src/app/components/ui/multiselect/](src/app/components/ui/multiselect/)
+- **Modal**: [src/app/components/ui/modal/](src/app/components/ui/modal/)
+- **Tabs**: [src/app/components/ui/tabs/](src/app/components/ui/tabs/)
+- **Datepicker**: [src/app/components/ui/datepicker/](src/app/components/ui/datepicker/)
+
+### Quick Tips
+
+1. **Preview colors**: Open [src/app/app.html](src/app/app.html) for interactive color picker demo
+2. **View CSS variables**: Check [src/styles/tokens/](src/styles/tokens/) files
+3. **Add design tokens**: Edit appropriate file in `src/styles/tokens/` (e.g., `_colors.css`)
+4. **Create component quickly**: Copy [dropdown/](src/app/components/ui/dropdown/) and modify
+5. **Debug Storybook**: Verify `layout: 'fullscreen'` in parameters
+6. **Test dark mode**: Add class `.dark` to any parent element
+
+---
+
+## Appendix: Design System Details
+
+### Complete Token Organization
+
+**Main Entry Point:** [src/styles.css](src/styles.css) - imports all modules
+
+```
+src/styles/
+├── tokens/         # Design tokens (CSS variables)
+│   ├── _colors.css        # 200+ color variables
+│   ├── _spacing.css       # 15 spacing scales
+│   ├── _typography.css    # Font system
+│   ├── _borders.css       # Border system
+│   ├── _shadows.css       # Shadow definitions
+│   ├── _transitions.css   # Animation tokens
+│   ├── _layout.css        # Z-index, containers
+│   └── _index.css         # Tokens index
+├── components/     # Component-specific styles
+│   ├── _buttons.css       # Button variants
+│   ├── _forms.css         # Form elements
+│   ├── _cards.css         # Card components
+│   ├── _badges.css        # Badge variants
+│   ├── _alerts.css        # Alert messages
+│   ├── _navigation.css    # Navigation components
+│   ├── _tables.css        # Table styles
+│   ├── _modals.css        # Modal and dialogs
+│   ├── _interactive.css   # Dropdowns, accordions
+│   ├── _feedback.css      # Progress, spinners
+│   ├── _avatar.css        # Avatar components
+│   └── _index.css         # Components index
+├── utilities/      # Utility classes
+│   ├── _helpers.css       # Helper utilities
+│   └── _index.css         # Utilities index
+└── themes/         # Theme variations (reserved)
+```
+
+### Design Tokens Details
+
+#### 1. Colors (`_colors.css`)
+- **Semantic colors**: primary, secondary, success, error, warning, info, dark
+- **Gray scale**: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900
+- **Text colors**: primary, secondary, disabled, inverse
+- **Border colors**: default, light, dark
+- **Background colors**: primary, secondary, tertiary
+- **Component-specific colors**: button, input, card, modal, etc.
+- **Light/Dark mode**: Automatic switching with `.dark` class
+
+#### 2. Spacing (`_spacing.css`)
+Based on 4px/8px grid system:
+- `--spacing-0`: 0px
+- `--spacing-1`: 4px
+- `--spacing-2`: 8px
+- `--spacing-3`: 12px
+- `--spacing-4`: 16px
+- `--spacing-5`: 20px
+- `--spacing-6`: 24px
+- `--spacing-7`: 28px
+- `--spacing-8`: 32px
+- `--spacing-10`: 40px
+- `--spacing-12`: 48px
+- `--spacing-16`: 64px
+- `--spacing-20`: 80px
+- `--spacing-24`: 96px
+- `--spacing-32`: 128px
+
+#### 3. Typography (`_typography.css`)
+**Font Sizes:**
+- xs, sm, base, lg, xl, 2xl, 3xl, 4xl, 5xl, 6xl
+
+**Line Heights:**
+- none, tight, snug, normal, relaxed, loose
+
+**Font Weights:**
+- thin (100), extralight (200), light (300), normal (400), medium (500), semibold (600), bold (700), extrabold (800), black (900)
+
+#### 4. Borders (`_borders.css`)
+**Border Radius:**
+- none, sm, base, md, lg, xl, 2xl, 3xl, full
+
+**Border Widths:**
+- 0, 1px, 2px, 4px, 8px
+
+#### 5. Shadows (`_shadows.css`)
+- sm, base, md, lg, xl, 2xl, inner, none
+
+#### 6. Transitions (`_transitions.css`)
+**Durations:**
+- 75ms, 100ms, 150ms, 200ms, 300ms, 500ms, 700ms, 1000ms
+
+**Timing Functions:**
+- linear, ease, ease-in, ease-out, ease-in-out
+
+#### 7. Layout (`_layout.css`)
+**Z-index Scale:**
+- 0, 10, 20, 30, 40, 50
+
+**Container Max Widths:**
+- sm (640px), md (768px), lg (1024px), xl (1280px), 2xl (1536px)
+
+### Component Styles (`src/styles/components/`)
+
+All component styles use `@layer components`:
+
+- **[_buttons.css](src/styles/components/_buttons.css)** - Button variants (solid, outline), sizes, modifiers
+- **[_forms.css](src/styles/components/_forms.css)** - Labels, inputs, checkboxes, floating labels
+- **[_cards.css](src/styles/components/_cards.css)** - Card layouts and elements
+- **[_badges.css](src/styles/components/_badges.css)** - Badge variants and pills
+- **[_alerts.css](src/styles/components/_alerts.css)** - Alert messages with icons
+- **[_navigation.css](src/styles/components/_navigation.css)** - Navbar, sidebar, breadcrumb, pagination
+- **[_tables.css](src/styles/components/_tables.css)** - Table styles with hover and striped rows
+- **[_modals.css](src/styles/components/_modals.css)** - Modal dialogs and tooltips
+- **[_interactive.css](src/styles/components/_interactive.css)** - Dropdowns and accordions
+- **[_feedback.css](src/styles/components/_feedback.css)** - Progress bars and spinners
+- **[_avatar.css](src/styles/components/_avatar.css)** - Avatar components with status
+
+### Utility Classes (`src/styles/utilities/`)
+
+Custom utilities using `@layer utilities`:
+
+- **[_helpers.css](src/styles/utilities/_helpers.css)** - Helper classes
+  - Scrollbar utilities
+  - Responsive containers
+  - Shadow utilities
+  - Background and text color utilities
+  - Border utilities
+  - Border radius utilities
+  - Transition utilities
+
+### Semantic Component Classes
+
+**Color Variants**: `primary`, `secondary`, `success`, `error`, `warning`, `info`, `dark`
+
+**Available Component Classes:**
+- **Buttons**: `.btn`, `.btn-{variant}`, `.btn-outline-{variant}`, sizes: `xs`, `sm`, `md`, `lg`, `xl`
+- **Forms**: `.form-label`, `.form-input`, `.form-checkbox`, `.floating-input`
+- **Cards**: `.card`, `.card-title`, `.card-text`, `.card-btn`
+- **Badges/Alerts**: `.badge-{variant}`, `.alert-{variant}`
+- **Navigation**: `.navbar`, `.breadcrumb`, `.sidebar`, `.pagination`
+- **Tables**: `.table`, `.table-header`, `.table-row`, `.table-cell`
+- **Interactive**: `.dropdown`, `.accordion`, `.modal`, `.tooltip`
+- **Feedback**: `.spinner`, `.progress-bar`, `.progress-fill`
+- **Avatar**: `.avatar`, `.avatar-sm`, `.avatar-lg`, `.avatar-dot`
+
+### CSS Variable Examples
+
+```css
+/* Colors */
+var(--color-primary)
+var(--color-success)
+var(--color-error)
+var(--color-text-primary)
+var(--color-bg-primary)
+var(--color-border)
+
+/* Spacing */
+var(--spacing-2)    /* 8px */
+var(--spacing-4)    /* 16px */
+var(--spacing-6)    /* 24px */
+
+/* Typography */
+var(--font-size-sm)
+var(--font-size-base)
+var(--font-size-lg)
+var(--font-weight-medium)
+var(--line-height-normal)
+
+/* Borders & Shadows */
+var(--border-radius-md)
+var(--border-width-1)
+var(--shadow-lg)
+
+/* Transitions */
+var(--transition-duration-150)
+var(--transition-timing-ease)
+
+/* Layout */
+var(--z-50)
+var(--container-lg)
+```
+
+### Style Organization Best Practices
+
+When adding new styles to the design system:
+
+1. **Adding Design Tokens (Variables):**
+   - Add to appropriate file in `src/styles/tokens/`
+   - Follow existing naming conventions
+   - Document both light and dark mode values in `_colors.css`
+
+2. **Adding Component Styles:**
+   - Create new file in `src/styles/components/` if needed
+   - Use `@layer components { ... }`
+   - Import in `src/styles/components/_index.css`
+   - Always use CSS variables, never hardcoded values
+
+3. **Adding Utility Classes:**
+   - Add to `src/styles/utilities/_helpers.css`
+   - Use `@layer utilities { ... }`
+   - Follow Tailwind naming conventions when possible
+
+4. **File Naming Convention:**
+   - Use underscore prefix: `_filename.css`
+   - Index files: `_index.css` for module exports
+   - Descriptive names: `_buttons.css`, `_colors.css`
+
+---
+
+**Last Updated**: November 2024
+**Maintainers**: Development Team
+**License**: MIT
