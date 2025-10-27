@@ -1,19 +1,26 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DataTable } from './data-table';
+import { DataTableComponent } from './data-table';
 
-describe('DataTable', () => {
-  let component: DataTable;
-  let fixture: ComponentFixture<DataTable>;
+describe('DataTableComponent', () => {
+  let component: DataTableComponent;
+  let fixture: ComponentFixture<DataTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DataTable]
+      imports: [DataTableComponent],
+      providers: [provideZonelessChangeDetection()],
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DataTable);
+    fixture = TestBed.createComponent(DataTableComponent);
     component = fixture.componentInstance;
+
+    // Set required inputs
+    fixture.componentRef.setInput('data', []);
+    fixture.componentRef.setInput('columns', []);
+
     fixture.detectChanges();
   });
 
