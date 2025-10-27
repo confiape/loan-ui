@@ -38,7 +38,10 @@ export const Default: Story = {
   },
   render: (args) => ({
     props: args,
-    template: createLightDarkComparison('app-search-bar', '[placeholder]="placeholder" [size]="size"'),
+    template: createLightDarkComparison(
+      'app-search-bar',
+      '[placeholder]="placeholder" [size]="size"',
+    ),
   }),
 };
 
@@ -49,7 +52,10 @@ export const Small: Story = {
   },
   render: (args) => ({
     props: args,
-    template: createLightDarkComparison('app-search-bar', '[placeholder]="placeholder" [size]="size"'),
+    template: createLightDarkComparison(
+      'app-search-bar',
+      '[placeholder]="placeholder" [size]="size"',
+    ),
   }),
 };
 
@@ -60,7 +66,10 @@ export const Medium: Story = {
   },
   render: (args) => ({
     props: args,
-    template: createLightDarkComparison('app-search-bar', '[placeholder]="placeholder" [size]="size"'),
+    template: createLightDarkComparison(
+      'app-search-bar',
+      '[placeholder]="placeholder" [size]="size"',
+    ),
   }),
 };
 
@@ -71,7 +80,10 @@ export const Large: Story = {
   },
   render: (args) => ({
     props: args,
-    template: createLightDarkComparison('app-search-bar', '[placeholder]="placeholder" [size]="size"'),
+    template: createLightDarkComparison(
+      'app-search-bar',
+      '[placeholder]="placeholder" [size]="size"',
+    ),
   }),
 };
 
@@ -85,7 +97,7 @@ export const Disabled: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-search-bar',
-      '[placeholder]="placeholder" [disabled]="disabled" [size]="size"'
+      '[placeholder]="placeholder" [disabled]="disabled" [size]="size"',
     ),
   }),
 };
@@ -97,7 +109,10 @@ export const CustomPlaceholder: Story = {
   },
   render: (args) => ({
     props: args,
-    template: createLightDarkComparison('app-search-bar', '[placeholder]="placeholder" [size]="size"'),
+    template: createLightDarkComparison(
+      'app-search-bar',
+      '[placeholder]="placeholder" [size]="size"',
+    ),
   }),
 };
 
@@ -110,7 +125,7 @@ export const WithInitialValue: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-search-bar',
-      '[placeholder]="placeholder" [size]="size"'
+      '[placeholder]="placeholder" [size]="size"',
     ),
   }),
 };

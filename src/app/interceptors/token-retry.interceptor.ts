@@ -64,15 +64,15 @@ export const tokenRetryInterceptor: HttpInterceptorFn = (req, next) => {
           // Failed to refresh token
           toastService.error(
             'No tienes permisos para realizar esta acción o tu sesión ha expirado',
-            'Sin Permisos'
+            'Sin Permisos',
           );
 
           // Redirect to login
           authService.navigateToLogin();
 
           return throwError(() => refreshError);
-        })
+        }),
       );
-    })
+    }),
   );
 };

@@ -42,10 +42,7 @@ const meta: Meta<LoginComponent> = {
   },
   decorators: [
     applicationConfig({
-      providers: [
-        provideRouter([]),
-        provideHttpClient(),
-      ],
+      providers: [provideRouter([]), provideHttpClient()],
     }),
     moduleMetadata({
       providers: [
@@ -153,8 +150,7 @@ export const LoadingState: Story = {
         {
           provide: AuthenticationApiService,
           useValue: {
-            logIn: () =>
-              new Promise((resolve) => setTimeout(() => resolve(undefined), 5000)),
+            logIn: () => new Promise((resolve) => setTimeout(() => resolve(undefined), 5000)),
           },
         },
         {
@@ -169,8 +165,8 @@ export const LoadingState: Story = {
                       tokenType: 'Bearer',
                       user: {},
                     }),
-                  5000
-                )
+                  5000,
+                ),
               ),
           },
         },

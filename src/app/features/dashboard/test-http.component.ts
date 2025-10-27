@@ -14,33 +14,13 @@ import { ToastService } from '../../services/toast.service';
       <h2 class="text-2xl font-bold mb-4">Test HTTP Interceptor</h2>
 
       <div class="space-y-2">
-        <button
-          class="btn btn-primary"
-          (click)="testSuccessPost()"
-        >
-          Test POST Success
-        </button>
+        <button class="btn btn-primary" (click)="testSuccessPost()">Test POST Success</button>
 
-        <button
-          class="btn btn-error"
-          (click)="testError404()"
-        >
-          Test 404 Error
-        </button>
+        <button class="btn btn-error" (click)="testError404()">Test 404 Error</button>
 
-        <button
-          class="btn btn-error"
-          (click)="testError500()"
-        >
-          Test 500 Error
-        </button>
+        <button class="btn btn-error" (click)="testError500()">Test 500 Error</button>
 
-        <button
-          class="btn btn-success"
-          (click)="testManualToast()"
-        >
-          Test Manual Toast
-        </button>
+        <button class="btn btn-success" (click)="testManualToast()">Test Manual Toast</button>
       </div>
 
       <div class="mt-4 p-4 bg-gray-100 rounded">
@@ -61,18 +41,20 @@ export class TestHttpComponent {
 
   testSuccessPost(): void {
     // Using JSONPlaceholder API for testing
-    this.http.post('https://jsonplaceholder.typicode.com/posts', {
-      title: 'Test Post',
-      body: 'This is a test',
-      userId: 1,
-    }).subscribe({
-      next: (response) => {
-        console.log('Success:', response);
-      },
-      error: (error) => {
-        console.error('Error:', error);
-      },
-    });
+    this.http
+      .post('https://jsonplaceholder.typicode.com/posts', {
+        title: 'Test Post',
+        body: 'This is a test',
+        userId: 1,
+      })
+      .subscribe({
+        next: (response) => {
+          console.log('Success:', response);
+        },
+        error: (error) => {
+          console.error('Error:', error);
+        },
+      });
   }
 
   testError404(): void {

@@ -41,6 +41,6 @@ export const httpNotificationInterceptor: HttpInterceptorFn = (req, next) => {
 
       // Re-throw the error so it can be handled by the caller
       return throwError(() => error);
-    })
+    }),
   );
 };

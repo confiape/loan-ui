@@ -79,7 +79,7 @@ export const Default: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-notification-button',
-      '[notifications]="notifications"'
+      '[notifications]="notifications"',
     ),
   }),
 };
@@ -90,7 +90,10 @@ export const Empty: Story = {
   },
   render: (args) => ({
     props: args,
-    template: createLightDarkComparison('app-notification-button', '[notifications]="notifications"'),
+    template: createLightDarkComparison(
+      'app-notification-button',
+      '[notifications]="notifications"',
+    ),
   }),
 };
 
@@ -103,7 +106,7 @@ export const CustomEmptyMessage: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-notification-button',
-      '[notifications]="notifications" [emptyMessage]="emptyMessage"'
+      '[notifications]="notifications" [emptyMessage]="emptyMessage"',
     ),
   }),
 };
@@ -117,7 +120,7 @@ export const WithBadgeCount: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-notification-button',
-      '[notifications]="notifications" [badgeCount]="badgeCount"'
+      '[notifications]="notifications" [badgeCount]="badgeCount"',
     ),
   }),
 };
@@ -131,7 +134,7 @@ export const LargeBadgeCount: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-notification-button',
-      '[notifications]="notifications" [badgeCount]="badgeCount"'
+      '[notifications]="notifications" [badgeCount]="badgeCount"',
     ),
   }),
 };
@@ -145,7 +148,7 @@ export const WithoutBadge: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-notification-button',
-      '[notifications]="notifications" [showBadge]="showBadge"'
+      '[notifications]="notifications" [showBadge]="showBadge"',
     ),
   }),
 };
@@ -159,7 +162,7 @@ export const LimitedDisplay: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-notification-button',
-      '[notifications]="notifications" [maxNotificationsDisplay]="maxNotificationsDisplay"'
+      '[notifications]="notifications" [maxNotificationsDisplay]="maxNotificationsDisplay"',
     ),
   }),
 };
@@ -172,7 +175,7 @@ export const AllUnread: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-notification-button',
-      '[notifications]="notifications"'
+      '[notifications]="notifications"',
     ),
   }),
 };
@@ -185,7 +188,7 @@ export const AllRead: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-notification-button',
-      '[notifications]="notifications"'
+      '[notifications]="notifications"',
     ),
   }),
 };
@@ -235,7 +238,7 @@ export const WithIcons: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-notification-button',
-      '[notifications]="notifications"'
+      '[notifications]="notifications"',
     ),
   }),
 };
@@ -273,7 +276,7 @@ export const WithAvatars: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-notification-button',
-      '[notifications]="notifications"'
+      '[notifications]="notifications"',
     ),
   }),
 };

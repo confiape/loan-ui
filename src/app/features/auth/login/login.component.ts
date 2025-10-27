@@ -52,8 +52,7 @@ export class LoginComponent {
       },
       error: (error) => {
         console.error('Login error:', error);
-        const errorMessage =
-          error.error?.message || 'Email o contraseña incorrectos';
+        const errorMessage = error.error?.message || 'Email o contraseña incorrectos';
         this.toastService.error(errorMessage, 'Error de Autenticación');
         this.isLoading.set(false);
       },

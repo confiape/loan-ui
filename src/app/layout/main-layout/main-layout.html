@@ -1,7 +1,7 @@
 <div class="h-screen grid grid-rows-[auto_1fr]">
   <!-- Toast Container -->
   <app-toast-container position="top-right" />
-
+<div class="h-screen grid grid-rows-[auto_1fr_auto] lg:grid-rows-[auto_1fr]">
   <!-- Navbar -->
   <nav class="bg-[var(--color-bg-primary)] border-b border-[var(--color-border)]">
     <app-navbar
@@ -57,4 +57,10 @@
       <router-outlet />
     </main>
   </div>
+
+  <!-- Bottom Navigation (Mobile Only) - Footer integrado al grid -->
+  <app-bottom-navigation
+    [items]="bottomNavItems"
+    (itemClick)="onBottomNavClick($event)"
+  />
 </div>

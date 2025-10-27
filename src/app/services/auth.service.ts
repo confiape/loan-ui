@@ -57,7 +57,7 @@ export class AuthService {
       catchError(() => {
         this.clearToken();
         return of(false);
-      })
+      }),
     );
   }
 
@@ -75,7 +75,7 @@ export class AuthService {
       catchError((error) => {
         this.clearToken();
         throw error;
-      })
+      }),
     );
   }
 
@@ -113,7 +113,7 @@ export class AuthService {
         this.clearToken();
         this.isRefreshing.next(false);
         throw error;
-      })
+      }),
     );
   }
 
@@ -139,7 +139,7 @@ export class AuthService {
         this.clearToken();
         this.navigateToLogin();
         return of(undefined);
-      })
+      }),
     );
   }
 }

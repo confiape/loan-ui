@@ -1,6 +1,9 @@
 import { Component, input, output } from '@angular/core';
 import { SearchBar } from '../../components/ui/search-bar/search-bar';
-import { NotificationButton, Notification } from '../../components/ui/notification-button/notification-button';
+import {
+  NotificationButton,
+  Notification,
+} from '../../components/ui/notification-button/notification-button';
 import { AppsMenu, AppMenuItem } from '../../components/ui/apps-menu/apps-menu';
 import { UserMenu, UserMenuItem } from '../../components/ui/user-menu/user-menu';
 

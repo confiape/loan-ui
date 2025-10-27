@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { SidenavComponent, SidenavItem } from '../sidenav/sidenav';
 import { NavbarComponent } from '../navbar/navbar';
 import { ToastContainerComponent } from '../../components/ui';
+import { BottomNavigation, BottomNavItem } from '../bottom-navigation/bottom-navigation';
 import { Notification } from '../../components/ui/notification-button/notification-button';
 import { AppMenuItem } from '../../components/ui/apps-menu/apps-menu';
 import { UserMenuItem } from '../../components/ui/user-menu/user-menu';
@@ -11,11 +12,18 @@ import {
   APPS_MENU_ITEMS,
   USER_MENU_ITEMS,
   MOCK_NOTIFICATIONS,
+  BOTTOM_NAV_ITEMS,
 } from '../../config/layout.config';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [RouterOutlet, SidenavComponent, NavbarComponent, ToastContainerComponent],
+  imports: [
+    RouterOutlet,
+    SidenavComponent,
+    NavbarComponent,
+    BottomNavigation,
+    ToastContainerComponent,
+  ],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
   standalone: true,
@@ -31,6 +39,7 @@ export class MainLayout {
   sidenavItems: SidenavItem[] = SIDENAV_ITEMS;
   appsMenuItems: AppMenuItem[] = APPS_MENU_ITEMS;
   userMenuItems: UserMenuItem[] = USER_MENU_ITEMS;
+  bottomNavItems: BottomNavItem[] = BOTTOM_NAV_ITEMS;
   notifications = signal<Notification[]>(MOCK_NOTIFICATIONS);
 
   // State
@@ -65,7 +74,7 @@ export class MainLayout {
     console.log('Notification clicked:', notification);
     // Mark as read
     this.notifications.update((notifications) =>
-      notifications.map((n) => (n.id === notification.id ? { ...n, read: true } : n))
+      notifications.map((n) => (n.id === notification.id ? { ...n, read: true } : n)),
     );
   }
 
@@ -85,5 +94,10 @@ export class MainLayout {
       console.log('Logging out...');
     }
     // Handle other menu items
+  }
+
+  onBottomNavClick(item: BottomNavItem): void {
+    console.log('Bottom nav item clicked:', item);
+    // Navigation is handled automatically by routerLink
   }
 }

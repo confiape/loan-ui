@@ -1,9 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { vi, Mock } from 'vitest';
@@ -79,9 +76,7 @@ describe('tokenRetryInterceptor', () => {
     });
 
     it('should show error and redirect to login if refresh fails on 401', () => {
-      authService.refreshToken!.mockReturnValue(
-        throwError(() => new Error('Refresh failed'))
-      );
+      authService.refreshToken!.mockReturnValue(throwError(() => new Error('Refresh failed')));
 
       httpClient.get('/api/users').subscribe({
         next: () => {},
@@ -95,7 +90,7 @@ describe('tokenRetryInterceptor', () => {
       expect(authService.refreshToken).toHaveBeenCalled();
       expect(toastService.error).toHaveBeenCalledWith(
         'No tienes permisos para realizar esta acción o tu sesión ha expirado',
-        'Sin Permisos'
+        'Sin Permisos',
       );
       expect(authService.navigateToLogin).toHaveBeenCalled();
     });
@@ -122,9 +117,7 @@ describe('tokenRetryInterceptor', () => {
     });
 
     it('should show error and redirect to login if refresh fails on 403', () => {
-      authService.refreshToken!.mockReturnValue(
-        throwError(() => new Error('Refresh failed'))
-      );
+      authService.refreshToken!.mockReturnValue(throwError(() => new Error('Refresh failed')));
 
       httpClient.get('/api/users').subscribe({
         next: () => {},
@@ -137,7 +130,7 @@ describe('tokenRetryInterceptor', () => {
 
       expect(toastService.error).toHaveBeenCalledWith(
         'No tienes permisos para realizar esta acción o tu sesión ha expirado',
-        'Sin Permisos'
+        'Sin Permisos',
       );
       expect(authService.navigateToLogin).toHaveBeenCalled();
     });
@@ -169,7 +162,7 @@ describe('tokenRetryInterceptor', () => {
       const req = httpTestingController.expectOne('/api/users');
       req.flush(
         { message: 'Internal Server Error' },
-        { status: 500, statusText: 'Internal Server Error' }
+        { status: 500, statusText: 'Internal Server Error' },
       );
 
       expect(authService.refreshToken).not.toHaveBeenCalled();

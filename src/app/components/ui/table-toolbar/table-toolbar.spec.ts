@@ -1,18 +1,19 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TableToolbar } from './table-toolbar';
+import { TableToolbarComponent } from './table-toolbar';
 
-describe('TableToolbar', () => {
-  let component: TableToolbar;
-  let fixture: ComponentFixture<TableToolbar>;
+describe('TableToolbarComponent', () => {
+  let component: TableToolbarComponent;
+  let fixture: ComponentFixture<TableToolbarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TableToolbar]
-    })
-    .compileComponents();
+      imports: [TableToolbarComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(TableToolbar);
+    fixture = TestBed.createComponent(TableToolbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

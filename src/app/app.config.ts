@@ -21,7 +21,7 @@ export const appConfig: ApplicationConfig = {
         authInterceptor, // 1. Check auth and add token
         tokenRetryInterceptor, // 2. Handle expired tokens
         httpNotificationInterceptor, // 3. Show notifications
-      ])
+      ]),
     ),
   ],
 };

@@ -77,14 +77,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             // Failed to get authorization token, redirect to login
             authService.navigateToLogin();
             return throwError(() => error);
-          })
+          }),
         );
       }),
       catchError((error) => {
         // Failed to check authentication, redirect to login
         authService.navigateToLogin();
         return throwError(() => error);
-      })
+      }),
     );
   }
 

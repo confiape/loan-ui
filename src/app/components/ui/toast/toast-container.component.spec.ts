@@ -34,7 +34,7 @@ describe('ToastContainerComponent', () => {
     });
 
     it('should inject ToastService', () => {
-      expect(component.toastService).toBeTruthy();
+      expect(toastService).toBeTruthy();
     });
   });
 

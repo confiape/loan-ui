@@ -24,7 +24,7 @@ export class ToastService {
     message: string,
     title?: string,
     duration?: number,
-    dismissible = true
+    dismissible = true,
   ): void {
     const id = this.generateId();
     const defaultDuration = type === 'error' ? 3000 : 2000;

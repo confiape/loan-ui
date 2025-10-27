@@ -106,16 +106,12 @@ describe('LoginComponent', () => {
     });
 
     it('should render submit button', () => {
-      const submitButton = compiled.querySelector<HTMLButtonElement>(
-        'button[type="submit"]'
-      );
+      const submitButton = compiled.querySelector<HTMLButtonElement>('button[type="submit"]');
       expect(submitButton).toBeTruthy();
     });
 
     it('should disable submit button when form is invalid', () => {
-      const submitButton = compiled.querySelector<HTMLButtonElement>(
-        'button[type="submit"]'
-      );
+      const submitButton = compiled.querySelector<HTMLButtonElement>('button[type="submit"]');
       expect(submitButton?.disabled).toBe(true);
     });
 
@@ -124,9 +120,7 @@ describe('LoginComponent', () => {
       component.password.set('password123');
       fixture.detectChanges();
 
-      const submitButton = compiled.querySelector<HTMLButtonElement>(
-        'button[type="submit"]'
-      );
+      const submitButton = compiled.querySelector<HTMLButtonElement>('button[type="submit"]');
       expect(submitButton?.disabled).toBe(false);
     });
   });
@@ -247,7 +241,7 @@ describe('LoginComponent', () => {
       await fixture.whenStable();
       expect(toastServiceMock.error).toHaveBeenCalledWith(
         'Email o contraseña incorrectos',
-        'Error de Autenticación'
+        'Error de Autenticación',
       );
       expect(component.isLoading()).toBe(false);
     });
@@ -260,7 +254,7 @@ describe('LoginComponent', () => {
       await fixture.whenStable();
       expect(toastServiceMock.error).toHaveBeenCalledWith(
         'Email o contraseña incorrectos',
-        'Error de Autenticación'
+        'Error de Autenticación',
       );
     });
 
@@ -283,14 +277,14 @@ describe('LoginComponent', () => {
     it('should show error toast if getAuthorizationToken fails', async () => {
       authApiMock.logIn!.mockReturnValue(of(undefined));
       authServiceMock.getAuthorizationToken!.mockReturnValue(
-        throwError(() => new Error('Token error'))
+        throwError(() => new Error('Token error')),
       );
 
       component.onSubmit();
 
       await fixture.whenStable();
       expect(toastServiceMock.error).toHaveBeenCalledWith(
-        'Error al obtener el token de autorización'
+        'Error al obtener el token de autorización',
       );
       expect(component.isLoading()).toBe(false);
     });

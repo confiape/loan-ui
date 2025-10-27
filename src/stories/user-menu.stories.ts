@@ -78,7 +78,7 @@ export const Default: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-user-menu',
-      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"'
+      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"',
     ),
   }),
 };
@@ -94,7 +94,7 @@ export const WithAvatar: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-user-menu',
-      '[userName]="userName" [userEmail]="userEmail" [userAvatar]="userAvatar" [menuItems]="menuItems"'
+      '[userName]="userName" [userEmail]="userEmail" [userAvatar]="userAvatar" [menuItems]="menuItems"',
     ),
   }),
 };
@@ -108,7 +108,7 @@ export const WithoutEmail: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-user-menu',
-      '[userName]="userName" [menuItems]="menuItems"'
+      '[userName]="userName" [menuItems]="menuItems"',
     ),
   }),
 };
@@ -123,7 +123,7 @@ export const SingleName: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-user-menu',
-      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"'
+      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"',
     ),
   }),
 };
@@ -138,7 +138,7 @@ export const LongName: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-user-menu',
-      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"'
+      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"',
     ),
   }),
 };
@@ -153,7 +153,7 @@ export const EmptyMenu: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-user-menu',
-      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"'
+      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"',
     ),
   }),
 };
@@ -187,7 +187,7 @@ export const SimpleMenu: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-user-menu',
-      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"'
+      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"',
     ),
   }),
 };
@@ -232,7 +232,7 @@ export const WithLinks: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-user-menu',
-      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"'
+      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"',
     ),
   }),
 };
@@ -299,7 +299,7 @@ export const MultipleDividers: Story = {
     props: args,
     template: createLightDarkComparison(
       'app-user-menu',
-      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"'
+      '[userName]="userName" [userEmail]="userEmail" [menuItems]="menuItems"',
     ),
   }),
 };

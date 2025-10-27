@@ -101,9 +101,7 @@ describe('AuthService', () => {
 
     it('should handle API errors and clear token', async () => {
       service.setToken('test-token');
-      authApiMock.isAuthenticated!.mockReturnValue(
-        throwError(() => new Error('API Error'))
-      );
+      authApiMock.isAuthenticated!.mockReturnValue(throwError(() => new Error('API Error')));
 
       const isAuth = await firstValueFrom(service.checkAuthentication());
       expect(isAuth).toBe(false);
@@ -125,9 +123,7 @@ describe('AuthService', () => {
 
     it('should clear token when API fails', async () => {
       service.setToken('old-token');
-      authApiMock.getAuthorizationToken!.mockReturnValue(
-        throwError(() => new Error('API Error'))
-      );
+      authApiMock.getAuthorizationToken!.mockReturnValue(throwError(() => new Error('API Error')));
 
       try {
         await firstValueFrom(service.getAuthorizationToken());
@@ -154,7 +150,7 @@ describe('AuthService', () => {
     it('should clear token when refresh fails', async () => {
       service.setToken('old-token');
       authApiMock.getAuthorizationToken!.mockReturnValue(
-        throwError(() => new Error('Refresh failed'))
+        throwError(() => new Error('Refresh failed')),
       );
 
       try {

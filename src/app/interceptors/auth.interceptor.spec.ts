@@ -1,9 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -81,9 +78,7 @@ describe('authInterceptor', () => {
     it('should allow GetAuthorizationToken endpoint', () => {
       httpClient.post('/api/Authentication/GetAuthorizationToken', {}).subscribe();
 
-      const req = httpTestingController.expectOne(
-        '/api/Authentication/GetAuthorizationToken'
-      );
+      const req = httpTestingController.expectOne('/api/Authentication/GetAuthorizationToken');
       expect(req.request.headers.has('Authorization')).toBe(false);
       req.flush(mockLoginResponse);
     });
@@ -151,9 +146,7 @@ describe('authInterceptor', () => {
       expect(authService.getAuthorizationToken).toHaveBeenCalled();
 
       const req = httpTestingController.expectOne('/api/users');
-      expect(req.request.headers.get('Authorization')).toBe(
-        'Bearer mock-access-token'
-      );
+      expect(req.request.headers.get('Authorization')).toBe('Bearer mock-access-token');
       req.flush([]);
     });
 
@@ -161,7 +154,7 @@ describe('authInterceptor', () => {
       authService.getToken!.mockReturnValue(null);
       authService.checkAuthentication!.mockReturnValue(of(true));
       authService.getAuthorizationToken!.mockReturnValue(
-        throwError(() => new Error('Token error'))
+        throwError(() => new Error('Token error')),
       );
 
       httpClient.get('/api/users').subscribe({
@@ -177,7 +170,7 @@ describe('authInterceptor', () => {
     it('should redirect to login when authentication check fails', () => {
       authService.getToken!.mockReturnValue(null);
       authService.checkAuthentication!.mockReturnValue(
-        throwError(() => new Error('Auth check failed'))
+        throwError(() => new Error('Auth check failed')),
       );
 
       httpClient.get('/api/users').subscribe({
