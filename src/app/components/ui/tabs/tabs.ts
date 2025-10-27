@@ -21,8 +21,8 @@ export type TabOrientation = 'horizontal' | 'vertical';
   selector: 'app-tabs',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './tabs.component.html',
-  styleUrl: './tabs.component.css',
+  templateUrl: './tabs.html',
+  styleUrl: './tabs.css',
 })
 export class TabsComponent implements OnInit {
   // Inputs

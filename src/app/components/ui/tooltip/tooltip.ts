@@ -7,8 +7,8 @@ export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
   selector: 'app-tooltip',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './tooltip.component.html',
-  styleUrl: './tooltip.component.css',
+  templateUrl: './tooltip.html',
+  styleUrl: './tooltip.css',
 })
 export class TooltipComponent {
   // Inputs

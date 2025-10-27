@@ -3,7 +3,7 @@ import { fn } from 'storybook/test';
 import {
   MultiSelectComponent,
   MultiSelectItem,
-} from '../app/components/ui/multiselect/multiselect.component';
+} from '../app/components/ui/multiselect/multiselect';
 import { createLightDarkComparison } from './story-helpers';
 
 const meta: Meta<MultiSelectComponent> = {

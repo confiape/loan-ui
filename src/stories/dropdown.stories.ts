@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { DropdownComponent, DropdownItem } from '../app/components/ui/dropdown/dropdown.component';
+import { DropdownComponent, DropdownItem } from '../app/components/ui/dropdown/dropdown';
 import { createLightDarkComparison } from './story-helpers';
 
 const meta: Meta<DropdownComponent> = {

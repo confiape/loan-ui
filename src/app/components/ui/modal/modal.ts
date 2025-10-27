@@ -18,8 +18,8 @@ export type ModalVariant = 'default' | 'success' | 'error' | 'warning' | 'info';
   selector: 'app-modal',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './modal.component.html',
-  styleUrl: './modal.component.css',
+  templateUrl: './modal.html',
+  styleUrl: './modal.css',
 })
 export class ModalComponent implements AfterViewInit {
   // Inputs

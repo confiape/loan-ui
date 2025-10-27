@@ -1,6 +1,6 @@
 import { Component, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToastComponent, ToastPosition } from './toast.component';
+import { ToastComponent, ToastPosition } from './toast';
 import { ToastService } from '../../../services/toast.service';
 
 @Component({

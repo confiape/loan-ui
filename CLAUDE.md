@@ -45,6 +45,25 @@ ng generate --help           # See all schematics
 - **Components**: Standalone components (no NgModules)
 - **TypeScript**: Strict mode enabled with all strictness flags
 
+### IMPORTANT: Generated Code Exclusion
+**ALWAYS IGNORE** the following directories when analyzing, modifying, or reviewing code:
+- ❌ `src/app/core/openapi/**` - Auto-generated OpenAPI client code
+- ❌ `src/app/core/api/openapi/**` - Auto-generated API services
+
+**Why ignore?**
+- These files are auto-generated from OpenAPI specifications
+- Any manual changes will be overwritten on next generation
+- They follow their own patterns and conventions
+- Not relevant for Angular best practices analysis
+
+**What to focus on instead:**
+- ✅ Components in `src/app/components/ui/`
+- ✅ Layout components in `src/app/layout/`
+- ✅ Features in `src/app/features/`
+- ✅ Services in `src/app/services/`
+- ✅ Interceptors in `src/app/interceptors/`
+- ✅ Configuration files (`*.config.ts`, `*.routes.ts`)
+
 ### Application Structure
 ```
 loan-ui/
@@ -333,6 +352,93 @@ export const MOCK_NOTIFICATIONS: Notification[] = [...]; // Notifications
 
 ## Development Guidelines
 
+### File Naming Conventions (CRITICAL)
+
+**ALWAYS use MODERN nomenclature (without `.component`):**
+
+✅ **CORRECT:**
+```
+my-component/
+├── my-component.ts          # Component class
+├── my-component.html        # Template
+├── my-component.css         # Styles (only if complex)
+```
+
+❌ **INCORRECT (Old Angular CLI style):**
+```
+my-component/
+├── my-component.component.ts      # ❌ Remove .component
+├── my-component.component.html    # ❌ Remove .component
+├── my-component.component.css     # ❌ Remove .component
+```
+
+**Rules:**
+- ❌ NEVER use `.component.ts` - use `.ts` instead
+- ❌ NEVER use `.component.html` - use `.html` instead
+- ❌ NEVER use `.component.css` - use `.css` instead
+- ✅ Use kebab-case for file names: `user-menu.ts`, not `UserMenu.ts`
+- ✅ Folder name must match component name: `user-menu/user-menu.ts`
+
+### Component Styling Policy (CRITICAL)
+
+**Prefer Tailwind CSS in templates. Use separate CSS files ONLY for complex cases.**
+
+#### When to use Tailwind (90% of cases):
+
+✅ **Use Tailwind classes directly in HTML:**
+```html
+<div class="flex items-center gap-2 p-4 bg-white rounded-lg shadow-md">
+  <button class="btn btn-primary">Click me</button>
+</div>
+```
+
+✅ **DO NOT create a CSS file for:**
+- Simple layouts (flex, grid, padding, margin)
+- Background colors, borders, shadows
+- Text styling (size, weight, color)
+- Basic responsive design
+- Spacing and sizing
+
+❌ **If your CSS file only has comments or 1-5 lines:**
+```css
+/* This is bad - DELETE this file */
+.container {
+  padding: var(--spacing-4);
+}
+```
+**Solution:** Use `class="p-4"` in HTML instead
+
+#### When to use separate CSS files (10% of cases):
+
+✅ **Create a `.css` file ONLY for:**
+- Complex animations with `@keyframes`
+- Intricate hover/focus states that can't be done with Tailwind
+- Dynamic positioning (tooltips, dropdowns, modals)
+- Complex pseudo-selectors (`:nth-child`, `::before`, `::after`)
+- Component-specific z-index management
+- Grid/flex layouts with 10+ lines of CSS
+
+✅ **Examples of JUSTIFIED CSS files:**
+- `dropdown.css` (312 lines) - Positioning, animations, states
+- `modal.css` (338 lines) - Backdrop, sizes, transitions
+- `datepicker.css` (522 lines) - Calendar grid, date selection
+- `tooltip.css` (87 lines) - Dynamic positioning
+
+❌ **Examples of UNJUSTIFIED CSS files (use Tailwind instead):**
+- Single padding/margin rules
+- Basic color/background changes
+- Simple borders and shadows
+- Container width/height
+
+#### CSS File Checklist:
+
+Before creating a `.css` file, ask:
+- [ ] Can this be done with Tailwind classes? → Use Tailwind
+- [ ] Does it have complex animations? → CSS file OK
+- [ ] Is it dynamic positioning? → CSS file OK
+- [ ] Is it more than 50 lines? → CSS file OK
+- [ ] Is it less than 10 lines? → Use Tailwind instead
+
 ### Component Development Essentials
 - Create standalone components only (no NgModules)
 - Use Angular signals: `input()`, `output()`, `signal()`, `computed()`
@@ -341,6 +447,8 @@ export const MOCK_NOTIFICATIONS: Notification[] = [...]; // Notifications
 - Implement ARIA attributes and keyboard navigation
 - **ALWAYS create Storybook stories** for UI components
 - File structure: `.ts`, `.html`, `.css` (no inline templates/styles)
+- **File naming:** Use `.ts` NOT `.component.ts`
+- **Styling:** Prefer Tailwind, use `.css` only for complex cases
 
 **Angular Signals Pattern:**
 ```typescript
@@ -450,26 +558,44 @@ export const Default: Story = {
 ng generate component components/ui/component-name --standalone
 ```
 
+**⚠️ IMPORTANT: After generation, RENAME files immediately:**
+```bash
+# Angular CLI generates with old nomenclature, rename to modern style:
+cd src/app/components/ui/component-name/
+mv component-name.component.ts component-name.ts
+mv component-name.component.html component-name.html
+# Only keep .css if needed for complex styling (see CSS policy below)
+```
+
 #### 2. Implement Component
 - Define TypeScript interfaces and types
 - Use `input()` for props, `output()` for events
 - Use `signal()` for internal state, `computed()` for derived values
 - Organize code in sections: Inputs → Outputs → State → Computed → Methods
 - Implement keyboard navigation
-- See [dropdown.component.ts](src/app/components/ui/dropdown/dropdown.component.ts) for reference
+- **Update imports:** Change `templateUrl` and `styleUrl` to match renamed files
+- See [dropdown.ts](src/app/components/ui/dropdown/dropdown.ts) for reference
 
 #### 3. Build Template
 - Use modern syntax: `@if`, `@for`, `@else`, `@empty`
 - Add complete ARIA attributes (`role`, `aria-label`, `aria-expanded`, etc.)
 - Use semantic HTML structure
-- See [dropdown.component.html](src/app/components/ui/dropdown/dropdown.component.html) for reference
+- **Use Tailwind classes** for 90% of styling
+- See [dropdown.html](src/app/components/ui/dropdown/dropdown.html) for reference
 
 #### 4. Style with Design System
-- Use ONLY CSS variables (never hardcoded colors)
-- Organize in sections with clear comments
-- Implement variants, sizes, and states
-- Add focus states and transitions
-- See [dropdown.component.css](src/app/components/ui/dropdown/dropdown.component.css) for reference
+- **Prefer Tailwind classes in HTML** (90% of cases)
+- Only create `.css` file if component has:
+  - Complex animations (`@keyframes`)
+  - Dynamic positioning (dropdowns, tooltips, modals)
+  - More than 50 lines of styling
+- If using CSS file:
+  - Use ONLY CSS variables (never hardcoded colors)
+  - Organize in sections with clear comments
+  - Implement variants, sizes, and states
+  - Add focus states and transitions
+- **Delete `.css` file if it has less than 10 lines** - use Tailwind instead
+- See [dropdown.css](src/app/components/ui/dropdown/dropdown.css) for complex example
 
 #### 5. Create Storybook Stories
 - Use `createLightDarkComparison()` helper
@@ -501,13 +627,33 @@ Add section to this CLAUDE.md under "UI Components Library" with:
 
 Before considering a component complete:
 
+**File Structure & Naming:**
+- [ ] Files use modern naming: `.ts`, `.html`, `.css` (NOT `.component.*`)
+- [ ] Folder name matches component name (kebab-case)
+- [ ] `.css` file only exists if component has 50+ lines of complex styling
+- [ ] If CSS file exists, it's documented WHY (animations, positioning, etc.)
+- [ ] Template uses Tailwind classes for 90% of styling
+
+**Angular 20 Best Practices:**
 - [ ] Component uses `standalone: true`
 - [ ] Uses Angular signals (`input`, `output`, `signal`, `computed`)
 - [ ] Template uses modern syntax (`@if`, `@for`, `@empty`)
+- [ ] Uses `inject()` for dependency injection (not constructor)
+- [ ] No old decorators (`@Input`, `@Output`, `@ViewChild` - use signals)
+
+**Styling & Design System:**
 - [ ] ALL CSS variables from design system (no hardcoded colors)
+- [ ] Tailwind classes used where possible
+- [ ] Works in Light & Dark mode
+- [ ] If CSS file exists: organized sections, comments, variables only
+
+**Accessibility & UX:**
 - [ ] Keyboard navigation implemented
 - [ ] Complete ARIA attributes
-- [ ] Works in Light & Dark mode
+- [ ] Focus states visible
+- [ ] Semantic HTML structure
+
+**Storybook & Documentation:**
 - [ ] Stories created with helper functions
 - [ ] Stories have `layout: 'fullscreen'`
 - [ ] Minimum 5-10 stories covering main cases
@@ -572,16 +718,37 @@ Before considering a component complete:
 - ✅ TypeScript strict mode
 - ✅ Standalone components (no NgModules)
 
-### Convenciones del Proyecto
+### Convenciones del Proyecto (CRITICAL - MUST FOLLOW)
+
+#### Nomenclatura de Archivos
+- ❌ **NUNCA** usar `.component.ts` - usar `.ts`
+- ❌ **NUNCA** usar `.component.html` - usar `.html`
+- ❌ **NUNCA** usar `.component.css` - usar `.css`
+- ✅ **SIEMPRE** usar kebab-case: `user-menu.ts`, no `UserMenu.ts`
+- ✅ camelCase para variables, PascalCase para clases/interfaces
+
+#### Política de Estilos
+- ✅ **PREFERIR Tailwind** en HTML (90% de casos)
+- ❌ **NO crear `.css`** para estilos simples (padding, colors, borders)
+- ✅ **Crear `.css` SOLO si:**
+  - Tiene animaciones complejas (`@keyframes`)
+  - Posicionamiento dinámico (dropdowns, modals)
+  - Más de 50 líneas de estilos
+- ✅ Si existe `.css`: SOLO variables CSS, NUNCA hardcoded
+
+#### Angular 20 Standards
+- ✅ **Standalone**: Todos los componentes son standalone (no NgModules)
+- ✅ **Signals**: Usar `input()`, `output()`, `signal()`, `computed()`
+- ❌ **No decorators**: No usar `@Input()`, `@Output()`, `@ViewChild()`
+- ✅ **Templates**: Sintaxis moderna (`@if`, `@for`) no directivas (`*ngIf`, `*ngFor`)
+- ✅ **DI**: Usar `inject()`, no constructor injection
+
+#### Otros Standards
 - **Idioma**: Español en contenido de ejemplo, inglés en código
-- **Nomenclatura**: camelCase para variables, kebab-case para archivos
 - **Imports**: Usar rutas relativas, no alias
-- **Standalone**: Todos los componentes son standalone
-- **Signals**: Usar signals para estado, no decorators antiguos (`@Input()`, `@Output()`)
-- **Templates**: Sintaxis moderna (`@if`, `@for`) no directivas (`*ngIf`, `*ngFor`)
-- **Styles**: SIEMPRE usar variables CSS, NUNCA colores hardcoded
 - **Storybook**: SIEMPRE crear stories con comparación Light/Dark
 - **Accessibility**: SIEMPRE implementar ARIA attributes y keyboard navigation
+- **Generated Code**: IGNORAR `src/app/core/openapi/**` (auto-generated)
 
 ### Tips Rápidos
 

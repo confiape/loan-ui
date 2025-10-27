@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { TabsComponent, TabItem } from '../app/components/ui/tabs/tabs.component';
+import { TabsComponent, TabItem } from '../app/components/ui/tabs/tabs';
 import { createLightDarkComparison } from './story-helpers';
 
 const meta: Meta<TabsComponent> = {

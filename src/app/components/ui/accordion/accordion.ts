@@ -13,8 +13,8 @@ export interface AccordionItem {
   selector: 'app-accordion',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './accordion.component.html',
-  styleUrl: './accordion.component.css',
+  templateUrl: './accordion.html',
+  styleUrl: './accordion.css',
 })
 export class AccordionComponent implements OnInit {
   // Inputs

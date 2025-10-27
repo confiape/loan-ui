@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ToastComponent, Toast, ToastType } from './toast.component';
+import { ToastComponent, Toast, ToastType } from './toast';
 
 describe('ToastComponent', () => {
   let component: ToastComponent;

@@ -23,8 +23,8 @@ export interface Toast {
   selector: 'app-toast',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './toast.component.html',
-  styleUrl: './toast.component.css',
+  templateUrl: './toast.html',
+  styleUrl: './toast.css',
 })
 export class ToastComponent {
   // Inputs

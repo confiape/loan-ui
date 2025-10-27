@@ -10,8 +10,7 @@ import { LoginDto } from '../../../core/openapi/model/loginDto';
   selector: 'app-login',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  templateUrl: './login.html',
 })
 export class LoginComponent {
   private router = inject(Router);

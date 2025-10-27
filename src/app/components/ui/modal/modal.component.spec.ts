@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ModalComponent, ModalSize, ModalVariant } from './modal.component';
+import { ModalComponent, ModalSize, ModalVariant } from './modal';
 
 describe('ModalComponent', () => {
   let component: ModalComponent;

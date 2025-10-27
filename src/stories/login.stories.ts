@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { applicationConfig, moduleMetadata } from '@storybook/angular';
-import { LoginComponent } from '../app/features/auth/login/login.component';
+import { LoginComponent } from '../app/features/auth/login/login';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { AuthenticationApiService } from '../app/core/openapi/api/authentication.service';

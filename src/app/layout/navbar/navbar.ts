@@ -11,7 +11,6 @@ import { UserMenu, UserMenuItem } from '../../components/ui/user-menu/user-menu'
   selector: 'app-navbar',
   imports: [SearchBar, NotificationButton, AppsMenu, UserMenu],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
   standalone: true,
 })
 export class NavbarComponent {

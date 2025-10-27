@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { vi, Mock } from 'vitest';
-import { LoginComponent } from './login.component';
+import { LoginComponent } from './login';
 import { AuthenticationApiService } from '../../../core/openapi/api/authentication.service';
 import { AuthService } from '../../../services/auth.service';
 import { ToastService } from '../../../services/toast.service';

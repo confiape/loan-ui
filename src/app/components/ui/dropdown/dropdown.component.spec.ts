@@ -1,7 +1,7 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { DropdownComponent, DropdownItem } from './dropdown.component';
+import { DropdownComponent, DropdownItem } from './dropdown';
 
 describe('DropdownComponent', () => {
   let component: DropdownComponent;

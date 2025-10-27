@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { TooltipComponent, TooltipPosition } from './tooltip.component';
+import { TooltipComponent, TooltipPosition } from './tooltip';
 
 describe('TooltipComponent', () => {
   let component: TooltipComponent;

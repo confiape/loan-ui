@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ToastContainerComponent } from './toast-container.component';
-import { ToastPosition } from './toast.component';
+import { ToastContainerComponent } from './toast-container';
+import { ToastPosition } from './toast';
 import { ToastService } from '../../../services/toast.service';
 
 describe('ToastContainerComponent', () => {

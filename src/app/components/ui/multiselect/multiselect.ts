@@ -23,8 +23,8 @@ export interface MultiSelectItem {
   selector: 'app-multiselect',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './multiselect.component.html',
-  styleUrl: './multiselect.component.css',
+  templateUrl: './multiselect.html',
+  styleUrl: './multiselect.css',
 })
 export class MultiSelectComponent {
   // Inputs

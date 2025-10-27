@@ -24,8 +24,8 @@ export interface DropdownItem {
   selector: 'app-dropdown',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './dropdown.component.html',
-  styleUrl: './dropdown.component.css',
+  templateUrl: './dropdown.html',
+  styleUrl: './dropdown.css',
 })
 export class DropdownComponent {
   // Inputs

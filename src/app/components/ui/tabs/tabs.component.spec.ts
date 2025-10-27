@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { TabsComponent, TabItem } from './tabs.component';
+import { TabsComponent, TabItem } from './tabs';
 
 describe('TabsComponent', () => {
   let component: TabsComponent;

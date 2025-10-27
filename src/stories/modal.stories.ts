@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { fn } from 'storybook/test';
 import { Component, signal } from '@angular/core';
-import { ModalComponent } from '../app/components/ui/modal/modal.component';
+import { ModalComponent } from '../app/components/ui/modal/modal';
 import { CommonModule } from '@angular/common';
 import { wrapInLightDarkComparison } from './story-helpers';
 

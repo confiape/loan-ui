@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { MultiSelectComponent, MultiSelectItem } from './multiselect.component';
+import { MultiSelectComponent, MultiSelectItem } from './multiselect';
 
 describe('MultiSelectComponent', () => {
   let component: MultiSelectComponent;
