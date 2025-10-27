@@ -1,20 +1,20 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TableToolbarComponent } from './table-toolbar';
+import { Datepicker } from './datepicker';
 
-describe('TableToolbarComponent', () => {
-  let component: TableToolbarComponent;
-  let fixture: ComponentFixture<TableToolbarComponent>;
+describe('Datepicker', () => {
+  let component: Datepicker;
+  let fixture: ComponentFixture<Datepicker>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TableToolbarComponent],
+      imports: [Datepicker],
       providers: [provideZonelessChangeDetection()],
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TableToolbarComponent);
+    fixture = TestBed.createComponent(Datepicker);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
