@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { moduleMetadata } from '@storybook/angular';
+import { applicationConfig, moduleMetadata } from '@storybook/angular';
 import { LoginComponent } from '../app/features/auth/login/login.component';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
@@ -41,10 +41,14 @@ const meta: Meta<LoginComponent> = {
     layout: 'fullscreen',
   },
   decorators: [
-    moduleMetadata({
+    applicationConfig({
       providers: [
         provideRouter([]),
         provideHttpClient(),
+      ],
+    }),
+    moduleMetadata({
+      providers: [
         { provide: AuthenticationApiService, useValue: mockAuthApiService },
         { provide: AuthService, useValue: mockAuthService },
         { provide: ToastService, useValue: mockToastService },
@@ -146,8 +150,6 @@ export const LoadingState: Story = {
   decorators: [
     moduleMetadata({
       providers: [
-        provideRouter([]),
-        provideHttpClient(),
         {
           provide: AuthenticationApiService,
           useValue: {
@@ -215,8 +217,6 @@ export const ErrorState: Story = {
   decorators: [
     moduleMetadata({
       providers: [
-        provideRouter([]),
-        provideHttpClient(),
         {
           provide: AuthenticationApiService,
           useValue: {
@@ -277,7 +277,7 @@ export const PasswordVisible: Story = {
     const canvas = canvasElement;
     const emailInput = canvas.querySelector<HTMLInputElement>('#email');
     const passwordInput = canvas.querySelector<HTMLInputElement>('#password');
-    const toggleButton = canvas.querySelector<HTMLButtonElement>('.password-toggle');
+    const toggleButton = canvas.querySelector<HTMLButtonElement>('button[type="button"]');
 
     if (emailInput) {
       emailInput.value = 'demo@example.com';

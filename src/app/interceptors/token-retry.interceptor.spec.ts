@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { of, throwError } from 'rxjs';
-import { vi } from 'vitest';
+import { vi, Mock } from 'vitest';
 import { tokenRetryInterceptor } from './token-retry.interceptor';
 import { AuthService } from '../services/auth.service';
 import { ToastService } from '../services/toast.service';
@@ -15,8 +15,13 @@ import { LoginResponse } from '../core/openapi/model/loginResponse';
 describe('tokenRetryInterceptor', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
-  let authService: Partial<AuthService>;
-  let toastService: Partial<ToastService>;
+  let authService: {
+    refreshToken: Mock;
+    navigateToLogin: Mock;
+  };
+  let toastService: {
+    error: Mock;
+  };
 
   const mockLoginResponse: LoginResponse = {
     user: { id: 1, email: 'test@test.com' } as any,
@@ -26,12 +31,12 @@ describe('tokenRetryInterceptor', () => {
 
   beforeEach(() => {
     authService = {
-      refreshToken: vi.fn(),
-      navigateToLogin: vi.fn(),
+      refreshToken: vi.fn() as Mock,
+      navigateToLogin: vi.fn() as Mock,
     };
 
     toastService = {
-      error: vi.fn(),
+      error: vi.fn() as Mock,
     };
 
     TestBed.configureTestingModule({

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { of, throwError } from 'rxjs';
-import { vi } from 'vitest';
+import { of, throwError, firstValueFrom } from 'rxjs';
+import { vi, Mock } from 'vitest';
 import { LoginComponent } from './login.component';
 import { AuthenticationApiService } from '../../../core/openapi/api/authentication.service';
 import { AuthService } from '../../../services/auth.service';
@@ -13,10 +13,19 @@ describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let compiled: HTMLElement;
-  let authApiMock: Partial<AuthenticationApiService>;
-  let authServiceMock: Partial<AuthService>;
-  let toastServiceMock: Partial<ToastService>;
-  let routerMock: Partial<Router>;
+  let authApiMock: {
+    logIn: Mock;
+  };
+  let authServiceMock: {
+    getAuthorizationToken: Mock;
+  };
+  let toastServiceMock: {
+    success: Mock;
+    error: Mock;
+  };
+  let routerMock: {
+    navigate: Mock;
+  };
 
   const mockLoginResponse: LoginResponse = {
     user: { id: 1, email: 'test@test.com' } as any,
@@ -26,20 +35,20 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     authApiMock = {
-      logIn: vi.fn(),
+      logIn: vi.fn() as Mock,
     };
 
     authServiceMock = {
-      getAuthorizationToken: vi.fn(),
+      getAuthorizationToken: vi.fn() as Mock,
     };
 
     toastServiceMock = {
-      success: vi.fn(),
-      error: vi.fn(),
+      success: vi.fn() as Mock,
+      error: vi.fn() as Mock,
     };
 
     routerMock = {
-      navigate: vi.fn(),
+      navigate: vi.fn() as Mock,
     };
 
     await TestBed.configureTestingModule({
@@ -190,40 +199,34 @@ describe('LoginComponent', () => {
       component.password.set('password123');
     });
 
-    it('should get authorization token after successful login', (done) => {
+    it('should get authorization token after successful login', async () => {
       authApiMock.logIn!.mockReturnValue(of(undefined));
       authServiceMock.getAuthorizationToken!.mockReturnValue(of(mockLoginResponse));
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(authServiceMock.getAuthorizationToken).toHaveBeenCalled();
-        done();
-      }, 0);
+      await fixture.whenStable();
+      expect(authServiceMock.getAuthorizationToken).toHaveBeenCalled();
     });
 
-    it('should show success toast after successful login', (done) => {
+    it('should show success toast after successful login', async () => {
       authApiMock.logIn!.mockReturnValue(of(undefined));
       authServiceMock.getAuthorizationToken!.mockReturnValue(of(mockLoginResponse));
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(toastServiceMock.success).toHaveBeenCalledWith('Inicio de sesión exitoso');
-        done();
-      }, 0);
+      await fixture.whenStable();
+      expect(toastServiceMock.success).toHaveBeenCalledWith('Inicio de sesión exitoso');
     });
 
-    it('should navigate to dashboard after successful login', (done) => {
+    it('should navigate to dashboard after successful login', async () => {
       authApiMock.logIn!.mockReturnValue(of(undefined));
       authServiceMock.getAuthorizationToken!.mockReturnValue(of(mockLoginResponse));
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(routerMock.navigate).toHaveBeenCalledWith(['/dashboard']);
-        done();
-      }, 0);
+      await fixture.whenStable();
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/dashboard']);
     });
   });
 
@@ -233,7 +236,7 @@ describe('LoginComponent', () => {
       component.password.set('wrong-password');
     });
 
-    it('should show error toast on login failure', (done) => {
+    it('should show error toast on login failure', async () => {
       const error = {
         error: { message: 'Email o contraseña incorrectos' },
       };
@@ -241,39 +244,33 @@ describe('LoginComponent', () => {
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(toastServiceMock.error).toHaveBeenCalledWith(
-          'Email o contraseña incorrectos',
-          'Error de Autenticación'
-        );
-        expect(component.isLoading()).toBe(false);
-        done();
-      }, 0);
+      await fixture.whenStable();
+      expect(toastServiceMock.error).toHaveBeenCalledWith(
+        'Email o contraseña incorrectos',
+        'Error de Autenticación'
+      );
+      expect(component.isLoading()).toBe(false);
     });
 
-    it('should show generic error message when no message provided', (done) => {
+    it('should show generic error message when no message provided', async () => {
       authApiMock.logIn!.mockReturnValue(throwError(() => ({ error: {} })));
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(toastServiceMock.error).toHaveBeenCalledWith(
-          'Email o contraseña incorrectos',
-          'Error de Autenticación'
-        );
-        done();
-      }, 0);
+      await fixture.whenStable();
+      expect(toastServiceMock.error).toHaveBeenCalledWith(
+        'Email o contraseña incorrectos',
+        'Error de Autenticación'
+      );
     });
 
-    it('should stop loading on login failure', (done) => {
+    it('should stop loading on login failure', async () => {
       authApiMock.logIn!.mockReturnValue(throwError(() => new Error('Login failed')));
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(component.isLoading()).toBe(false);
-        done();
-      }, 0);
+      await fixture.whenStable();
+      expect(component.isLoading()).toBe(false);
     });
   });
 
@@ -283,7 +280,7 @@ describe('LoginComponent', () => {
       component.password.set('password123');
     });
 
-    it('should show error toast if getAuthorizationToken fails', (done) => {
+    it('should show error toast if getAuthorizationToken fails', async () => {
       authApiMock.logIn!.mockReturnValue(of(undefined));
       authServiceMock.getAuthorizationToken!.mockReturnValue(
         throwError(() => new Error('Token error'))
@@ -291,13 +288,11 @@ describe('LoginComponent', () => {
 
       component.onSubmit();
 
-      setTimeout(() => {
-        expect(toastServiceMock.error).toHaveBeenCalledWith(
-          'Error al obtener el token de autorización'
-        );
-        expect(component.isLoading()).toBe(false);
-        done();
-      }, 0);
+      await fixture.whenStable();
+      expect(toastServiceMock.error).toHaveBeenCalledWith(
+        'Error al obtener el token de autorización'
+      );
+      expect(component.isLoading()).toBe(false);
     });
   });
 });

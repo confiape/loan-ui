@@ -7,7 +7,7 @@ import {
 import { provideZonelessChangeDetection } from '@angular/core';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { vi } from 'vitest';
+import { vi, Mock } from 'vitest';
 import { authInterceptor } from './auth.interceptor';
 import { AuthService } from '../services/auth.service';
 import { LoginResponse } from '../core/openapi/model/loginResponse';
@@ -15,8 +15,15 @@ import { LoginResponse } from '../core/openapi/model/loginResponse';
 describe('authInterceptor', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
-  let authService: Partial<AuthService>;
-  let router: Partial<Router>;
+  let authService: {
+    getToken: Mock;
+    checkAuthentication: Mock;
+    getAuthorizationToken: Mock;
+    navigateToLogin: Mock;
+  };
+  let router: {
+    navigate: Mock;
+  };
 
   const mockLoginResponse: LoginResponse = {
     user: { id: 1, email: 'test@test.com' } as any,
@@ -26,14 +33,14 @@ describe('authInterceptor', () => {
 
   beforeEach(() => {
     authService = {
-      getToken: vi.fn(),
-      checkAuthentication: vi.fn(),
-      getAuthorizationToken: vi.fn(),
-      navigateToLogin: vi.fn(),
+      getToken: vi.fn() as Mock,
+      checkAuthentication: vi.fn() as Mock,
+      getAuthorizationToken: vi.fn() as Mock,
+      navigateToLogin: vi.fn() as Mock,
     };
 
     router = {
-      navigate: vi.fn(),
+      navigate: vi.fn() as Mock,
     };
 
     TestBed.configureTestingModule({

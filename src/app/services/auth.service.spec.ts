@@ -1,16 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { of, throwError } from 'rxjs';
-import { vi } from 'vitest';
+import { of, throwError, firstValueFrom, delay } from 'rxjs';
+import { vi, Mock } from 'vitest';
 import { AuthService } from './auth.service';
 import { AuthenticationApiService } from '../core/openapi/api/authentication.service';
 import { LoginResponse } from '../core/openapi/model/loginResponse';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let authApiMock: Partial<AuthenticationApiService>;
-  let routerMock: Partial<Router>;
+  let authApiMock: {
+    isAuthenticated: Mock;
+    getAuthorizationToken: Mock;
+    logOut: Mock;
+  };
+  let routerMock: {
+    navigate: Mock;
+  };
 
   const mockLoginResponse: LoginResponse = {
     user: { id: 1, email: 'test@test.com' } as any,
@@ -20,13 +26,13 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     authApiMock = {
-      isAuthenticated: vi.fn(),
-      getAuthorizationToken: vi.fn(),
-      logOut: vi.fn(),
+      isAuthenticated: vi.fn() as Mock,
+      getAuthorizationToken: vi.fn() as Mock,
+      logOut: vi.fn() as Mock,
     };
 
     routerMock = {
-      navigate: vi.fn(),
+      navigate: vi.fn() as Mock,
     };
 
     TestBed.configureTestingModule({
@@ -74,118 +80,109 @@ describe('AuthService', () => {
   });
 
   describe('checkAuthentication', () => {
-    it('should update authentication state when API returns true', (done) => {
+    it('should update authentication state when API returns true', async () => {
       authApiMock.isAuthenticated!.mockReturnValue(of(true));
 
-      service.checkAuthentication().subscribe((isAuth) => {
-        expect(isAuth).toBe(true);
-        expect(service.isAuthenticated$()).toBe(true);
-        expect(authApiMock.isAuthenticated).toHaveBeenCalled();
-        done();
-      });
+      const isAuth = await firstValueFrom(service.checkAuthentication());
+      expect(isAuth).toBe(true);
+      expect(service.isAuthenticated$()).toBe(true);
+      expect(authApiMock.isAuthenticated).toHaveBeenCalled();
     });
 
-    it('should clear token when API returns false', (done) => {
+    it('should clear token when API returns false', async () => {
       service.setToken('test-token');
       authApiMock.isAuthenticated!.mockReturnValue(of(false));
 
-      service.checkAuthentication().subscribe((isAuth) => {
-        expect(isAuth).toBe(false);
-        expect(service.isAuthenticated$()).toBe(false);
-        expect(service.getToken()).toBeNull();
-        done();
-      });
+      const isAuth = await firstValueFrom(service.checkAuthentication());
+      expect(isAuth).toBe(false);
+      expect(service.isAuthenticated$()).toBe(false);
+      expect(service.getToken()).toBeNull();
     });
 
-    it('should handle API errors and clear token', (done) => {
+    it('should handle API errors and clear token', async () => {
       service.setToken('test-token');
       authApiMock.isAuthenticated!.mockReturnValue(
         throwError(() => new Error('API Error'))
       );
 
-      service.checkAuthentication().subscribe((isAuth) => {
-        expect(isAuth).toBe(false);
-        expect(service.isAuthenticated$()).toBe(false);
-        expect(service.getToken()).toBeNull();
-        done();
-      });
+      const isAuth = await firstValueFrom(service.checkAuthentication());
+      expect(isAuth).toBe(false);
+      expect(service.isAuthenticated$()).toBe(false);
+      expect(service.getToken()).toBeNull();
     });
   });
 
   describe('getAuthorizationToken', () => {
-    it('should set token when API returns success', (done) => {
+    it('should set token when API returns success', async () => {
       authApiMock.getAuthorizationToken!.mockReturnValue(of(mockLoginResponse));
 
-      service.getAuthorizationToken().subscribe((response) => {
-        expect(response).toEqual(mockLoginResponse);
-        expect(service.getToken()).toBe('mock-access-token');
-        expect(service.isAuthenticated$()).toBe(true);
-        expect(authApiMock.getAuthorizationToken).toHaveBeenCalled();
-        done();
-      });
+      const response = await firstValueFrom(service.getAuthorizationToken());
+      expect(response).toEqual(mockLoginResponse);
+      expect(service.getToken()).toBe('mock-access-token');
+      expect(service.isAuthenticated$()).toBe(true);
+      expect(authApiMock.getAuthorizationToken).toHaveBeenCalled();
     });
 
-    it('should clear token when API fails', (done) => {
+    it('should clear token when API fails', async () => {
       service.setToken('old-token');
       authApiMock.getAuthorizationToken!.mockReturnValue(
         throwError(() => new Error('API Error'))
       );
 
-      service.getAuthorizationToken().subscribe({
-        error: (error) => {
-          expect(error).toBeDefined();
-          expect(service.getToken()).toBeNull();
-          expect(service.isAuthenticated$()).toBe(false);
-          done();
-        },
-      });
+      try {
+        await firstValueFrom(service.getAuthorizationToken());
+        // If we reach here, the test should fail
+        expect(true).toBe(false);
+      } catch (error) {
+        expect(error).toBeDefined();
+        expect(service.getToken()).toBeNull();
+        expect(service.isAuthenticated$()).toBe(false);
+      }
     });
   });
 
   describe('refreshToken', () => {
-    it('should refresh token successfully', (done) => {
+    it('should refresh token successfully', async () => {
       authApiMock.getAuthorizationToken!.mockReturnValue(of(mockLoginResponse));
 
-      service.refreshToken().subscribe((response) => {
-        expect(response).toEqual(mockLoginResponse);
-        expect(service.getToken()).toBe('mock-access-token');
-        expect(authApiMock.getAuthorizationToken).toHaveBeenCalled();
-        done();
-      });
+      const response = await firstValueFrom(service.refreshToken());
+      expect(response).toEqual(mockLoginResponse);
+      expect(service.getToken()).toBe('mock-access-token');
+      expect(authApiMock.getAuthorizationToken).toHaveBeenCalled();
     });
 
-    it('should clear token when refresh fails', (done) => {
+    it('should clear token when refresh fails', async () => {
       service.setToken('old-token');
       authApiMock.getAuthorizationToken!.mockReturnValue(
         throwError(() => new Error('Refresh failed'))
       );
 
-      service.refreshToken().subscribe({
-        error: (error) => {
-          expect(error).toBeDefined();
-          expect(service.getToken()).toBeNull();
-          expect(service.isAuthenticated$()).toBe(false);
-          done();
-        },
-      });
+      try {
+        await firstValueFrom(service.refreshToken());
+        // If we reach here, the test should fail
+        expect(true).toBe(false);
+      } catch (error) {
+        expect(error).toBeDefined();
+        expect(service.getToken()).toBeNull();
+        expect(service.isAuthenticated$()).toBe(false);
+      }
     });
 
-    it('should prevent multiple simultaneous refreshes', (done) => {
+    it('should prevent multiple simultaneous refreshes', async () => {
       let callCount = 0;
-      authApiMock.getAuthorizationToken!.mockImplementation(() => {
+      authApiMock.getAuthorizationToken.mockImplementation(() => {
         callCount++;
-        return new Promise((resolve) => {
-          setTimeout(() => resolve(mockLoginResponse), 100);
-        }) as any;
+        return of(mockLoginResponse).pipe(delay(100));
       });
 
       // Call refresh twice simultaneously
-      service.refreshToken().subscribe();
-      service.refreshToken().subscribe(() => {
-        // Only one API call should have been made
-        expect(callCount).toBe(1);
-        done();
-      });
+      const promise1 = firstValueFrom(service.refreshToken());
+      const promise2 = firstValueFrom(service.refreshToken());
+
+      await Promise.all([promise1, promise2]);
+
+      // Only one API call should have been made
+      expect(callCount).toBe(1);
     });
   });
 
@@ -202,29 +199,25 @@ describe('AuthService', () => {
   });
 
   describe('logout', () => {
-    it('should logout successfully', (done) => {
+    it('should logout successfully', async () => {
       service.setToken('test-token');
       authApiMock.logOut!.mockReturnValue(of(undefined));
 
-      service.logout().subscribe(() => {
-        expect(service.getToken()).toBeNull();
-        expect(service.isAuthenticated$()).toBe(false);
-        expect(routerMock.navigate).toHaveBeenCalledWith(['/login']);
-        expect(authApiMock.logOut).toHaveBeenCalled();
-        done();
-      });
+      await firstValueFrom(service.logout());
+      expect(service.getToken()).toBeNull();
+      expect(service.isAuthenticated$()).toBe(false);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/login']);
+      expect(authApiMock.logOut).toHaveBeenCalled();
     });
 
-    it('should clear token even if logout API fails', (done) => {
+    it('should clear token even if logout API fails', async () => {
       service.setToken('test-token');
       authApiMock.logOut!.mockReturnValue(throwError(() => new Error('Logout failed')));
 
-      service.logout().subscribe(() => {
-        expect(service.getToken()).toBeNull();
-        expect(service.isAuthenticated$()).toBe(false);
-        expect(routerMock.navigate).toHaveBeenCalledWith(['/login']);
-        done();
-      });
+      await firstValueFrom(service.logout());
+      expect(service.getToken()).toBeNull();
+      expect(service.isAuthenticated$()).toBe(false);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/login']);
     });
   });
 });
