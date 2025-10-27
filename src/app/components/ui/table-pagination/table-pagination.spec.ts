@@ -11,8 +11,7 @@ describe('TablePaginationComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TablePaginationComponent],
       providers: [provideZonelessChangeDetection()],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TablePaginationComponent);
     component = fixture.componentInstance;

@@ -1,4 +1,13 @@
-import { Component, computed, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export type SelectionMode = 'single' | 'range' | 'multiple';
@@ -10,15 +19,13 @@ export interface DateRange {
   end: Date | null;
 }
 
-export interface DisabledDateFn {
-  (date: Date): boolean;
-}
+export type DisabledDateFn = (date: Date) => boolean;
 
 @Component({
   selector: 'app-datepicker',
   imports: [CommonModule],
   templateUrl: './datepicker.html',
-  styleUrl: './datepicker.css'
+  styleUrl: './datepicker.css',
 })
 export class Datepicker {
   // ========================================
@@ -116,8 +123,18 @@ export class Datepicker {
 
   monthsGrid = computed(() => {
     const months = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
     ];
     return months;
   });
@@ -157,8 +174,20 @@ export class Datepicker {
 
   currentMonthYear = computed(() => {
     const date = this.currentDate();
-    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const months = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ];
     return `${months[date.getMonth()]} ${date.getFullYear()}`;
   });
 
@@ -332,7 +361,7 @@ export class Datepicker {
 
   selectMultipleDate(date: Date): void {
     const dates = [...this.selectedMultiple()];
-    const index = dates.findIndex(d => this.isSameDay(d, date));
+    const index = dates.findIndex((d) => this.isSameDay(d, date));
 
     if (index >= 0) {
       dates.splice(index, 1);
@@ -344,7 +373,7 @@ export class Datepicker {
     this.selectedMultiple.set(dates);
 
     if (this.showTime()) {
-      const datesWithTime = dates.map(d => {
+      const datesWithTime = dates.map((d) => {
         const newDate = new Date(d);
         newDate.setHours(this.selectedHour());
         newDate.setMinutes(this.selectedMinute());
@@ -390,7 +419,7 @@ export class Datepicker {
         this.rangeChange.emit({ start, end });
       }
     } else if (mode === 'multiple') {
-      const dates = this.selectedMultiple().map(d => {
+      const dates = this.selectedMultiple().map((d) => {
         const newDate = new Date(d);
         newDate.setHours(this.selectedHour());
         newDate.setMinutes(this.selectedMinute());
@@ -459,16 +488,18 @@ export class Datepicker {
 
     if (min && date < min) return true;
     if (max && date > max) return true;
-    if (disabledDates.some(d => this.isSameDay(d, date))) return true;
+    if (disabledDates.some((d) => this.isSameDay(d, date))) return true;
     if (disabledFn && disabledFn(date)) return true;
 
     return false;
   }
 
   isSameDay(date1: Date, date2: Date): boolean {
-    return date1.getFullYear() === date2.getFullYear() &&
-           date1.getMonth() === date2.getMonth() &&
-           date1.getDate() === date2.getDate();
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
   }
 
   isToday(date: Date): boolean {
@@ -487,7 +518,7 @@ export class Datepicker {
       if (range.end && this.isSameDay(range.end, date)) return true;
       return false;
     } else {
-      return this.selectedMultiple().some(d => this.isSameDay(d, date));
+      return this.selectedMultiple().some((d) => this.isSameDay(d, date));
     }
   }
 
@@ -536,7 +567,7 @@ export class Datepicker {
     }
   }
 
-  formatDate(date: Date, includeTime: boolean = false): string {
+  formatDate(date: Date, includeTime = false): string {
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
@@ -595,7 +626,7 @@ export class Datepicker {
     let currentFocus = this.focusedDay();
 
     if (currentFocus === null) {
-      const today = days.findIndex(d => this.isToday(d));
+      const today = days.findIndex((d) => this.isToday(d));
       currentFocus = today >= 0 ? today : 15;
     }
 

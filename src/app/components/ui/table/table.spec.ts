@@ -11,8 +11,7 @@ describe('TableComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TableComponent],
       providers: [provideZonelessChangeDetection()],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TableComponent);
     component = fixture.componentInstance;

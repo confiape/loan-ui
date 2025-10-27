@@ -2,27 +2,25 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ToastContainerComponent } from './toast-container.component';
-import { Toast, ToastPosition } from './toast.component';
+import { ToastPosition } from './toast.component';
+import { ToastService } from '../../../services/toast.service';
 
 describe('ToastContainerComponent', () => {
   let component: ToastContainerComponent;
   let fixture: ComponentFixture<ToastContainerComponent>;
   let compiled: HTMLElement;
-
-  const mockToasts: Toast[] = [
-    { id: '1', type: 'success', message: 'Success message' },
-    { id: '2', type: 'error', message: 'Error message' },
-  ];
+  let toastService: ToastService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ToastContainerComponent],
-      providers: [provideZonelessChangeDetection()],
+      providers: [provideZonelessChangeDetection(), ToastService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ToastContainerComponent);
     component = fixture.componentInstance;
     compiled = fixture.nativeElement;
+    toastService = TestBed.inject(ToastService);
   });
 
   describe('Component Initialization', () => {
@@ -31,16 +29,19 @@ describe('ToastContainerComponent', () => {
     });
 
     it('should have default position', () => {
-      fixture.componentRef.setInput('toasts', []);
       fixture.detectChanges();
-
       expect(component.position()).toBe('top-right');
+    });
+
+    it('should inject ToastService', () => {
+      expect(toastService).toBeTruthy();
     });
   });
 
   describe('Rendering', () => {
-    it('should render all toasts', () => {
-      fixture.componentRef.setInput('toasts', mockToasts);
+    it('should render all toasts from service', () => {
+      toastService.success('Success message');
+      toastService.error('Error message');
       fixture.detectChanges();
 
       const toasts = compiled.querySelectorAll('app-toast');
@@ -48,11 +49,31 @@ describe('ToastContainerComponent', () => {
     });
 
     it('should not render when no toasts', () => {
-      fixture.componentRef.setInput('toasts', []);
       fixture.detectChanges();
 
       const toasts = compiled.querySelectorAll('app-toast');
       expect(toasts.length).toBe(0);
+    });
+
+    it('should update when toasts are added', () => {
+      fixture.detectChanges();
+      expect(compiled.querySelectorAll('app-toast').length).toBe(0);
+
+      toastService.info('New toast');
+      fixture.detectChanges();
+      expect(compiled.querySelectorAll('app-toast').length).toBe(1);
+    });
+  });
+
+  describe('onDismiss', () => {
+    it('should remove toast when dismissed', () => {
+      toastService.success('Test message');
+      fixture.detectChanges();
+
+      const toastId = toastService.toasts$()[0].id;
+      component.onDismiss(toastId);
+
+      expect(toastService.toasts$().length).toBe(0);
     });
   });
 
@@ -68,7 +89,6 @@ describe('ToastContainerComponent', () => {
 
     positions.forEach((position) => {
       it(`should apply ${position} position class`, () => {
-        fixture.componentRef.setInput('toasts', mockToasts);
         fixture.componentRef.setInput('position', position);
         fixture.detectChanges();
 

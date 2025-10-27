@@ -11,8 +11,7 @@ describe('TableToolbarComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TableToolbarComponent],
       providers: [provideZonelessChangeDetection()],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TableToolbarComponent);
     component = fixture.componentInstance;

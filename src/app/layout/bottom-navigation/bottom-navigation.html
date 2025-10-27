@@ -1,22 +1,22 @@
 <nav
-  class="lg:hidden w-full h-16 bg-[var(--color-bg-primary)] border-t border-[var(--color-border)]"
+  class="bottom-nav lg:hidden w-full h-16 bg-[var(--color-bg-primary)] border-t border-[var(--color-border)]"
   role="navigation"
   aria-label="Bottom navigation"
 >
-  <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+  <div class="bottom-nav-container grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
     @for (item of items(); track item.id) {
       <a
         [routerLink]="item.routerLink"
         routerLinkActive="router-link-active"
-        class="inline-flex flex-col items-center justify-center px-5 hover:bg-[var(--color-bg-secondary)] group"
+        class="bottom-nav-item inline-flex flex-col items-center justify-center px-5 hover:bg-[var(--color-bg-secondary)] group"
         (click)="onItemClick(item)"
         [attr.aria-label]="item.label"
       >
-        <span class="w-5 h-5 mb-2 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors" [innerHTML]="item.icon"></span>
-        <span class="text-sm text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors">{{ item.label }}</span>
+        <span class="bottom-nav-icon w-5 h-5 mb-2 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors" [innerHTML]="item.icon"></span>
+        <span class="bottom-nav-label text-sm text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors">{{ item.label }}</span>
       </a>
     } @empty {
-      <div class="col-span-4 flex items-center justify-center text-[var(--color-text-secondary)] text-sm">
+      <div class="bottom-nav-empty col-span-4 flex items-center justify-center text-[var(--color-text-secondary)] text-sm">
         No navigation items
       </div>
     }

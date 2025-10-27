@@ -1,8 +1,13 @@
 import { Routes } from '@angular/router';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { Dashboard } from './features/dashboard/dashboard';
+import { LoginComponent } from './features/auth/login/login.component';
 
 export const routes: Routes = [
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
   {
     path: '',
     component: MainLayout,

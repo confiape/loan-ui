@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidenavComponent, SidenavItem } from '../sidenav/sidenav';
 import { NavbarComponent } from '../navbar/navbar';
+import { ToastContainerComponent } from '../../components/ui';
 import { BottomNavigation, BottomNavItem } from '../bottom-navigation/bottom-navigation';
 import { Notification } from '../../components/ui/notification-button/notification-button';
 import { AppMenuItem } from '../../components/ui/apps-menu/apps-menu';
@@ -16,7 +17,13 @@ import {
 
 @Component({
   selector: 'app-main-layout',
-  imports: [RouterOutlet, SidenavComponent, NavbarComponent, BottomNavigation],
+  imports: [
+    RouterOutlet,
+    SidenavComponent,
+    NavbarComponent,
+    BottomNavigation,
+    ToastContainerComponent,
+  ],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
   standalone: true,
@@ -67,7 +74,7 @@ export class MainLayout {
     console.log('Notification clicked:', notification);
     // Mark as read
     this.notifications.update((notifications) =>
-      notifications.map((n) => (n.id === notification.id ? { ...n, read: true } : n))
+      notifications.map((n) => (n.id === notification.id ? { ...n, read: true } : n)),
     );
   }
 

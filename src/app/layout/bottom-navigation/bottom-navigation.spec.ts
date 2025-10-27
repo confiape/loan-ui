@@ -38,7 +38,20 @@ describe('BottomNavigation', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BottomNavigation],
-      providers: [provideZonelessChangeDetection(), provideRouter([])],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideRouter([
+          { path: 'dashboard', component: BottomNavigation },
+          { path: 'loans', component: BottomNavigation },
+          { path: 'customers', component: BottomNavigation },
+          { path: 'reports', component: BottomNavigation },
+          { path: 'test', component: BottomNavigation },
+          { path: 'long', component: BottomNavigation },
+          { path: 'special', component: BottomNavigation },
+          { path: 'settings', component: BottomNavigation },
+          { path: 'help', component: BottomNavigation },
+        ]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BottomNavigation);
@@ -133,32 +146,37 @@ describe('BottomNavigation', () => {
       fixture.detectChanges();
     });
 
-    it('should emit itemClick event when item is clicked', (done) => {
+    it('should emit itemClick event when item is clicked', async () => {
+      let emittedItem: BottomNavItem | null = null;
+
       component.itemClick.subscribe((item: BottomNavItem) => {
-        expect(item).toEqual(mockItems[0]);
-        done();
+        emittedItem = item;
       });
 
       const firstItem = fixture.debugElement.query(By.css('.bottom-nav-item'));
       firstItem.nativeElement.click();
+
+      await fixture.whenStable();
+      expect(emittedItem).toEqual(mockItems[0]);
     });
 
-    it('should emit correct item on different clicks', (done) => {
+    it('should emit correct item on different clicks', async () => {
       let clickCount = 0;
+      const emittedItems: BottomNavItem[] = [];
 
       component.itemClick.subscribe((item: BottomNavItem) => {
         clickCount++;
-        if (clickCount === 1) {
-          expect(item.id).toBe('loans');
-        } else if (clickCount === 2) {
-          expect(item.id).toBe('customers');
-          done();
-        }
+        emittedItems.push(item);
       });
 
       const navItems = fixture.debugElement.queryAll(By.css('.bottom-nav-item'));
       navItems[1].nativeElement.click(); // Loans
       navItems[2].nativeElement.click(); // Customers
+
+      await fixture.whenStable();
+      expect(clickCount).toBe(2);
+      expect(emittedItems[0].id).toBe('loans');
+      expect(emittedItems[1].id).toBe('customers');
     });
   });
 

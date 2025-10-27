@@ -11,8 +11,7 @@ describe('Datepicker', () => {
     await TestBed.configureTestingModule({
       imports: [Datepicker],
       providers: [provideZonelessChangeDetection()],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Datepicker);
     component = fixture.componentInstance;

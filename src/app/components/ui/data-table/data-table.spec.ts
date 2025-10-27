@@ -11,8 +11,7 @@ describe('DataTableComponent', () => {
     await TestBed.configureTestingModule({
       imports: [DataTableComponent],
       providers: [provideZonelessChangeDetection()],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DataTableComponent);
     component = fixture.componentInstance;
