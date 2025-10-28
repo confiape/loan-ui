@@ -6,11 +6,13 @@ import { vi } from 'vitest';
 import { NavbarComponent as Navbar } from './navbar';
 import { UserApiService } from '../../core/openapi/api/user.service';
 import { UserDto } from '../../core/openapi/model/userDto';
+import { AuthService } from '../../services/auth.service';
 
 describe('Navbar', () => {
   let component: Navbar;
   let fixture: ComponentFixture<Navbar>;
   let mockUserApiService: { getCurrentUser: ReturnType<typeof vi.fn> };
+  let mockAuthService: { logout: ReturnType<typeof vi.fn> };
 
   const mockUser: UserDto = {
     id: '123',
@@ -36,11 +38,16 @@ describe('Navbar', () => {
       getCurrentUser: vi.fn().mockReturnValue(of(mockUser)),
     };
 
+    mockAuthService = {
+      logout: vi.fn().mockReturnValue(of(undefined)),
+    };
+
     await TestBed.configureTestingModule({
       imports: [Navbar],
       providers: [
         provideZonelessChangeDetection(),
         { provide: UserApiService, useValue: mockUserApiService },
+        { provide: AuthService, useValue: mockAuthService },
       ],
     }).compileComponents();
 
@@ -148,5 +155,31 @@ describe('Navbar', () => {
     const menuItem = { id: '1', label: 'Profile', icon: 'user', action: 'profile' };
     component.onUserMenuClick(menuItem);
     expect(component.userMenuClick.emit).toHaveBeenCalledWith(menuItem);
+  });
+
+  it('should call authService.logout when user clicks logout menu item', () => {
+    const logoutMenuItem = { id: 'logout', label: 'Logout', icon: 'logout', action: 'logout' };
+    component.onUserMenuClick(logoutMenuItem);
+    expect(mockAuthService.logout).toHaveBeenCalled();
+  });
+
+  it('should not emit userMenuClick event when logout action is triggered', () => {
+    vi.spyOn(component.userMenuClick, 'emit');
+    const logoutMenuItem = { id: 'logout', label: 'Logout', icon: 'logout', action: 'logout' };
+    component.onUserMenuClick(logoutMenuItem);
+    expect(component.userMenuClick.emit).not.toHaveBeenCalled();
+  });
+
+  it('should emit userMenuClick event for non-logout actions', () => {
+    vi.spyOn(component.userMenuClick, 'emit');
+    const settingsMenuItem = {
+      id: 'settings',
+      label: 'Settings',
+      icon: 'settings',
+      action: 'settings',
+    };
+    component.onUserMenuClick(settingsMenuItem);
+    expect(component.userMenuClick.emit).toHaveBeenCalledWith(settingsMenuItem);
+    expect(mockAuthService.logout).not.toHaveBeenCalled();
   });
 });

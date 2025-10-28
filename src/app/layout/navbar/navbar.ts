@@ -8,6 +8,7 @@ import { AppsMenu, AppMenuItem } from '../../components/ui/apps-menu/apps-menu';
 import { UserMenu, UserMenuItem } from '../../components/ui/user-menu/user-menu';
 import { UserApiService } from '../../core/openapi/api/user.service';
 import { UserDto } from '../../core/openapi/model/userDto';
+import { AuthService } from '../../services/auth.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -20,6 +21,7 @@ import { of } from 'rxjs';
 export class NavbarComponent implements OnInit {
   // Services
   private userApiService = inject(UserApiService);
+  private authService = inject(AuthService);
 
   // Signals
   currentUser = signal<UserDto | null>(null);
@@ -117,6 +119,16 @@ export class NavbarComponent implements OnInit {
   }
 
   onUserMenuClick(item: UserMenuItem): void {
+    // Handle logout action
+    if (item.action === 'logout') {
+      this.handleLogout();
+      return;
+    }
+
     this.userMenuClick.emit(item);
+  }
+
+  private handleLogout(): void {
+    this.authService.logout().subscribe();
   }
 }
