@@ -10,6 +10,7 @@ import { routes } from './app.routes';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { tokenRetryInterceptor } from './interceptors/token-retry.interceptor';
 import { httpNotificationInterceptor } from './interceptors/http-notification.interceptor';
+import { BASE_PATH } from './core/openapi';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,5 +24,6 @@ export const appConfig: ApplicationConfig = {
         httpNotificationInterceptor, // 3. Show notifications
       ]),
     ),
+    { provide: BASE_PATH, useValue: '' },
   ],
 };

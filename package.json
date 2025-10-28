@@ -12,7 +12,8 @@
     "lint": "ng lint",
     "coverage": "vitest run --coverage",
     "sonarqube": "sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.token=$SONARQUBE_TOKEN -Dsonar.projectKey=loan-ui",
-    "analyze": "npm run coverage && npm run sonarqube"
+    "analyze": "npm run coverage && npm run sonarqube",
+    "prettier": "npx prettier --write ."
   },
   "prettier": {
     "printWidth": 100,

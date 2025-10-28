@@ -24,11 +24,16 @@
       "Bash(timeout 30 npm run build:*)",
       "Bash(timeout 20 npm run storybook:*)",
       "Bash(git mv:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(npx prettier:*)"
     ],
     "deny": [],
     "ask": []
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": ["sonarqube", "playwright"]
+  "enabledMcpjsonServers": [
+    "sonarqube",
+    "playwright",
+    "github"
+  ]
 }
