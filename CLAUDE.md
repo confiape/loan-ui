@@ -393,4 +393,165 @@ loan-ui
 
 ---
 
+## Workflow GitHub
+
+### Issues
+
+- Labels: `feature`, `bug`, `enhancement`, `docs`
+- Estructura: descripción, tareas (checkboxes), criterios de aceptación, archivos
+
+### Branches
+
+**⚠️ SIEMPRE antes de crear una nueva rama:**
+
+```bash
+git checkout master
+git pull origin master
+git checkout -b feature/nombre-descriptivo
+```
+
+### PRs
+
+1. Branch: `feature/nombre-descriptivo` desde master actualizado
+2. Desarrollo + tests + lint + prettier
+3. Commit: `<tipo>: descripción\n\n- cambios\n\nCloses #N`
+4. PR: resumen, checklist, resultados tests
+
+### Commits
+
+Tipos: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `style`
+
+---
+
+## Testing Vitest
+
+### Mocks
+
+```typescript
+import { vi } from 'vitest';
+
+const mockService = {
+  getData: vi.fn().mockReturnValue(of(mockData)),
+};
+
+// En tests
+vi.spyOn(component.output, 'emit');
+expect(component.output.emit).toHaveBeenCalledWith(data);
+```
+
+### Providers
+
+```typescript
+// HttpClient (si componente o hijos lo usan)
+import { provideHttpClient } from '@angular/common/http';
+providers: [provideHttpClient()];
+
+// Router
+import { provideRouter } from '@angular/router';
+providers: [provideRouter([])];
+```
+
+---
+
+## Interfaces UI
+
+**⚠️ SIEMPRE leer interfaces antes de crear mocks:**
+
+- `NotificationButton` → `Notification` (usa `time`, no `timestamp`)
+- `AppsMenu` → `AppMenuItem` (usa `id`, `label`, `href`)
+- `UserMenu` → `UserMenuItem` (usa `id`, `label`, `action`)
+
+**Verificar:**
+
+```typescript
+// 1. Leer archivo .ts del componente
+// 2. Ver interface exportada
+// 3. Usar campos exactos
+```
+
+---
+
+## Signals + Servicios
+
+```typescript
+// Estado
+currentData = signal<Type | null>(null);
+isLoading = signal<boolean>(false);
+error = signal<string | null>(null);
+
+// Carga
+loadData(): void {
+  this.isLoading.set(true);
+  this.service.getData()
+    .pipe(
+      tap((data) => {
+        this.currentData.set(data);
+        this.isLoading.set(false);
+      }),
+      catchError((err) => {
+        this.error.set('Error message');
+        this.isLoading.set(false);
+        return of(null);
+      })
+    ).subscribe();
+}
+
+// Getter con fallback
+get displayValue(): string {
+  return this.currentData()?.value || this.inputValue() || 'default';
+}
+```
+
+---
+
+## Storybook
+
+```typescript
+const meta: Meta<Component> = {
+  title: 'Categoría/Nombre',
+  component: Component,
+  tags: ['autodocs'],
+  decorators: [
+    applicationConfig({
+      providers: [provideZonelessChangeDetection() /* mocks */],
+    }),
+  ],
+  args: {
+    /* defaults */
+  },
+};
+```
+
+Stories: `Default`, `DarkMode`, `Error`, `Loading`, `Empty`
+
+---
+
+## Checklist Pre-Commit
+
+```bash
+# Ejecutar siempre
+npm test && npm run lint && npx prettier --write .
+```
+
+- [ ] Tests pasan
+- [ ] Lint sin errores
+- [ ] Prettier ejecutado
+- [ ] Tests unitarios actualizados
+- [ ] Storybook actualizado (si aplica)
+- [ ] Sin modificar `src/app/core/openapi/**`
+
+---
+
+## Flujo de Trabajo
+
+1. **Inicio:** `git checkout master` → `git pull` → Issue GitHub
+2. **Planificación:** Verificar interfaces → Crear branch desde master actualizado
+3. **Implementación:** Componente → Template → Compilar
+4. **Testing:** Tests → `npm test` → Corregir tipos
+5. **Docs:** Storybook stories → Verificar variantes
+6. **Calidad:** lint → prettier → Revisión
+7. **Git:** add → commit → push → PR
+
+---
+
 **Para buenas practicas y creacion de cualquier recurso de angular, consulta el MCP Angular 20.**
