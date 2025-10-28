@@ -400,9 +400,19 @@ loan-ui
 - Labels: `feature`, `bug`, `enhancement`, `docs`
 - Estructura: descripción, tareas (checkboxes), criterios de aceptación, archivos
 
+### Branches
+
+**⚠️ SIEMPRE antes de crear una nueva rama:**
+
+```bash
+git checkout master
+git pull origin master
+git checkout -b feature/nombre-descriptivo
+```
+
 ### PRs
 
-1. Branch: `feature/nombre-descriptivo` desde master
+1. Branch: `feature/nombre-descriptivo` desde master actualizado
 2. Desarrollo + tests + lint + prettier
 3. Commit: `<tipo>: descripción\n\n- cambios\n\nCloses #N`
 4. PR: resumen, checklist, resultados tests
@@ -534,12 +544,13 @@ npm test && npm run lint && npx prettier --write .
 
 ## Flujo de Trabajo
 
-1. **Planificación:** Issue GitHub → Verificar interfaces → Crear branch
-2. **Implementación:** Componente → Template → Compilar
-3. **Testing:** Tests → `npm test` → Corregir tipos
-4. **Docs:** Storybook stories → Verificar variantes
-5. **Calidad:** lint → prettier → Revisión
-6. **Git:** add → commit → push → PR
+1. **Inicio:** `git checkout master` → `git pull` → Issue GitHub
+2. **Planificación:** Verificar interfaces → Crear branch desde master actualizado
+3. **Implementación:** Componente → Template → Compilar
+4. **Testing:** Tests → `npm test` → Corregir tipos
+5. **Docs:** Storybook stories → Verificar variantes
+6. **Calidad:** lint → prettier → Revisión
+7. **Git:** add → commit → push → PR
 
 ---
 
