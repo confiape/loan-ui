@@ -23,6 +23,7 @@ Componentes UI reutilizables y completamente funcionales construidos con Angular
 Menú desplegable funcional con soporte para dark mode.
 
 ### Características
+
 - ✅ Click fuera para cerrar
 - ✅ Items con divider
 - ✅ Items deshabilitados
@@ -46,7 +47,7 @@ import { DropdownComponent, DropdownItem } from '@app/components/ui/dropdown/dro
       variant="primary"
       (selectionChange)="onSelect($event)"
     />
-  `
+  `,
 })
 export class MyComponent {
   items = signal<DropdownItem[]>([
@@ -66,6 +67,7 @@ export class MyComponent {
 ### API
 
 **Inputs:**
+
 - `items: DropdownItem[]` - (Requerido) Array de items
 - `placeholder: string` - Texto cuando no hay selección (default: "Select an option")
 - `disabled: boolean` - Deshabilitar dropdown (default: false)
@@ -73,9 +75,11 @@ export class MyComponent {
 - `variant: 'primary' | 'secondary' | 'outline'` - Estilo del botón (default: 'outline')
 
 **Outputs:**
+
 - `selectionChange: DropdownItem` - Emite cuando se selecciona un item
 
 **Interface:**
+
 ```typescript
 interface DropdownItem {
   label: string;
@@ -93,6 +97,7 @@ interface DropdownItem {
 Selector múltiple con checkboxes y límite de selecciones.
 
 ### Características
+
 - ✅ Checkboxes para múltiples selecciones
 - ✅ Botones "Select All" / "Clear All"
 - ✅ Límite máximo de selecciones
@@ -103,7 +108,10 @@ Selector múltiple con checkboxes y límite de selecciones.
 ### Uso Básico
 
 ```typescript
-import { MultiSelectComponent, MultiSelectItem } from '@app/components/ui/multiselect/multiselect.component';
+import {
+  MultiSelectComponent,
+  MultiSelectItem,
+} from '@app/components/ui/multiselect/multiselect.component';
 
 @Component({
   selector: 'app-my-component',
@@ -117,7 +125,7 @@ import { MultiSelectComponent, MultiSelectItem } from '@app/components/ui/multis
       [showSelectAll]="true"
       (selectionChange)="onSelectionChange($event)"
     />
-  `
+  `,
 })
 export class MyComponent {
   frameworks = signal<MultiSelectItem[]>([
@@ -136,6 +144,7 @@ export class MyComponent {
 ### API
 
 **Inputs:**
+
 - `items: MultiSelectItem[]` - (Requerido) Array de items
 - `placeholder: string` - Texto cuando no hay selección (default: "Select options")
 - `disabled: boolean` - Deshabilitar componente (default: false)
@@ -144,9 +153,11 @@ export class MyComponent {
 - `showSelectAll: boolean` - Mostrar botones Select/Clear All (default: true)
 
 **Outputs:**
+
 - `selectionChange: MultiSelectItem[]` - Emite cuando cambia la selección
 
 **Interface:**
+
 ```typescript
 interface MultiSelectItem {
   label: string;
@@ -162,6 +173,7 @@ interface MultiSelectItem {
 Modal/Dialog completamente funcional con animaciones.
 
 ### Características
+
 - ✅ Backdrop con blur
 - ✅ Cerrar con ESC
 - ✅ Cerrar al hacer click fuera
@@ -180,9 +192,7 @@ import { ModalComponent } from '@app/components/ui/modal/modal.component';
   standalone: true,
   imports: [ModalComponent],
   template: `
-    <button (click)="isOpen.set(true)" class="btn btn-primary">
-      Abrir Modal
-    </button>
+    <button (click)="isOpen.set(true)" class="btn btn-primary">Abrir Modal</button>
 
     <app-modal
       [isOpen]="isOpen()"
@@ -197,15 +207,11 @@ import { ModalComponent } from '@app/components/ui/modal/modal.component';
 
       <!-- Footer (opcional) -->
       <div modal-footer>
-        <button (click)="isOpen.set(false)" class="btn btn-outline-secondary">
-          Cancelar
-        </button>
-        <button (click)="save()" class="btn btn-primary">
-          Guardar
-        </button>
+        <button (click)="isOpen.set(false)" class="btn btn-outline-secondary">Cancelar</button>
+        <button (click)="save()" class="btn btn-primary">Guardar</button>
       </div>
     </app-modal>
-  `
+  `,
 })
 export class MyComponent {
   isOpen = signal(false);
@@ -220,6 +226,7 @@ export class MyComponent {
 ### API
 
 **Inputs:**
+
 - `isOpen: boolean` - (Requerido) Control de visibilidad
 - `title: string` - Título del modal (default: '')
 - `size: 'sm' | 'md' | 'lg' | 'xl' | 'full'` - Tamaño del modal (default: 'md')
@@ -228,10 +235,12 @@ export class MyComponent {
 - `closeOnEscape: boolean` - Cerrar con ESC (default: true)
 
 **Outputs:**
+
 - `closed: void` - Emite cuando se cierra el modal
 - `opened: void` - Emite cuando se abre el modal
 
 **Proyección de Contenido:**
+
 - Contenido principal: `<ng-content></ng-content>`
 - Footer: `<ng-content select="[modal-footer]"></ng-content>`
 
@@ -242,6 +251,7 @@ export class MyComponent {
 Acordeón expandible/colapsable con animaciones.
 
 ### Características
+
 - ✅ Modo simple o múltiple
 - ✅ Items con estado inicial abierto/cerrado
 - ✅ Items deshabilitados
@@ -251,7 +261,10 @@ Acordeón expandible/colapsable con animaciones.
 ### Uso Básico
 
 ```typescript
-import { AccordionComponent, AccordionItem } from '@app/components/ui/accordion/accordion.component';
+import {
+  AccordionComponent,
+  AccordionItem,
+} from '@app/components/ui/accordion/accordion.component';
 
 @Component({
   selector: 'app-my-component',
@@ -264,7 +277,7 @@ import { AccordionComponent, AccordionItem } from '@app/components/ui/accordion/
       [animated]="true"
       (itemToggled)="onToggle($event)"
     />
-  `
+  `,
 })
 export class MyComponent {
   faqs = signal<AccordionItem[]>([
@@ -272,12 +285,12 @@ export class MyComponent {
       id: '1',
       title: '¿Qué es Angular?',
       content: 'Angular es un framework de desarrollo web...',
-      isOpen: true
+      isOpen: true,
     },
     {
       id: '2',
       title: '¿Qué son los Signals?',
-      content: 'Signals son la nueva forma reactiva de Angular...'
+      content: 'Signals son la nueva forma reactiva de Angular...',
     },
   ]);
 
@@ -290,14 +303,17 @@ export class MyComponent {
 ### API
 
 **Inputs:**
+
 - `items: AccordionItem[]` - (Requerido) Array de items
 - `allowMultiple: boolean` - Permitir múltiples items abiertos (default: false)
 - `animated: boolean` - Habilitar animaciones (default: true)
 
 **Outputs:**
+
 - `itemToggled: AccordionItem` - Emite cuando se abre/cierra un item
 
 **Interface:**
+
 ```typescript
 interface AccordionItem {
   id: string;
@@ -313,6 +329,7 @@ interface AccordionItem {
 ## 🎨 Temas y Estilos
 
 Todos los componentes:
+
 - ✅ Soportan dark mode automáticamente
 - ✅ Usan variables CSS del design system
 - ✅ Son completamente responsive

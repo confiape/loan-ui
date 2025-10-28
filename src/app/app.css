@@ -1,20 +1,19 @@
-
-  [popover] {
-    border: 1px solid #ccc;
-    background: #fff;
-    padding: 10px;
-    border-radius: 4px;
-  }
-  [popover] ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  [popover] li a {
-    display: block;
-    padding: 5px;
-    text-decoration: none;
-  }
-  [popover] li a:hover {
-    background: #f0f0f0;
-  }
+[popover] {
+  border: 1px solid #ccc;
+  background: #fff;
+  padding: 10px;
+  border-radius: 4px;
+}
+[popover] ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+[popover] li a {
+  display: block;
+  padding: 5px;
+  text-decoration: none;
+}
+[popover] li a:hover {
+  background: #f0f0f0;
+}

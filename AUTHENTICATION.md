@@ -35,11 +35,13 @@ Sistema completo de autenticación basado en JWT con refresh automático de toke
 Servicio principal que gestiona el estado de autenticación y tokens.
 
 **Signals:**
+
 - `accessToken`: Token de autorización actual
 - `isAuthenticatedSignal`: Estado de autenticación
 - `isRefreshing`: Control de refresh en progreso
 
 **Métodos principales:**
+
 ```typescript
 // Obtener token actual
 getToken(): string | null
@@ -69,23 +71,26 @@ logout(): Observable<void>
 ### 2. AuthInterceptor (`src/app/interceptors/auth.interceptor.ts`)
 
 Interceptor que:
+
 - Verifica autenticación antes de cada request
 - Agrega el token Bearer a los headers
 - Redirige a login si no está autenticado
 - Excluye endpoints públicos
 
 **Endpoints Públicos (no requieren auth):**
+
 ```typescript
-'/api/Authentication/IsAuthenticated'
-'/api/Authentication/LoginWithGoogleToken'
-'/api/Authentication/GetAuthorizationToken'
-'/api/Authentication/LogIn'
-'/api/Authentication/LogOut'
+'/api/Authentication/IsAuthenticated';
+'/api/Authentication/LoginWithGoogleToken';
+'/api/Authentication/GetAuthorizationToken';
+'/api/Authentication/LogIn';
+'/api/Authentication/LogOut';
 ```
 
 ### 3. TokenRetryInterceptor (`src/app/interceptors/token-retry.interceptor.ts`)
 
 Interceptor que:
+
 - Captura errores 401 y 403
 - Intenta refrescar el token automáticamente
 - Reintenta la petición original con el nuevo token
@@ -96,6 +101,7 @@ Interceptor que:
 ### 4. LoginComponent (`src/app/features/auth/login/`)
 
 Componente de login con:
+
 - ✅ Formulario reactivo con signals
 - ✅ Validación de campos
 - ✅ Toggle de visibilidad de contraseña
@@ -124,12 +130,12 @@ export class MyComponent {
           next: () => {
             // Token guardado, navegar al dashboard
             this.router.navigate(['/dashboard']);
-          }
+          },
         });
       },
       error: (error) => {
         console.error('Login failed:', error);
-      }
+      },
     });
   }
 }
@@ -165,7 +171,7 @@ export class MyComponent {
     console.log('Authenticated:', isAuth);
 
     // Verificar con API
-    this.authService.checkAuthentication().subscribe(isAuth => {
+    this.authService.checkAuthentication().subscribe((isAuth) => {
       console.log('API check:', isAuth);
     });
   }
@@ -179,14 +185,15 @@ export class MyComponent {
 ```typescript
 provideHttpClient(
   withInterceptors([
-    authInterceptor,              // 1. Verifica auth y agrega token
-    tokenRetryInterceptor,        // 2. Maneja tokens expirados
-    httpNotificationInterceptor,  // 3. Muestra notificaciones
-  ])
-)
+    authInterceptor, // 1. Verifica auth y agrega token
+    tokenRetryInterceptor, // 2. Maneja tokens expirados
+    httpNotificationInterceptor, // 3. Muestra notificaciones
+  ]),
+);
 ```
 
 **⚠️ IMPORTANTE:** El orden de los interceptores es crítico:
+
 1. Primero `authInterceptor` verifica y agrega el token
 2. Luego `tokenRetryInterceptor` maneja renovaciones
 3. Finalmente `httpNotificationInterceptor` muestra mensajes
@@ -215,9 +222,11 @@ export const routes: Routes = [
 ## API Endpoints (OpenAPI)
 
 ### `POST /api/Authentication/LogIn`
+
 Login de usuario. Retorna JWT en cookies httpOnly.
 
 **Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -226,9 +235,11 @@ Login de usuario. Retorna JWT en cookies httpOnly.
 ```
 
 ### `POST /api/Authentication/GetAuthorizationToken`
+
 Obtiene el token de autorización usando el JWT de cookies.
 
 **Response:**
+
 ```json
 {
   "user": { ... },
@@ -238,17 +249,21 @@ Obtiene el token de autorización usando el JWT de cookies.
 ```
 
 ### `GET /api/Authentication/IsAuthenticated`
+
 Verifica si el usuario está autenticado.
 
 **Response:**
+
 ```json
 true
 ```
 
 ### `GET /api/Authentication/LogOut`
+
 Cierra la sesión del usuario.
 
 ### `POST /api/Authentication/RefreshAuthenticationToken`
+
 Refresca el token de autenticación (no usado actualmente, se usa `getAuthorizationToken`).
 
 ## Casos de Uso
@@ -309,6 +324,7 @@ Refresca el token de autenticación (no usado actualmente, se usa `getAuthorizat
 ### Recomendaciones Adicionales
 
 1. **Configurar cookies en el servidor:**
+
 ```csharp
 options.Cookie.HttpOnly = true;
 options.Cookie.Secure = true; // HTTPS only
@@ -320,6 +336,7 @@ options.Cookie.SameSite = SameSiteMode.Strict;
 3. **Agregar rate limiting** en endpoints de autenticación
 
 4. **Implementar auto-logout** después de inactividad:
+
 ```typescript
 // En AuthService
 private setupAutoLogout() {
@@ -380,6 +397,7 @@ Ver `src/app/interceptors/http-notification.interceptor.spec.ts` como ejemplo.
 **Problema:** La app redirige constantemente a login.
 
 **Solución:** Verificar que:
+
 1. El JWT se está guardando correctamente en las cookies
 2. Las cookies tienen el dominio correcto
 3. El endpoint `isAuthenticated` retorna `true`
@@ -389,6 +407,7 @@ Ver `src/app/interceptors/http-notification.interceptor.spec.ts` como ejemplo.
 **Problema:** Los requests no tienen el header `Authorization`.
 
 **Solución:** Verificar que:
+
 1. El `authInterceptor` está registrado en `app.config.ts`
 2. Se llamó a `getAuthorizationToken()` después del login
 3. El token se guardó en `AuthService`
@@ -398,6 +417,7 @@ Ver `src/app/interceptors/http-notification.interceptor.spec.ts` como ejemplo.
 **Problema:** El interceptor intenta refrescar el token infinitamente.
 
 **Solución:** Verificar que:
+
 1. `getAuthorizationToken` no está en la lista `NO_RETRY_ENDPOINTS`
 2. El control `isRefreshing` funciona correctamente
 3. Los errores de refresh se manejan adecuadamente

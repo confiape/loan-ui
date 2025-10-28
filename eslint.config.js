@@ -7,7 +7,7 @@ const prettierConfig = require('eslint-config-prettier');
 
 module.exports = tseslint.config(
   {
-    ignores: [ 'src/app/core/openapi/**' ],
+    ignores: ['src/app/core/openapi/**'],
   },
   {
     files: ['**/*.ts'],
@@ -45,10 +45,7 @@ module.exports = tseslint.config(
   },
   {
     files: ['**/*.html'],
-    extends: [
-      ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
-    ],
+    extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
     rules: {},
   },
 );

@@ -12,11 +12,19 @@
         (click)="onItemClick(item)"
         [attr.aria-label]="item.label"
       >
-        <span class="bottom-nav-icon w-5 h-5 mb-2 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors" [innerHTML]="item.icon"></span>
-        <span class="bottom-nav-label text-sm text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors">{{ item.label }}</span>
+        <span
+          class="bottom-nav-icon w-5 h-5 mb-2 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors"
+          [innerHTML]="item.icon"
+        ></span>
+        <span
+          class="bottom-nav-label text-sm text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] transition-colors"
+          >{{ item.label }}</span
+        >
       </a>
     } @empty {
-      <div class="bottom-nav-empty col-span-4 flex items-center justify-center text-[var(--color-text-secondary)] text-sm">
+      <div
+        class="bottom-nav-empty col-span-4 flex items-center justify-center text-[var(--color-text-secondary)] text-sm"
+      >
         No navigation items
       </div>
     }

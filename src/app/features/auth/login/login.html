@@ -1,4 +1,6 @@
-<div class="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-primary to-secondary">
+<div
+  class="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-primary to-secondary"
+>
   <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8">
     <div class="text-center mb-8">
       <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Bienvenido</h1>
@@ -23,7 +25,9 @@
 
       <!-- Password Field -->
       <div class="flex flex-col gap-2">
-        <label for="password" class="text-sm font-medium text-gray-900 dark:text-white">Contraseña</label>
+        <label for="password" class="text-sm font-medium text-gray-900 dark:text-white"
+          >Contraseña</label
+        >
         <div class="relative flex items-center">
           <input
             id="password"
@@ -57,7 +61,9 @@
         [disabled]="isLoading() || !email() || !password()"
       >
         @if (isLoading()) {
-          <span class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          <span
+            class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+          ></span>
           <span>Iniciando sesión...</span>
         } @else {
           <span>Iniciar Sesión</span>
@@ -69,7 +75,11 @@
     <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
       <p class="text-sm text-gray-600 dark:text-gray-400 m-0">
         ¿Olvidaste tu contraseña?
-        <a href="#" class="text-primary no-underline font-medium transition-colors duration-150 ease-in-out hover:text-primary-dark hover:underline">Recuperar</a>
+        <a
+          href="#"
+          class="text-primary no-underline font-medium transition-colors duration-150 ease-in-out hover:text-primary-dark hover:underline"
+          >Recuperar</a
+        >
       </p>
     </div>
   </div>

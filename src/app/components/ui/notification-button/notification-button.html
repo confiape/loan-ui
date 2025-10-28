@@ -32,11 +32,7 @@
 
   <!-- Dropdown Menu -->
   @if (isOpen()) {
-    <div
-      class="notification-dropdown"
-      role="menu"
-      aria-label="Notifications menu"
-    >
+    <div class="notification-dropdown" role="menu" aria-label="Notifications menu">
       <!-- Header -->
       <div class="notification-dropdown-header">
         <span class="notification-dropdown-title">Notifications</span>
@@ -134,11 +130,7 @@
       <!-- Footer -->
       @if (notifications().length > 0) {
         <div class="notification-dropdown-footer">
-          <button
-            type="button"
-            class="notification-view-all"
-            (click)="onViewAll()"
-          >
+          <button type="button" class="notification-view-all" (click)="onViewAll()">
             <svg
               class="w-4 h-4"
               fill="currentColor"

@@ -1,10 +1,6 @@
 <div [ngClass]="containerClasses()">
   <!-- Tab List -->
-  <div
-    [ngClass]="tabListClasses()"
-    role="tablist"
-    [attr.aria-orientation]="orientation()"
-  >
+  <div [ngClass]="tabListClasses()" role="tablist" [attr.aria-orientation]="orientation()">
     @for (tab of tabs(); track tab.id; let i = $index) {
       <button
         type="button"

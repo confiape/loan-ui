@@ -24,10 +24,7 @@
       </button>
 
       @if (isOpen(item)) {
-        <div
-          class="accordion-body"
-          [class.animated]="animated()"
-        >
+        <div class="accordion-body" [class.animated]="animated()">
           {{ item.content }}
         </div>
       }

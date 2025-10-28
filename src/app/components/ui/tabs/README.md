@@ -22,12 +22,7 @@ import { TabsComponent, TabItem } from './components/ui/tabs/tabs.component';
   selector: 'app-example',
   standalone: true,
   imports: [TabsComponent],
-  template: `
-    <app-tabs
-      [tabs]="tabs"
-      variant="pills"
-    />
-  `
+  template: ` <app-tabs [tabs]="tabs" variant="pills" /> `,
 })
 export class ExampleComponent {
   tabs: TabItem[] = [
@@ -35,13 +30,13 @@ export class ExampleComponent {
       id: 'tab1',
       label: 'Profile',
       icon: '👤',
-      content: 'Profile content here...'
+      content: 'Profile content here...',
     },
     {
       id: 'tab2',
       label: 'Settings',
       icon: '⚙️',
-      content: 'Settings content here...'
+      content: 'Settings content here...',
     },
     {
       id: 'tab3',
@@ -49,7 +44,7 @@ export class ExampleComponent {
       icon: '💬',
       badge: 5,
       badgeVariant: 'primary',
-      content: 'You have 5 new messages.'
+      content: 'You have 5 new messages.',
     },
   ];
 }
@@ -73,9 +68,9 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'settings', component: SettingsComponent },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-    ]
-  }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
+  },
 ];
 ```
 
@@ -94,15 +89,11 @@ import { TabsComponent, TabItem } from './components/ui/tabs/tabs.component';
       <h1>Admin Panel</h1>
 
       <!-- Tabs with Router -->
-      <app-tabs
-        [tabs]="adminTabs"
-        [useRouter]="true"
-        variant="underline"
-      />
+      <app-tabs [tabs]="adminTabs" [useRouter]="true" variant="underline" />
 
       <!-- Content will be rendered via router-outlet inside tabs component -->
     </div>
-  `
+  `,
 })
 export class AdminLayoutComponent {
   adminTabs: TabItem[] = [
@@ -110,19 +101,19 @@ export class AdminLayoutComponent {
       id: 'dashboard',
       label: 'Dashboard',
       icon: '📊',
-      route: '/admin/dashboard'
+      route: '/admin/dashboard',
     },
     {
       id: 'profile',
       label: 'Profile',
       icon: '👤',
-      route: '/admin/profile'
+      route: '/admin/profile',
     },
     {
       id: 'settings',
       label: 'Settings',
       icon: '⚙️',
-      route: '/admin/settings'
+      route: '/admin/settings',
     },
   ];
 }
@@ -145,33 +136,33 @@ navigateToSettings() {
 
 ### Inputs
 
-| Input | Type | Default | Description |
-|-------|------|---------|-------------|
-| `tabs` | `TabItem[]` | **required** | Array of tab items |
-| `variant` | `'default' \| 'pills' \| 'underline' \| 'boxed' \| 'segmented'` | `'default'` | Visual variant |
-| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Tab orientation |
-| `useRouter` | `boolean` | `false` | Enable Angular Router integration |
-| `activeTabId` | `string` | `''` | Initially active tab ID (content mode) |
-| `justified` | `boolean` | `false` | Evenly distribute tabs |
-| `fullWidth` | `boolean` | `false` | Tabs take full width |
+| Input         | Type                                                            | Default        | Description                            |
+| ------------- | --------------------------------------------------------------- | -------------- | -------------------------------------- |
+| `tabs`        | `TabItem[]`                                                     | **required**   | Array of tab items                     |
+| `variant`     | `'default' \| 'pills' \| 'underline' \| 'boxed' \| 'segmented'` | `'default'`    | Visual variant                         |
+| `orientation` | `'horizontal' \| 'vertical'`                                    | `'horizontal'` | Tab orientation                        |
+| `useRouter`   | `boolean`                                                       | `false`        | Enable Angular Router integration      |
+| `activeTabId` | `string`                                                        | `''`           | Initially active tab ID (content mode) |
+| `justified`   | `boolean`                                                       | `false`        | Evenly distribute tabs                 |
+| `fullWidth`   | `boolean`                                                       | `false`        | Tabs take full width                   |
 
 ### Outputs
 
-| Output | Type | Description |
-|--------|------|-------------|
+| Output       | Type                    | Description                 |
+| ------------ | ----------------------- | --------------------------- |
 | `tabChanged` | `EventEmitter<TabItem>` | Emitted when tab is changed |
 
 ### TabItem Interface
 
 ```typescript
 interface TabItem {
-  id: string;                 // Unique identifier
-  label: string;              // Tab label text
-  content?: string;           // Static content (content mode only)
-  route?: string;             // Router path (router mode only)
-  disabled?: boolean;         // Disable the tab
-  icon?: string;              // Icon (emoji or text)
-  badge?: string | number;    // Badge content
+  id: string; // Unique identifier
+  label: string; // Tab label text
+  content?: string; // Static content (content mode only)
+  route?: string; // Router path (router mode only)
+  disabled?: boolean; // Disable the tab
+  icon?: string; // Icon (emoji or text)
+  badge?: string | number; // Badge content
   badgeVariant?: 'primary' | 'success' | 'error' | 'warning' | 'info'; // Badge color
 }
 ```
@@ -179,6 +170,7 @@ interface TabItem {
 ## Variants
 
 ### Default
+
 Tabs with background on active tab (traditional style)
 
 ```html
@@ -186,6 +178,7 @@ Tabs with background on active tab (traditional style)
 ```
 
 ### Pills
+
 Rounded pill-style buttons
 
 ```html
@@ -193,6 +186,7 @@ Rounded pill-style buttons
 ```
 
 ### Underline
+
 Clean underline indicator (modern style)
 
 ```html
@@ -200,6 +194,7 @@ Clean underline indicator (modern style)
 ```
 
 ### Boxed
+
 Tabs with borders (classic style)
 
 ```html
@@ -207,6 +202,7 @@ Tabs with borders (classic style)
 ```
 
 ### Segmented
+
 iOS-style segmented control
 
 ```html

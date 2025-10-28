@@ -27,7 +27,8 @@
 
       <!-- Title -->
       <span
-        class="text-lg lg:text-xl font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
+        class="text-lg lg:text-xl font-semibold text-[var(--color-text-primary)] whitespace-nowrap"
+      >
         {{ appTitle() }}
       </span>
 
@@ -53,7 +54,12 @@
           class="p-2 text-[var(--color-text-secondary)] rounded-lg md:hidden hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] focus:ring-4 focus:ring-[var(--color-border)] transition-all"
           aria-label="Toggle search"
         >
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            class="w-6 h-6"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               clip-rule="evenodd"
               fill-rule="evenodd"
@@ -70,10 +76,7 @@
       />
 
       <!-- Apps Menu -->
-      <app-apps-menu
-        [apps]="apps()"
-        (appClick)="onAppClick($event)"
-      />
+      <app-apps-menu [apps]="apps()" (appClick)="onAppClick($event)" />
 
       <!-- User Menu -->
       <app-user-menu
