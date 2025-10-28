@@ -80,9 +80,9 @@
 
       <!-- User Menu -->
       <app-user-menu
-        [userName]="userName()"
-        [userEmail]="userEmail()"
-        [userAvatar]="userAvatar()"
+        [userName]="displayUserName"
+        [userEmail]="displayUserEmail"
+        [userAvatar]="displayUserAvatar"
         [menuItems]="userMenuItems()"
         (menuItemClick)="onUserMenuClick($event)"
       />

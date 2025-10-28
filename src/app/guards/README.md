@@ -9,12 +9,14 @@ Los guards son funciones que controlan el acceso a rutas en la aplicación. Este
 Protege rutas que requieren autenticación. Si el usuario no está autenticado, será redirigido a la página de login.
 
 **Características:**
+
 - Verifica si el usuario tiene un token de acceso
 - Si no hay token, consulta el API para verificar autenticación
 - Redirige al login con el parámetro `returnUrl` para volver después del login
 - Maneja errores de autenticación de forma segura
 
 **Uso:**
+
 ```typescript
 import { authGuard } from './guards/auth.guard';
 
@@ -22,12 +24,13 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [authGuard]
-  }
+    canActivate: [authGuard],
+  },
 ];
 ```
 
 **Flujo:**
+
 1. Verifica si existe un token en memoria
 2. Si hay token → Permite acceso
 3. Si no hay token → Llama a `checkAuthentication()` del `AuthService`
@@ -41,11 +44,13 @@ export const routes: Routes = [
 Previene que usuarios autenticados accedan a la página de login. Si el usuario ya está autenticado, será redirigido al dashboard.
 
 **Características:**
+
 - Verifica si el usuario ya tiene un token de acceso
 - Si está autenticado, redirige al dashboard
 - Permite acceso al login solo si no hay autenticación
 
 **Uso:**
+
 ```typescript
 import { loginGuard } from './guards/login.guard';
 
@@ -53,12 +58,13 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [loginGuard]
-  }
+    canActivate: [loginGuard],
+  },
 ];
 ```
 
 **Flujo:**
+
 1. Verifica si existe un token en memoria
 2. Si hay token → Redirige a `/dashboard`
 3. Si no hay token → Llama a `checkAuthentication()` del `AuthService`
@@ -81,7 +87,7 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [loginGuard]
+    canActivate: [loginGuard],
   },
 
   // Rutas protegidas - Solo accesibles si está autenticado
@@ -92,14 +98,14 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        component: DashboardComponent
+        component: DashboardComponent,
       },
       {
         path: 'profile',
-        component: ProfileComponent
-      }
-    ]
-  }
+        component: ProfileComponent,
+      },
+    ],
+  },
 ];
 ```
 
@@ -122,6 +128,7 @@ Cada guard tiene su suite de tests completa:
 - `login.guard.spec.ts`: Tests para LoginGuard
 
 Ejecutar tests:
+
 ```bash
 npm test
 ```
