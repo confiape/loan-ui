@@ -8,25 +8,6 @@ Before proceeding with any user request, you MUST ask:
 
 **"Is this a TASK (implementation/code changes) or a QUERY (question/exploration)?"**
 
-### TASK (Implementation/Code Changes)
-If the request involves:
-- Creating new components, features, or functionality
-- Modifying existing code
-- Fixing bugs
-- Refactoring code
-- Any change that requires code edits
-
-**Follow the complete workflow:**
-- ✅ Check Angular Best Practices (MCP)
-- ✅ Create GitHub Issue
-- ✅ Create branch from master
-- ✅ Implement changes
-- ✅ Create/update unit tests (MANDATORY)
-- ✅ Create/update Storybook stories (if UI component)
-- ✅ Run quality checks (prettier, lint, tests)
-- ✅ User testing
-- ✅ Create Pull Request
-
 ### QUERY (Question/Exploration)
 If the request involves:
 - Asking questions about the codebase
@@ -43,6 +24,55 @@ If the request involves:
 - ❌ Skip: Unit tests creation
 - ❌ Skip: Storybook stories creation
 - ❌ Skip: Pull Request creation
+
+**At the end of QUERY:**
+After answering all questions and completing the exploration, you MUST:
+1. **Create a GitHub Issue** - Summarize everything discussed into a detailed issue with:
+   - Clear description based on the exploration
+   - Acceptance criteria
+   - Technical approach discovered during the query
+2. **Ask the user**: "Would you like to continue with the TASK to implement this?"
+
+**If user chooses to continue with TASK:**
+- Proceed with the complete TASK workflow below
+- You can now IGNORE all skip rules from the QUERY workflow
+- Follow ALL steps in the TASK workflow
+
+### TASK (Implementation/Code Changes)
+If the request involves:
+- Creating new components, features, or functionality
+- Modifying existing code
+- Fixing bugs
+- Refactoring code
+- Any change that requires code edits
+
+**Before starting, ALWAYS ask:**
+**"Does a GitHub Issue already exist for this task?"**
+
+**If YES (Issue exists):**
+- Ask for the issue number
+- Read the issue using GitHub MCP tools
+- Understand requirements, acceptance criteria, and technical approach
+- Proceed directly to step 1 (Check Angular Best Practices) below
+
+**If NO (No issue exists):**
+- Create a new GitHub Issue first (step 2 below)
+- Then proceed with the complete workflow
+
+**Follow the complete workflow:**
+1. ✅ **Check Angular Best Practices (MCP)**
+2. ✅ **Create GitHub Issue** (if doesn't exist) - Create detailed issue (bug/feature/hotfix) with:
+   - Clear description of work
+   - Acceptance criteria
+   - Technical approach if complex
+3. ✅ **Confirm with User** - Present issue details, ask if ready to proceed
+4. ✅ **Create branch from master**
+5. ✅ **Implement changes**
+6. ✅ **Create/update unit tests (MANDATORY)**
+7. ✅ **Create/update Storybook stories (if UI component)**
+8. ✅ **Run quality checks (prettier, lint, tests)**
+9. ✅ **User testing**
+10. ✅ **Create Pull Request**
 
 **Note:** If unclear, ask the user to clarify before proceeding.
 
