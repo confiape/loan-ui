@@ -1,557 +1,480 @@
-# loan-ui Angular 20 – Guía Rápida
+# CLAUDE.md - loan-ui
 
-Este proyecto es una UI de gestión de préstamos en Angular 20, con diseño semántico y Tailwind CSS v4. Las buenas prácticas y convenciones están centralizadas en el MCP (Manual de Convenciones y Prácticas). Este archivo solo contiene lo esencial para trabajar y navegar el proyecto.
+Angular 20 application with semantic design system on Tailwind CSS v4. Zoneless, standalone components.
 
----
+## CRITICAL RULES
 
-## Comandos Clave
+### NEVER EDIT GENERATED CODE
 
-| Acción           | Comando             |
-| ---------------- | ------------------- |
-| Dev server       | `npm start`         |
-| Test unitarios   | `npm test`          |
-| Storybook        | `npm run storybook` |
-| Lint/Prettier    | `npm run lint`      |
-| Build producción | `npm run build`     |
-| Prettier         | `npm run prettier`  |
+**NEVER** modify files in `src/app/core/openapi/**` - Auto-generated from OpenAPI specs. Any changes will be overwritten.
 
----
+### MANDATORY WORKFLOW (ALWAYS FOLLOW)
 
-## Estructura Principal
+Before starting ANY work:
 
-```text
-loan-ui
-.
-├── angular.json
-├── AUTHENTICATION.md
-├── .claude
-│   └── settings.local.json
-├── CLAUDE.md
-├── CLAUDE.md.backup
-├── documentation.json
-├── .editorconfig
-├── eslint.config.js
-├── .github
-│   └── workflows
-│       └── playwright.yml
-├── .gitignore
-├── .mcp.json
-├── package.json
-├── package-lock.json
-├── playwright.config.ts
-├── .postcssrc.json
-├── .prettierignore
-├── .prettierrc
-├── public
-│   └── favicon.ico
-├── README.md
-├── sonar-project.properties
-├── src
-│   ├── app
-│   │   ├── app.config.spec.ts
-│   │   ├── app.config.ts
-│   │   ├── app.css
-│   │   ├── app.html
-│   │   ├── app.routes.ts
-│   │   ├── app.spec.ts
-│   │   ├── app.ts
-│   │   ├── components
-│   │   │   └── ui
-│   │   │       ├── accordion
-│   │   │       │   ├── accordion.component.spec.ts
-│   │   │       │   ├── accordion.css
-│   │   │       │   ├── accordion.html
-│   │   │       │   └── accordion.ts
-│   │   │       ├── apps-menu
-│   │   │       │   ├── apps-menu.css
-│   │   │       │   ├── apps-menu.html
-│   │   │       │   ├── apps-menu.spec.ts
-│   │   │       │   └── apps-menu.ts
-│   │   │       ├── data-table
-│   │   │       │   ├── data-table.css
-│   │   │       │   ├── data-table.html
-│   │   │       │   ├── data-table.spec.ts
-│   │   │       │   └── data-table.ts
-│   │   │       ├── datepicker
-│   │   │       │   ├── datepicker.css
-│   │   │       │   ├── datepicker.html
-│   │   │       │   ├── datepicker.spec.ts
-│   │   │       │   └── datepicker.ts
-│   │   │       ├── dropdown
-│   │   │       │   ├── dropdown.component.spec.ts
-│   │   │       │   ├── dropdown.css
-│   │   │       │   ├── dropdown.html
-│   │   │       │   └── dropdown.ts
-│   │   │       ├── index.ts
-│   │   │       ├── modal
-│   │   │       │   ├── modal.component.spec.ts
-│   │   │       │   ├── modal.css
-│   │   │       │   ├── modal.html
-│   │   │       │   └── modal.ts
-│   │   │       ├── multiselect
-│   │   │       │   ├── multiselect.component.spec.ts
-│   │   │       │   ├── multiselect.css
-│   │   │       │   ├── multiselect.html
-│   │   │       │   └── multiselect.ts
-│   │   │       ├── notification-button
-│   │   │       │   ├── notification-button.css
-│   │   │       │   ├── notification-button.html
-│   │   │       │   ├── notification-button.spec.ts
-│   │   │       │   └── notification-button.ts
-│   │   │       ├── README.md
-│   │   │       ├── search-bar
-│   │   │       │   ├── search-bar.css
-│   │   │       │   ├── search-bar.html
-│   │   │       │   ├── search-bar.spec.ts
-│   │   │       │   └── search-bar.ts
-│   │   │       ├── table
-│   │   │       │   ├── table.css
-│   │   │       │   ├── table.html
-│   │   │       │   ├── table.spec.ts
-│   │   │       │   └── table.ts
-│   │   │       ├── table-pagination
-│   │   │       │   ├── table-pagination.css
-│   │   │       │   ├── table-pagination.html
-│   │   │       │   ├── table-pagination.spec.ts
-│   │   │       │   └── table-pagination.ts
-│   │   │       ├── table-toolbar
-│   │   │       │   ├── table-toolbar.css
-│   │   │       │   ├── table-toolbar.html
-│   │   │       │   ├── table-toolbar.spec.ts
-│   │   │       │   └── table-toolbar.ts
-│   │   │       ├── tabs
-│   │   │       │   ├── README.md
-│   │   │       │   ├── tabs.component.spec.ts
-│   │   │       │   ├── tabs.css
-│   │   │       │   ├── tabs.html
-│   │   │       │   └── tabs.ts
-│   │   │       ├── toast
-│   │   │       │   ├── toast.component.spec.ts
-│   │   │       │   ├── toast-container.component.spec.ts
-│   │   │       │   ├── toast-container.ts
-│   │   │       │   ├── toast.css
-│   │   │       │   ├── toast.html
-│   │   │       │   └── toast.ts
-│   │   │       ├── tooltip
-│   │   │       │   ├── tooltip.component.spec.ts
-│   │   │       │   ├── tooltip.css
-│   │   │       │   ├── tooltip.html
-│   │   │       │   └── tooltip.ts
-│   │   │       └── user-menu
-│   │   │           ├── user-menu.css
-│   │   │           ├── user-menu.html
-│   │   │           ├── user-menu.spec.ts
-│   │   │           └── user-menu.ts
-│   │   ├── config
-│   │   │   └── layout.config.ts
-│   │   ├── core
-│   │   │   └── openapi
-│   │   │       ├── api
-│   │   │       │   ├── api.ts
-│   │   │       │   ├── authentication.service.ts
-│   │   │       │   ├── borrower.service.ts
-│   │   │       │   ├── company.service.ts
-│   │   │       │   ├── default.service.ts
-│   │   │       │   ├── file.service.ts
-│   │   │       │   ├── inOutBalance.service.ts
-│   │   │       │   ├── loan.service.ts
-│   │   │       │   ├── payment.service.ts
-│   │   │       │   ├── reports.service.ts
-│   │   │       │   └── user.service.ts
-│   │   │       ├── api.module.ts
-│   │   │       ├── configuration.ts
-│   │   │       ├── encoder.ts
-│   │   │       ├── git_push.sh
-│   │   │       ├── index.ts
-│   │   │       ├── model
-│   │   │       │   ├── basicLoanAndPersonDto.ts
-│   │   │       │   ├── basicLoanDto.ts
-│   │   │       │   ├── borrowerClientWithActiveLoansDto.ts
-│   │   │       │   ├── companyDto.ts
-│   │   │       │   ├── createBorrowerDto.ts
-│   │   │       │   ├── inOutBalanceDto.ts
-│   │   │       │   ├── inOutBalanceType.ts
-│   │   │       │   ├── loanAndPaymentDto.ts
-│   │   │       │   ├── loanDto.ts
-│   │   │       │   ├── loanStatus.ts
-│   │   │       │   ├── loanType.ts
-│   │   │       │   ├── loginDto.ts
-│   │   │       │   ├── loginResponse.ts
-│   │   │       │   ├── models.ts
-│   │   │       │   ├── paymentByDayReportRequestDto.ts
-│   │   │       │   ├── paymentByDayReportResponseDto.ts
-│   │   │       │   ├── paymentDetailsResponseDto.ts
-│   │   │       │   ├── paymentDto.ts
-│   │   │       │   ├── paymentResponseDto.ts
-│   │   │       │   ├── paymentStatus.ts
-│   │   │       │   ├── permissionDto.ts
-│   │   │       │   ├── personDto.ts
-│   │   │       │   ├── pointDto.ts
-│   │   │       │   ├── reniecPersonalInformationDto.ts
-│   │   │       │   ├── roleDto.ts
-│   │   │       │   ├── saveCompanyDto.ts
-│   │   │       │   ├── saveLoanDto.ts
-│   │   │       │   ├── savePaymentDto.ts
-│   │   │       │   ├── saveRoleDto.ts
-│   │   │       │   ├── saveUserDto.ts
-│   │   │       │   ├── simplePaymentDto.ts
-│   │   │       │   ├── simplePayments.ts
-│   │   │       │   ├── tokenDto.ts
-│   │   │       │   ├── userDto.ts
-│   │   │       │   └── userToRegister.ts
-│   │   │       ├── param.ts
-│   │   │       ├── README.md
-│   │   │       └── variables.ts
-│   │   ├── features
-│   │   │   ├── auth
-│   │   │   │   └── login
-│   │   │   │       ├── login.component.spec.ts
-│   │   │   │       ├── login.html
-│   │   │   │       └── login.ts
-│   │   │   └── dashboard
-│   │   │       ├── dashboard.html
-│   │   │       ├── dashboard.spec.ts
-│   │   │       └── dashboard.ts
-│   │   ├── interceptors
-│   │   │   ├── auth.interceptor.spec.ts
-│   │   │   ├── auth.interceptor.ts
-│   │   │   ├── http-notification.interceptor.spec.ts
-│   │   │   ├── http-notification.interceptor.ts
-│   │   │   ├── README.md
-│   │   │   ├── token-retry.interceptor.spec.ts
-│   │   │   └── token-retry.interceptor.ts
-│   │   ├── layout
-│   │   │   ├── bottom-navigation
-│   │   │   │   ├── bottom-navigation.css
-│   │   │   │   ├── bottom-navigation.html
-│   │   │   │   ├── bottom-navigation.spec.ts
-│   │   │   │   └── bottom-navigation.ts
-│   │   │   ├── main-layout
-│   │   │   │   ├── main-layout.html
-│   │   │   │   ├── main-layout.spec.ts
-│   │   │   │   └── main-layout.ts
-│   │   │   ├── navbar
-│   │   │   │   ├── navbar.html
-│   │   │   │   ├── navbar.spec.ts
-│   │   │   │   └── navbar.ts
-│   │   │   └── sidenav
-│   │   │       ├── sidenav.component.spec.ts
-│   │   │       ├── sidenav.css
-│   │   │       ├── sidenav.html
-│   │   │       └── sidenav.ts
-│   │   └── services
-│   │       ├── auth.service.spec.ts
-│   │       ├── auth.service.ts
-│   │       ├── toast.service.spec.ts
-│   │       └── toast.service.ts
-│   ├── index.html
-│   ├── main.ts
-│   ├── stories
-│   │   ├── apps-menu.stories.ts
-│   │   ├── bottom-navigation.stories.ts
-│   │   ├── data-table.stories.ts
-│   │   ├── datepicker.stories.ts
-│   │   ├── dropdown.stories.ts
-│   │   ├── login.stories.ts
-│   │   ├── modal.stories.ts
-│   │   ├── multiselect.stories.ts
-│   │   ├── notification-button.stories.ts
-│   │   ├── search-bar.stories.ts
-│   │   ├── sidenav.stories.ts
-│   │   ├── story-helpers.ts
-│   │   ├── tabs.stories.ts
-│   │   └── user-menu.stories.ts
-│   ├── styles
-│   │   ├── components
-│   │   │   ├── _alerts.css
-│   │   │   ├── _avatar.css
-│   │   │   ├── _badges.css
-│   │   │   ├── _buttons.css
-│   │   │   ├── _cards.css
-│   │   │   ├── _feedback.css
-│   │   │   ├── _forms.css
-│   │   │   ├── _index.css
-│   │   │   ├── _interactive.css
-│   │   │   ├── _modals.css
-│   │   │   ├── _navigation.css
-│   │   │   └── _tables.css
-│   │   ├── tokens
-│   │   │   ├── _borders.css
-│   │   │   ├── _colors.css
-│   │   │   ├── _index.css
-│   │   │   ├── _layout.css
-│   │   │   ├── _shadows.css
-│   │   │   ├── _spacing.css
-│   │   │   ├── _transitions.css
-│   │   │   └── _typography.css
-│   │   └── utilities
-│   │       ├── _helpers.css
-│   │       └── _index.css
-│   ├── styles.css
-│   ├── styles.css.backup
-│   └── test-setup.ts
-├── .storybook
-│   ├── main.ts
-│   ├── preview.ts
-│   ├── tsconfig.doc.json
-│   ├── tsconfig.json
-│   └── typings.d.ts
-├── tests
-│   └── example.spec.ts
-├── tsconfig.app.json
-├── tsconfig.json
-├── tsconfig.spec.json
-├── vitest.config.ts
-└── .vscode
-    ├── extensions.json
-    ├── launch.json
-    ├── settings.json
-    └── tasks.json
+1. **Check Angular Best Practices** - Run MCP tool `mcp__angular-cli__get_best_practices` for nomenclature, signals, modern syntax
+2. **Create GitHub Issue** - Create detailed issue (bug/feature/hotfix) with:
+   - Clear description of work
+   - Acceptance criteria
+   - Technical approach if complex
+3. **Confirm with User** - Present issue details, ask if ready to proceed or if changes needed
+4. **Create Branch** - From updated `master`:
+   ```bash
+   git checkout master && git pull origin master
+   git checkout -b <type>/<descriptive-name>
+   # Types: feature, bug, hotfix, refactor, docs
+   # Example: feature/user-authentication
+   ```
+5. **Implement Changes** - Follow Angular 20 standards (see below)
+6. **Update/Create Tests** - MANDATORY unit tests with Vitest
+7. **Update Stories** - If UI component, update/create Storybook stories
+8. **Run Quality Checks**:
+   ```bash
+   npx prettier --write .           # Format code
+   npm run lint                      # Fix lint errors
+   npm test                          # Run unit tests - MUST PASS
+   ```
+9. **Resolve ALL Errors** - Fix any lint/test failures from YOUR changes only
+10. **User Testing** - Ask user to test changes
+11. **Create PR** - If user approves:
+    - Create PR from your branch to `master`
+    - Include issue reference
+    - Describe changes and testing done
 
-49 directories, 237 files
+## Quick Reference
 
-
-```
-
-> **Nota:** Código generado en `src/app/core/openapi/**` se ignora siempre (no modificar, se sobreescribe automáticamente) solo leer en el caso de que se quiera consultar el http rest query entrada o salida.
-
----
-
-## Diseño y Estilos
-
-- **Tailwind CSS v4** para el 90% del styling.
-- **CSS variables** (tokens) para colores, spacing, tipografía, borders, sombras, transiciones y layout.
-- **Solo CSS separado** para animaciones complejas o posicionamiento dinámico.
-- **Dark mode:** Activado por la clase `.dark` en el HTML; todos los tokens de color cambian automáticamente.
-- **Ejemplo de variables:**
-  ```css
-  color: var(--color-primary);
-  background: var(--color-bg-primary);
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-lg);
-  ```
-- **Tokens principales en `src/styles/tokens/`:**
-  - `_colors.css` (colores semánticos, escala de grises, dark mode)
-  - `_spacing.css` (espaciado 0-32)
-  - `_typography.css` (tamaños, pesos, line-heights)
-  - `_borders.css` (radius, widths)
-  - `_shadows.css` (sm-2xl)
-  - `_transitions.css` (duraciones, timings)
-  - `_layout.css` (z-index, containers)
-
----
-
-## Componentes UI
-
-**Resumen:** 17 UI + 4 Layout. Todos con accesibilidad, variantes, dark mode y stories.
-
-- Form Controls: Dropdown, MultiSelect, Datepicker
-- Data Display: Table, TableToolbar, TablePagination, DataTable
-- Navegación: Tabs, Sidenav, BottomNavigation, AppsMenu, UserMenu, SearchBar
-- Feedback/Overlay: Modal, Toast, Tooltip, NotificationButton
-- Layout: Accordion, MainLayout, Navbar
-
-> Ver detalles y props en cada archivo de componente y en Storybook.
-
----
-
-## Testing & Calidad
-
-- **Unit tests:** Vitest (`npm test`)
-- **E2E:** Playwright (`./tests/`)
-- **Lint:** ESLint + Prettier (`npm run lint`)
-- **Cobertura:** `npm run coverage`
-- **Siempre que actualices código:**
-  - Agrega/modifica unit tests en vitest relacionados.
-  - Actualiza y revisa las historias de Storybook.
-  - Ejecuta `ng lint --fix` y `npx prettier --write .` para mantener el formato y calidad.
-
----
-
-## Servicios & Interceptores
-
-- **ToastService:** Notificaciones con signals.
-- **AuthService:** Autenticación y gestión de tokens.
-- **Interceptors:** auth, token-retry, http-notification.
-
----
-
-## Storybook
-
-- Historias en `src/stories/`, helpers en `story-helpers.ts`.
-- Todas las UI deben tener historias con comparación Light/Dark.
-
----
-
-## Recursos
-
-- [Angular 20](https://angular.dev)
-- [Tailwind CSS v4](https://tailwindcss.com/docs)
-- [Storybook Angular](https://storybook.js.org/docs/angular)
-- [Vitest](https://vitest.dev)
-- [Playwright](https://playwright.dev)
-
----
-
-## Workflow GitHub
-
-### Issues
-
-- Labels: `feature`, `bug`, `enhancement`, `docs`
-- Estructura: descripción, tareas (checkboxes), criterios de aceptación, archivos
-
-### Branches
-
-**⚠️ SIEMPRE antes de crear una nueva rama:**
+### Commands
 
 ```bash
-git checkout master
-git pull origin master
-git checkout -b feature/nombre-descriptivo
+npm start                     # Dev server :4200
+npm run build                 # Production build
+npm test                      # Unit tests (Vitest)
+npm run lint                  # ESLint + Prettier
+npm run storybook             # Storybook :6006
+ng generate component components/ui/name --standalone
 ```
 
-### PRs
+### File Structure
 
-1. Branch: `feature/nombre-descriptivo` desde master actualizado
-2. Desarrollo + tests + lint + prettier
-3. Commit: `<tipo>: descripción\n\n- cambios\n\nCloses #N`
-4. PR: resumen, checklist, resultados tests
+```
+src/app/
+├── components/ui/           # Reusable UI components
+├── features/                # Feature modules
+├── layout/                  # Layout (navbar, sidenav)
+├── config/layout.config.ts  # Centralized nav config
+└── core/openapi/            # AUTO-GENERATED - DO NOT EDIT
+```
 
-### Commits
+## Angular 20 Standards
 
-Tipos: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `style`
+### Nomenclature (CRITICAL)
 
----
+- ✅ `component-name.ts` (NOT `.component.ts`)
+- ✅ `component-name.html` (NOT `.component.html`)
+- ✅ `component-name.css` (NOT `.component.css`)
+- ✅ Folder matches name: `user-menu/user-menu.ts`
+- ✅ kebab-case files, camelCase variables, PascalCase classes
 
-## Testing Vitest
-
-### Mocks
+### Angular Features (Use MCP for details)
 
 ```typescript
-import { vi } from 'vitest';
+// Modern Angular 20 patterns - consult MCP for specifics
+import { Component, input, output, signal, computed } from '@angular/core';
 
-const mockService = {
-  getData: vi.fn().mockReturnValue(of(mockData)),
+export class MyComponent {
+  // Inputs/Outputs (signals)
+  variant = input<string>('primary');
+  onChange = output<string>();
+
+  // State & computed
+  isOpen = signal(false);
+  label = computed(() => (this.isOpen() ? 'Close' : 'Open'));
+
+  // Template uses @if, @for, @else, @empty
+}
+```
+
+**Consult Angular MCP** for:
+
+- Signal patterns and reactivity
+- Template syntax (@if/@for vs *ngIf/*ngFor)
+- Dependency injection with `inject()`
+- Change detection strategies
+
+## Styling Policy
+
+### Prefer Tailwind (90% of cases)
+
+```html
+<!-- Good - Use Tailwind -->
+<div class="flex items-center gap-4 p-6 bg-white rounded-lg shadow-md">
+  <button class="btn btn-primary">Submit</button>
+</div>
+```
+
+### Predefined Component Classes (Use These First)
+
+**Buttons** - `src/styles/components/_buttons.css`
+
+```html
+<!-- Solid buttons -->
+<button class="btn btn-primary">Primary</button>
+<button class="btn btn-secondary">Secondary</button>
+<button class="btn btn-success">Success</button>
+<button class="btn btn-error">Error</button>
+<button class="btn btn-warning">Warning</button>
+<button class="btn btn-info">Info</button>
+<button class="btn btn-dark">Dark</button>
+
+<!-- Outline buttons -->
+<button class="btn btn-outline-primary">Outline</button>
+
+<!-- Sizes -->
+<button class="btn btn-primary btn-xs">Extra Small</button>
+<button class="btn btn-primary btn-sm">Small</button>
+<button class="btn btn-primary btn-md">Medium</button>
+<button class="btn btn-primary btn-lg">Large</button>
+<button class="btn btn-primary btn-xl">Extra Large</button>
+
+<!-- Pill modifier -->
+<button class="btn btn-primary btn-pill">Rounded</button>
+```
+
+**Forms** - `src/styles/components/_forms.css`
+
+```html
+<!-- Label + Input -->
+<label class="form-label">Email</label>
+<input type="email" class="form-input" placeholder="name@example.com" />
+
+<!-- Input states -->
+<input class="form-input form-input-success" placeholder="Valid" />
+<input class="form-input form-input-error" placeholder="Invalid" />
+
+<!-- Checkbox -->
+<input type="checkbox" class="form-checkbox" />
+
+<!-- Floating label -->
+<div class="relative">
+  <input type="text" class="floating-input" placeholder=" " />
+  <label class="floating-label">Floating label</label>
+</div>
+```
+
+**Cards** - `src/styles/components/_cards.css`
+
+```html
+<div class="card">
+  <h5 class="card-title">Card Title</h5>
+  <p class="card-text">Card description text here.</p>
+  <button class="card-btn">Read more</button>
+</div>
+
+<!-- Clickable card -->
+<a href="#" class="card-link">
+  <h5 class="card-title">Link Card</h5>
+  <p class="card-text">This entire card is clickable.</p>
+</a>
+```
+
+**Badges** - `src/styles/components/_badges.css`
+
+```html
+<span class="badge badge-primary">Primary</span>
+<span class="badge badge-success">Success</span>
+<span class="badge badge-error">Error</span>
+<span class="badge badge-warning">Warning</span>
+<span class="badge badge-info">Info</span>
+<span class="badge badge-dark">Dark</span>
+
+<!-- Pill badge -->
+<span class="badge badge-primary badge-pill">Rounded</span>
+```
+
+**Alerts** - `src/styles/components/_alerts.css`
+
+```html
+<div class="alert alert-primary">
+  <svg class="alert-icon">...</svg>
+  <span>Primary alert message</span>
+</div>
+
+<div class="alert alert-success">Success message</div>
+<div class="alert alert-error">Error message</div>
+<div class="alert alert-warning">Warning message</div>
+<div class="alert alert-info">Info message</div>
+```
+
+### CSS Files (10% - Complex cases only)
+
+Create `.css` file ONLY for:
+
+- Complex animations (`@keyframes`)
+- Dynamic positioning (tooltips, modals)
+- 50+ lines of styling
+- Intricate pseudo-selectors
+
+```css
+/* When CSS needed - ONLY use CSS variables */
+.dropdown-menu {
+  background: var(--color-bg-primary);
+  border: var(--border-width-1) solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+}
+```
+
+**Delete CSS file** if < 10 lines - use Tailwind instead!
+
+### Design Tokens (organized in `src/styles/tokens/`)
+
+```css
+/* Colors */ var(--color-primary), var(--color-text-primary)
+/* Spacing */ var(--spacing-2) /* 8px */, var(--spacing-4) /* 16px */
+/* Typography */ var(--font-size-base), var(--font-weight-medium)
+/* Borders */ var(--border-radius-md), var(--shadow-lg)
+```
+
+**Rule:** NEVER hardcode colors/spacing - always use variables!
+
+## Storybook (MANDATORY for UI)
+
+### Story Helpers (`src/stories/story-helpers.ts`)
+
+**Always use these helpers to create Light/Dark comparisons automatically:**
+
+**1. `createLightDarkComparison()` - Most Common**
+
+```typescript
+import { Meta, StoryObj } from '@storybook/angular';
+import { createLightDarkComparison } from './story-helpers';
+
+const meta: Meta<MyComponent> = {
+  title: 'UI/MyComponent',
+  component: MyComponent,
+  tags: ['autodocs'],
+  parameters: { layout: 'fullscreen' }, // REQUIRED!
 };
 
-// En tests
-vi.spyOn(component.output, 'emit');
-expect(component.output.emit).toHaveBeenCalledWith(data);
+export default meta;
+type Story = StoryObj<MyComponent>;
+
+// Simple component
+export const Default: Story = {
+  args: { variant: 'primary', size: 'md' },
+  render: (args) => ({
+    props: args,
+    template: createLightDarkComparison('app-my-component', `[variant]="variant" [size]="size"`),
+  }),
+};
 ```
 
-### Providers
+**2. `createVariantComparison()` - For Multiple Variants Grid**
 
 ```typescript
-// HttpClient (si componente o hijos lo usan)
-import { provideHttpClient } from '@angular/common/http';
-providers: [provideHttpClient()];
+import { createVariantComparison } from './story-helpers';
 
-// Router
-import { provideRouter } from '@angular/router';
-providers: [provideRouter([])];
+// Show all variants in grid (Light + Dark)
+export const AllVariants: Story = {
+  render: () => ({
+    props: {},
+    template: createVariantComparison(
+      'app-button',
+      ['Primary', 'Secondary', 'Success', 'Error', 'Warning'],
+      'size="md"', // Common bindings for all
+    ),
+  }),
+};
 ```
 
----
-
-## Interfaces UI
-
-**⚠️ SIEMPRE leer interfaces antes de crear mocks:**
-
-- `NotificationButton` → `Notification` (usa `time`, no `timestamp`)
-- `AppsMenu` → `AppMenuItem` (usa `id`, `label`, `href`)
-- `UserMenu` → `UserMenuItem` (usa `id`, `label`, `action`)
-
-**Verificar:**
+**3. `wrapInLightDarkComparison()` - For Complex Templates**
 
 ```typescript
-// 1. Leer archivo .ts del componente
-// 2. Ver interface exportada
-// 3. Usar campos exactos
+import { wrapInLightDarkComparison } from './story-helpers';
+
+// When you need custom template (modals, complex layouts)
+export const ComplexExample: Story = {
+  args: { isOpen: true },
+  render: (args) => ({
+    props: args,
+    template: wrapInLightDarkComparison(`
+      <div class="p-8">
+        <app-my-component [isOpen]="isOpen">
+          <div class="custom-content">Complex content here</div>
+        </app-my-component>
+      </div>
+    `),
+  }),
+};
 ```
 
----
-
-## Signals + Servicios
+**4. `createLightDarkRender()` - Shorthand Helper**
 
 ```typescript
-// Estado
-currentData = signal<Type | null>(null);
-isLoading = signal<boolean>(false);
-error = signal<string | null>(null);
+import { createLightDarkRender } from './story-helpers';
 
-// Carga
-loadData(): void {
-  this.isLoading.set(true);
-  this.service.getData()
-    .pipe(
-      tap((data) => {
-        this.currentData.set(data);
-        this.isLoading.set(false);
-      }),
-      catchError((err) => {
-        this.error.set('Error message');
-        this.isLoading.set(false);
-        return of(null);
-      })
-    ).subscribe();
-}
-
-// Getter con fallback
-get displayValue(): string {
-  return this.currentData()?.value || this.inputValue() || 'default';
-}
+export const Shorthand: Story = {
+  args: { variant: 'primary' },
+  render: createLightDarkRender('app-my-component', `[variant]="variant"`),
+};
 ```
 
----
+### Story Structure Requirements
 
-## Storybook
+**Meta Configuration:**
 
 ```typescript
-const meta: Meta<Component> = {
-  title: 'Categoría/Nombre',
-  component: Component,
-  tags: ['autodocs'],
-  decorators: [
-    applicationConfig({
-      providers: [provideZonelessChangeDetection() /* mocks */],
-    }),
-  ],
+const meta: Meta<MyComponent> = {
+  title: 'UI/ComponentName', // Category/ComponentName
+  component: MyComponent,
+  tags: ['autodocs'], // Auto-generate documentation
+  parameters: {
+    layout: 'fullscreen', // REQUIRED for Light/Dark comparison
+  },
+  argTypes: {
+    // Optional: control types
+    variant: {
+      control: 'select',
+      options: ['primary', 'secondary', 'success'],
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+    },
+    disabled: { control: 'boolean' },
+  },
   args: {
-    /* defaults */
+    onClick: fn(), // Mock functions with fn()
   },
 };
 ```
 
-Stories: `Default`, `DarkMode`, `Error`, `Loading`, `Empty`
+**Story Coverage (Minimum 5-10 stories):**
 
----
+```typescript
+// 1. Default/Basic
+export const Default: Story = { ... };
 
-## Checklist Pre-Commit
+// 2. All Variants
+export const AllVariants: Story = { ... };
 
-```bash
-# Ejecutar siempre
-npm test && npm run lint && npx prettier --write .
+// 3. All Sizes
+export const Sizes: Story = { ... };
+
+// 4. States
+export const Disabled: Story = { args: { disabled: true } };
+export const Loading: Story = { args: { loading: true } };
+export const WithError: Story = { args: { error: 'Error message' } };
+
+// 5. Edge Cases
+export const EmptyState: Story = { args: { items: [] } };
+export const LongContent: Story = { args: { label: 'Very long text...' } };
+export const Overflow: Story = { args: { items: [...100 items] } };
 ```
 
-- [ ] Tests pasan
-- [ ] Lint sin errores
-- [ ] Prettier ejecutado
-- [ ] Tests unitarios actualizados
-- [ ] Storybook actualizado (si aplica)
-- [ ] Sin modificar `src/app/core/openapi/**`
+**Best Practices:**
+
+- Always use `parameters: { layout: 'fullscreen' }` for Light/Dark helpers
+- Use `fn()` from `@storybook/test` for event handlers
+- Create stories for all variants, sizes, and states
+- Test edge cases (empty, overflow, long text)
+- Use argTypes for interactive controls
+
+## Testing
+
+### Unit Tests (Vitest)
+
+```typescript
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+
+await TestBed.configureTestingModule({
+  imports: [MyComponent],
+  providers: [provideZonelessChangeDetection()],
+}).compileComponents();
+```
+
+**MUST pass** before creating PR!
+
+## Component Checklist
+
+Before considering work complete:
+
+**Files & Naming:**
+
+- [ ] Modern naming: `.ts`, `.html`, `.css` (not `.component.*`)
+- [ ] CSS file only if 50+ lines or complex
+- [ ] Tailwind used for 90% of styling
+
+**Angular 20:**
+
+- [ ] Standalone component
+- [ ] Signals: `input()`, `output()`, `signal()`, `computed()`
+- [ ] Modern templates: `@if`, `@for`, `@empty`
+- [ ] Used MCP for Angular best practices
+
+**Styling:**
+
+- [ ] Only CSS variables (no hardcoded values)
+- [ ] Works in light & dark mode
+- [ ] Responsive design
+
+**Accessibility:**
+
+- [ ] Keyboard navigation
+- [ ] ARIA attributes
+- [ ] Focus states visible
+
+**Quality:**
+
+- [ ] Storybook stories created
+- [ ] Unit tests pass
+- [ ] Prettier + lint pass
+- [ ] User tested and approved
+
+**Git:**
+
+- [ ] GitHub issue created
+- [ ] Branch from updated master
+- [ ] PR created with issue reference
+
+## Available UI Components
+
+Reusable components in `src/app/components/ui/`:
+
+- **Dropdown** - Search, keyboard nav, loading
+- **MultiSelect** - Multi-select, badges, search
+- **Modal** - Backdrop, focus trap, sizes
+- **Tabs** - Pills, underline, vertical variants
+- **Accordion** - Single/multiple expand
+- **Sidenav** - Collapsible nested nav
+- Plus: AppsMenu, UserMenu, NotificationButton, SearchBar, Toast, Tooltip
+
+Import from: `src/app/components/ui/index.ts`
+
+**All include:** Keyboard nav, ARIA, dark mode, Storybook stories
+
+## Key Files
+
+- **Layout Config**: `src/app/config/layout.config.ts` - Centralized menus
+- **Design Tokens**: `src/styles/tokens/` - CSS variables by category
+- **Story Helpers**: `src/stories/story-helpers.ts`
+- **Reference Components**: `src/app/components/ui/dropdown/`, `multiselect/`, `modal/`
+
+## Reference Materials
+
+- **Angular Docs**: Use MCP `mcp__angular-cli__search_documentation` for current patterns
+- **Angular Best Practices**: Use MCP `mcp__angular-cli__get_best_practices` before coding
+- **Tailwind v4**: https://tailwindcss.com/docs
+- **Project Components**: Copy existing components as templates
 
 ---
 
-## Flujo de Trabajo
+**Remember:**
 
-1. **Inicio:** `git checkout master` → `git pull` → Issue GitHub
-2. **Planificación:** Verificar interfaces → Crear branch desde master actualizado
-3. **Implementación:** Componente → Template → Compilar
-4. **Testing:** Tests → `npm test` → Corregir tipos
-5. **Docs:** Storybook stories → Verificar variantes
-6. **Calidad:** lint → prettier → Revisión
-7. **Git:** add → commit → push → PR
-
----
-
-**Para buenas practicas y creacion de cualquier recurso de angular, consulta el MCP Angular 20.**
+1. Always start with Angular MCP for best practices
+2. Always follow GitHub workflow (issue -> branch -> tests -> PR)
+3. Never edit `src/app/core/openapi/**`
+4. Prefer Tailwind over CSS files
+5. All UI components need Storybook stories
+6. Tests must pass before PR

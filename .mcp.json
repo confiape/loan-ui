@@ -20,6 +20,10 @@
       "command": "npx",
       "args": ["@playwright/mcp@latest", "--isolated", "--storage-state={path/to/storage.json}"]
     },
+    "angular-cli": {
+      "command": "npx",
+      "args": ["-y", "@angular/cli", "mcp"]
+    },
     "github": {
       "type": "stdio",
       "command": "docker",
