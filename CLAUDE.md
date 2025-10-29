@@ -2,6 +2,50 @@
 
 Angular 20 application with semantic design system on Tailwind CSS v4. Zoneless, standalone components.
 
+## REQUEST CLASSIFICATION (ALWAYS ASK FIRST)
+
+Before proceeding with any user request, you MUST ask:
+
+**"Is this a TASK (implementation/code changes) or a QUERY (question/exploration)?"**
+
+### TASK (Implementation/Code Changes)
+If the request involves:
+- Creating new components, features, or functionality
+- Modifying existing code
+- Fixing bugs
+- Refactoring code
+- Any change that requires code edits
+
+**Follow the complete workflow:**
+- ✅ Check Angular Best Practices (MCP)
+- ✅ Create GitHub Issue
+- ✅ Create branch from master
+- ✅ Implement changes
+- ✅ Create/update unit tests (MANDATORY)
+- ✅ Create/update Storybook stories (if UI component)
+- ✅ Run quality checks (prettier, lint, tests)
+- ✅ User testing
+- ✅ Create Pull Request
+
+### QUERY (Question/Exploration)
+If the request involves:
+- Asking questions about the codebase
+- Exploring how something works
+- Understanding architecture or patterns
+- General consultation or advice
+- Code review or analysis
+
+**Simplified workflow:**
+- ✅ Check Angular Best Practices (MCP) if relevant
+- ✅ Answer the question or explore the codebase
+- ❌ Skip: GitHub issue creation
+- ❌ Skip: Branch creation
+- ❌ Skip: Unit tests creation
+- ❌ Skip: Storybook stories creation
+- ❌ Skip: Pull Request creation
+
+**Note:** If unclear, ask the user to clarify before proceeding.
+
 ## CRITICAL RULES
 
 ### NEVER EDIT GENERATED CODE
