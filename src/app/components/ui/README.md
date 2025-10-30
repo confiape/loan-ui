@@ -10,11 +10,12 @@ Componentes UI reutilizables y completamente funcionales construidos con Angular
 2. **MultiSelect** - Selector múltiple con checkboxes
 3. **Modal** - Diálogo modal con backdrop
 4. **Accordion** - Acordeón expandible/colapsable
+5. **Icon** - Carga y cacheo de SVGs inline desde assets
 
 ### 🚧 Componentes Pendientes
 
-5. **Tooltip** - Tooltip al hover
-6. **DatePicker** - Selector de fecha
+1. **Tooltip** - Tooltip al hover
+2. **DatePicker** - Selector de fecha
 
 ---
 
@@ -89,6 +90,43 @@ interface DropdownItem {
   divider?: boolean;
 }
 ```
+
+---
+
+## 🎯 Icon Component
+
+Servicio y componente para incrustar SVGs inline con soporte para temas y accesibilidad.
+
+### Características
+
+- ✅ Carga SVGs desde `public/assets/icons`
+- ✅ Cachea las peticiones para evitar múltiples requests
+- ✅ Soporta tamaños predefinidos (`sm`, `md`, `lg`) o valores numéricos en píxeles
+- ✅ Accesible mediante `aria-label` y `role="img"`
+- ✅ Hereda el color mediante `currentColor`
+
+### Uso Básico
+
+```typescript
+import { IconComponent } from '@app/components/ui/icon/icon';
+
+@Component({
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [IconComponent],
+  template: ` <app-icon name="check" ariaLabel="Estado OK" class="text-emerald-500" /> `,
+})
+export class DashboardComponent {}
+```
+
+### API
+
+**Inputs:**
+
+- `name: string` - (Requerido) Nombre del SVG a cargar (sin extensión)
+- `size: 'sm' | 'md' | 'lg' | number` - Tamaño del icono (default: `md`)
+- `ariaLabel?: string` - Etiqueta accesible (define `role="img"` automáticamente)
+- `class?: string` - Clases adicionales aplicadas al host
 
 ---
 
