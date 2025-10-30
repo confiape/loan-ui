@@ -31,10 +31,5 @@
     "ask": []
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "sonarqube",
-    "playwright",
-    "angular-cli",
-    "github"
-  ]
+  "enabledMcpjsonServers": ["sonarqube", "playwright", "angular-cli", "github"]
 }

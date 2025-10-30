@@ -1,6 +1,7 @@
 // UI Components - Barrel Export
 // Import these components in your features
 
+export * from './base-input';
 export { DropdownComponent, type DropdownItem } from './dropdown/dropdown';
 export { MultiSelectComponent, type MultiSelectItem } from './multiselect/multiselect';
 export { ModalComponent, type ModalSize } from './modal/modal';

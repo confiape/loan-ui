@@ -9,7 +9,9 @@ Before proceeding with any user request, you MUST ask:
 **"Is this a TASK (implementation/code changes) or a QUERY (question/exploration)?"**
 
 ### QUERY (Question/Exploration)
+
 If the request involves:
+
 - Asking questions about the codebase
 - Exploring how something works
 - Understanding architecture or patterns
@@ -17,6 +19,7 @@ If the request involves:
 - Code review or analysis
 
 **Simplified workflow:**
+
 - ✅ Check Angular Best Practices (MCP) if relevant
 - ✅ Answer the question or explore the codebase
 - ❌ Skip: GitHub issue creation
@@ -27,6 +30,7 @@ If the request involves:
 
 **At the end of QUERY:**
 After answering all questions and completing the exploration, you MUST:
+
 1. **Create a GitHub Issue** - Summarize everything discussed into a detailed issue with:
    - Clear description based on the exploration
    - Acceptance criteria
@@ -34,12 +38,15 @@ After answering all questions and completing the exploration, you MUST:
 2. **Ask the user**: "Would you like to continue with the TASK to implement this?"
 
 **If user chooses to continue with TASK:**
+
 - Proceed with the complete TASK workflow below
 - You can now IGNORE all skip rules from the QUERY workflow
 - Follow ALL steps in the TASK workflow
 
 ### TASK (Implementation/Code Changes)
+
 If the request involves:
+
 - Creating new components, features, or functionality
 - Modifying existing code
 - Fixing bugs
@@ -50,16 +57,19 @@ If the request involves:
 **"Does a GitHub Issue already exist for this task?"**
 
 **If YES (Issue exists):**
+
 - Ask for the issue number
 - Read the issue using GitHub MCP tools
 - Understand requirements, acceptance criteria, and technical approach
 - Proceed directly to step 1 (Check Angular Best Practices) below
 
 **If NO (No issue exists):**
+
 - Create a new GitHub Issue first (step 2 below)
 - Then proceed with the complete workflow
 
 **Follow the complete workflow:**
+
 1. ✅ **Check Angular Best Practices (MCP)**
 2. ✅ **Create GitHub Issue** (if doesn't exist) - Create detailed issue (bug/feature/hotfix) with:
    - Clear description of work
