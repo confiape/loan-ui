@@ -20,6 +20,13 @@ Place unit specs beside their implementation and prefer Testing Library-style as
 
 Start every request by clarifying whether it is a TASK (code change) or QUERY (exploration). For TASKs, confirm a GitHub issue exists; create one if missing, record acceptance criteria, and get user approval before implementation. Always consult the Angular Best Practices MCP helper before coding. Branch from an updated `master` using the `type/description` naming convention (e.g., `feature/navbar-signout`). Run Prettier, lint, unit tests, and Storybook updates before handing work back. Never edit generated OpenAPI files.
 
+## Storybook Guidelines
+
+- Use the shared helpers (`createLightDarkComparison`, `wrapInLightDarkComparison`, `createVariantComparison`) for every Light/Dark presentation. Avoid hand-crafted duplicated markup or decorators that toggle dark mode manually.
+- When a story needs to show several components together, wrap the whole block with `wrapInLightDarkComparison` instead of reimplementing the comparison layout.
+- Mock every service dependency that hits `HttpClient` (e.g., `AuthService`, `UserApiService`) inside the story decorators so Storybook doesn’t crash while instantiating components.
+- Keep helpers style-agnostic: they should only wrap the content; any visual tweaks belong in the components or design tokens.
+
 ## Commit & Pull Request Guidelines
 
 Commits follow Conventional Commit syntax (`feat:`, `fix:`, `docs:`) with concise imperative subjects and optional scopes (`feat(navbar): add sign-out`). Each PR must link its issue, summarize the solution, call out risks, and attach UI screenshots or Storybook links when visual changes occur. Ensure automated checks pass, document any manual verification, and highlight follow-up tasks when relevant.

@@ -7,6 +7,7 @@ import { AuthenticationApiService } from '../app/core/openapi/api/authentication
 import { AuthService } from '../app/services/auth.service';
 import { ToastService } from '../app/services/toast.service';
 import { of, throwError } from 'rxjs';
+import { wrapInLightDarkComparison } from './story-helpers';
 
 // Mock services for Storybook
 const mockAuthApiService = {
@@ -33,6 +34,8 @@ const mockToastService = {
   error: (message: string) => console.log('Error:', message),
 };
 
+const createLoginWrapper = (content = '<app-login />') => wrapInLightDarkComparison(content);
+
 const meta: Meta<LoginComponent> = {
   title: 'Pages/Login',
   component: LoginComponent,
@@ -58,56 +61,11 @@ export default meta;
 type Story = StoryObj<LoginComponent>;
 
 /**
- * Default login page in light mode
+ * Default login experience with Light/Dark comparison
  */
-export const LightMode: Story = {
+export const Default: Story = {
   render: () => ({
-    template: `
-      <div>
-        <app-login />
-      </div>
-    `,
-  }),
-};
-
-/**
- * Login page in dark mode
- */
-export const DarkMode: Story = {
-  render: () => ({
-    template: `
-      <div class="dark">
-        <app-login />
-      </div>
-    `,
-  }),
-};
-
-/**
- * Login page comparison between light and dark themes
- */
-export const LightDarkComparison: Story = {
-  render: () => ({
-    template: `
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; min-height: 100vh;">
-        <div style="display: flex; flex-direction: column; border-right: 2px solid #e5e7eb;">
-          <div style="padding: 1rem; background: #f3f4f6; font-weight: 600; text-align: center; border-bottom: 2px solid #e5e7eb;">
-            Light Mode
-          </div>
-          <div style="flex: 1;">
-            <app-login />
-          </div>
-        </div>
-        <div class="dark" style="display: flex; flex-direction: column;">
-          <div style="padding: 1rem; background: #1f2937; color: white; font-weight: 600; text-align: center; border-bottom: 2px solid #374151;">
-            Dark Mode
-          </div>
-          <div style="flex: 1;">
-            <app-login />
-          </div>
-        </div>
-      </div>
-    `,
+    template: createLoginWrapper(),
   }),
 };
 
@@ -117,11 +75,7 @@ export const LightDarkComparison: Story = {
 export const WithCredentials: Story = {
   render: () => ({
     props: {},
-    template: `
-      <div>
-        <app-login />
-      </div>
-    `,
+    template: createLoginWrapper(),
   }),
   play: async ({ canvasElement }) => {
     const canvas = canvasElement;
@@ -175,11 +129,7 @@ export const LoadingState: Story = {
     }),
   ],
   render: () => ({
-    template: `
-      <div>
-        <app-login />
-      </div>
-    `,
+    template: createLoginWrapper(),
   }),
   play: async ({ canvasElement }) => {
     const canvas = canvasElement;
@@ -228,11 +178,7 @@ export const ErrorState: Story = {
     }),
   ],
   render: () => ({
-    template: `
-      <div>
-        <app-login />
-      </div>
-    `,
+    template: createLoginWrapper(),
   }),
   play: async ({ canvasElement }) => {
     const canvas = canvasElement;
@@ -263,11 +209,7 @@ export const ErrorState: Story = {
  */
 export const PasswordVisible: Story = {
   render: () => ({
-    template: `
-      <div>
-        <app-login />
-      </div>
-    `,
+    template: createLoginWrapper(),
   }),
   play: async ({ canvasElement }) => {
     const canvas = canvasElement;
@@ -301,11 +243,7 @@ export const MobileView: Story = {
     },
   },
   render: () => ({
-    template: `
-      <div>
-        <app-login />
-      </div>
-    `,
+    template: createLoginWrapper(),
   }),
 };
 
@@ -319,10 +257,6 @@ export const TabletView: Story = {
     },
   },
   render: () => ({
-    template: `
-      <div>
-        <app-login />
-      </div>
-    `,
+    template: createLoginWrapper(),
   }),
 };

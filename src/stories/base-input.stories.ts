@@ -15,7 +15,7 @@ import {
   UrlInputComponent,
   type InputOption,
 } from '../app/components/ui/base-input';
-import { createLightDarkComparison } from './story-helpers';
+import { createLightDarkComparison, wrapInLightDarkComparison } from './story-helpers';
 
 const meta: Meta<TextInputComponent> = {
   title: 'Forms/Base Input',
@@ -88,46 +88,25 @@ export const NumericInput: Story = {
 
 export const ContactInputs: Story = {
   render: () => ({
-    template: `
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 p-8 bg-muted/20 min-h-screen">
-        <div class="space-y-6">
-          <h3 class="text-lg font-semibold text-foreground">Light mode</h3>
-          <app-phone-input
-            label="Phone number"
-            placeholder="+51 999 999 999"
-            helperText="Include country code."
-            required
-          />
-          <app-email-input
-            label="Email address"
-            placeholder="you@example.com"
-            required
-          />
-          <app-password-input
-            label="Password"
-            placeholder="Enter a secure password"
-          />
-        </div>
-        <div class="dark space-y-6 bg-gray-900 p-8 rounded-lg">
-          <h3 class="text-lg font-semibold text-white">Dark mode</h3>
-          <app-phone-input
-            label="Phone number"
-            placeholder="+51 999 999 999"
-            helperText="Include country code."
-            required
-          />
-          <app-email-input
-            label="Email address"
-            placeholder="you@example.com"
-            required
-          />
-          <app-password-input
-            label="Password"
-            placeholder="Enter a secure password"
-          />
-        </div>
+    template: wrapInLightDarkComparison(`
+      <div class="flex max-w-md flex-col gap-6">
+        <app-phone-input
+          label="Phone number"
+          placeholder="+51 999 999 999"
+          helperText="Include country code."
+          required
+        />
+        <app-email-input
+          label="Email address"
+          placeholder="you@example.com"
+          required
+        />
+        <app-password-input
+          label="Password"
+          placeholder="Enter a secure password"
+        />
       </div>
-    `,
+    `),
     moduleMetadata: {
       imports: [PhoneInputComponent, EmailInputComponent, PasswordInputComponent, CommonModule],
     },
