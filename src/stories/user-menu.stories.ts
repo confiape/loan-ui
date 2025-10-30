@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { UserMenu } from '../app/components/ui/user-menu/user-menu';
-import { createLightDarkComparison } from './story-helpers';
+import { createLightDarkComparison, wrapInLightDarkComparison } from './story-helpers';
 import type { UserMenuItem } from '../app/components/ui/user-menu/user-menu';
 
 const mockMenuItems: UserMenuItem[] = [
@@ -306,33 +306,22 @@ export const MultipleDividers: Story = {
 
 export const InNavbar: Story = {
   render: () => ({
-    template: `
-      <div class="space-y-8">
-        <!-- Light Mode Navbar -->
-        <div class="bg-white border-b border-gray-200 p-4">
-          <div class="flex items-center justify-end gap-4">
-            <span class="text-sm text-gray-600">User menu in navbar:</span>
-            <app-user-menu
-              [userName]="userName"
-              [userEmail]="userEmail"
-              [menuItems]="menuItems"
-            />
-          </div>
-        </div>
-
-        <!-- Dark Mode Navbar -->
-        <div class="dark bg-gray-800 border-b border-gray-700 p-4">
-          <div class="flex items-center justify-end gap-4">
-            <span class="text-sm text-gray-400">User menu in navbar:</span>
-            <app-user-menu
-              [userName]="userName"
-              [userEmail]="userEmail"
-              [menuItems]="menuItems"
-            />
-          </div>
+    template: wrapInLightDarkComparison(`
+      <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+          <span class="dark:hidden">Light Mode Navbar</span>
+          <span class="hidden dark:inline">Dark Mode Navbar</span>
+        </p>
+        <div class="flex items-center justify-end gap-4">
+          <span class="text-sm text-gray-600 dark:text-gray-300">User menu in navbar:</span>
+          <app-user-menu
+            [userName]="userName"
+            [userEmail]="userEmail"
+            [menuItems]="menuItems"
+          />
         </div>
       </div>
-    `,
+    `),
     props: {
       userName: 'John Doe',
       userEmail: 'john.doe@example.com',
@@ -343,88 +332,48 @@ export const InNavbar: Story = {
 
 export const States: Story = {
   render: () => ({
-    template: `
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-        <div class="space-y-8">
-          <div class="bg-white p-8 rounded-lg">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Light Mode - States</h3>
-            <div class="space-y-4">
-              <div>
-                <p class="text-sm text-gray-600 mb-2">With email</p>
-                <app-user-menu
-                  [userName]="'John Doe'"
-                  [userEmail]="'john@example.com'"
-                  [menuItems]="menuItems"
-                />
-              </div>
-              <div>
-                <p class="text-sm text-gray-600 mb-2">Without email</p>
-                <app-user-menu
-                  [userName]="'Jane Smith'"
-                  [menuItems]="menuItems"
-                />
-              </div>
-              <div>
-                <p class="text-sm text-gray-600 mb-2">With avatar</p>
-                <app-user-menu
-                  [userName]="'Bob Johnson'"
-                  [userEmail]="'bob@example.com'"
-                  [userAvatar]="'https://i.pravatar.cc/150?img=8'"
-                  [menuItems]="menuItems"
-                />
-              </div>
-              <div>
-                <p class="text-sm text-gray-600 mb-2">Empty menu</p>
-                <app-user-menu
-                  [userName]="'Alice Brown'"
-                  [userEmail]="'alice@example.com'"
-                  [menuItems]="[]"
-                />
-              </div>
-            </div>
+    template: wrapInLightDarkComparison(`
+      <div class="space-y-6 rounded-lg bg-white p-8 shadow-sm dark:bg-gray-900">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          <span class="dark:hidden">Light Mode - States</span>
+          <span class="hidden dark:inline">Dark Mode - States</span>
+        </h3>
+        <div class="space-y-4">
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">With email</p>
+            <app-user-menu
+              [userName]="'John Doe'"
+              [userEmail]="'john@example.com'"
+              [menuItems]="menuItems"
+            />
           </div>
-        </div>
-        <div class="space-y-8">
-          <div class="dark bg-gray-900 p-8 rounded-lg">
-            <h3 class="text-lg font-semibold text-white mb-4">Dark Mode - States</h3>
-            <div class="space-y-4">
-              <div>
-                <p class="text-sm text-gray-400 mb-2">With email</p>
-                <app-user-menu
-                  [userName]="'John Doe'"
-                  [userEmail]="'john@example.com'"
-                  [menuItems]="menuItems"
-                />
-              </div>
-              <div>
-                <p class="text-sm text-gray-400 mb-2">Without email</p>
-                <app-user-menu
-                  [userName]="'Jane Smith'"
-                  [menuItems]="menuItems"
-                />
-              </div>
-              <div>
-                <p class="text-sm text-gray-400 mb-2">With avatar</p>
-                <app-user-menu
-                  [userName]="'Bob Johnson'"
-                  [userEmail]="'bob@example.com'"
-                  [userAvatar]="'https://i.pravatar.cc/150?img=8'"
-                  [menuItems]="menuItems"
-                />
-              </div>
-              <div>
-                <p class="text-sm text-gray-400 mb-2">Empty menu</p>
-                <app-user-menu
-                  [userName]="'Alice Brown'"
-                  [userEmail]="'alice@example.com'"
-                  [menuItems]="[]"
-                />
-              </div>
-            </div>
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Without email</p>
+            <app-user-menu
+              [userName]="'Jane Smith'"
+              [menuItems]="menuItems"
+            />
+          </div>
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">With avatar</p>
+            <app-user-menu
+              [userName]="'Bob Johnson'"
+              [userEmail]="'bob@example.com'"
+              [userAvatar]="'https://i.pravatar.cc/150?img=8'"
+              [menuItems]="menuItems"
+            />
+          </div>
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Empty menu</p>
+            <app-user-menu
+              [userName]="'Alice Brown'"
+              [userEmail]="'alice@example.com'"
+              [menuItems]="[]"
+            />
           </div>
         </div>
       </div>
-    `,
+    `),
     props: {
       menuItems: mockMenuItems,
     },

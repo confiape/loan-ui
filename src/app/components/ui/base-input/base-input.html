@@ -1,0 +1,174 @@
+<div
+  class="input-container"
+  [attr.data-state]="validationState()"
+  [style.--input-label-color]="visualState().labelColor"
+  [style.--input-helper-color]="visualState().helperColor"
+  [style.--input-prefix-color]="visualState().prefixColor"
+  [style.--input-bg-color]="visualState().inputBg"
+  [style.--input-border-color]="visualState().inputBorder"
+  [style.--input-text-color]="visualState().inputText"
+  [style.--input-focus-border-color]="visualState().focusBorder"
+  [style.--input-ring-color]="visualState().ringColor"
+  [class.input-container--disabled]="isDisabled()"
+>
+  @if (label()) {
+    <label
+      [id]="labelId()"
+      class="input-label"
+      [attr.for]="variant === 'checkbox' ? null : controlId()"
+    >
+      <span class="input-label__text">{{ label() }}</span>
+      @if (showOptionalText()) {
+        <span class="input-meta input-meta--optional">(Optional)</span>
+      }
+      @if (required()) {
+        <span class="input-meta input-meta--required">*</span>
+      }
+    </label>
+  }
+
+  @switch (variant) {
+    @case ('textarea') {
+      <textarea
+        [id]="controlId()"
+        class="input-element input-element--textarea"
+        [class.size-sm]="size() === 'sm'"
+        [class.size-md]="size() === 'md'"
+        [class.size-lg]="size() === 'lg'"
+        [attr.name]="inputName()"
+        [attr.placeholder]="placeholder() ?? ''"
+        [attr.rows]="rows() ?? undefined"
+        [attr.autocomplete]="autocomplete() ?? undefined"
+        [attr.inputmode]="inputMode() ?? undefined"
+        [attr.maxlength]="maxLength() ?? undefined"
+        [attr.minlength]="minLength() ?? undefined"
+        [attr.aria-invalid]="shouldDisplayErrors()"
+        [attr.aria-describedby]="describedByAttr() ?? undefined"
+        [required]="required()"
+        [disabled]="isDisabled()"
+        [readOnly]="isReadOnly()"
+        [attr.spellcheck]="spellcheck() ?? undefined"
+        [value]="value() ?? ''"
+        (input)="onInput($event)"
+        (focus)="handleFocus()"
+        (blur)="handleBlur()"
+      ></textarea>
+    }
+
+    @case ('checkbox') {
+      <label
+        class="choice-field choice-field--checkbox"
+        [class.choice-field--disabled]="isDisabled()"
+      >
+        <input
+          type="checkbox"
+          [id]="controlId()"
+          class="choice-input choice-input--checkbox"
+          [attr.name]="inputName()"
+          [checked]="isChecked()"
+          [disabled]="isDisabled()"
+          [required]="required()"
+          [attr.aria-describedby]="describedByAttr() ?? undefined"
+          (change)="handleCheckboxChange($event)"
+          (focus)="handleFocus()"
+          (blur)="handleBlur()"
+        />
+        <span class="choice-content">
+          <span class="choice-label">{{ checkboxLabel() ?? label() }}</span>
+          @if (hint()) {
+            <p class="choice-hint">{{ hint() }}</p>
+          }
+        </span>
+      </label>
+    }
+
+    @case ('radio') {
+      <div
+        role="radiogroup"
+        class="radio-group"
+        [class.radio-group--horizontal]="orientation() === 'horizontal'"
+        [attr.name]="inputName()"
+        [attr.aria-labelledby]="labelId() ?? undefined"
+        [attr.aria-describedby]="describedByAttr() ?? undefined"
+      >
+        @for (option of options(); track trackOption($index, option)) {
+          <label
+            class="choice-field choice-field--radio"
+            [class.choice-field--disabled]="isDisabled() || !!option.disabled"
+          >
+            <input
+              type="radio"
+              class="choice-input choice-input--radio"
+              [attr.name]="inputName()"
+              [value]="option.value"
+              [checked]="value() === option.value"
+              [disabled]="isDisabled() || !!option.disabled"
+              (change)="handleRadioChange(option, $event)"
+              (focus)="handleFocus()"
+              (blur)="handleBlur()"
+            />
+            <span class="choice-content">
+              <span class="choice-label">{{ option.label }}</span>
+              @if (option.description) {
+                <p class="choice-hint">{{ option.description }}</p>
+              }
+            </span>
+          </label>
+        }
+      </div>
+    }
+
+    @default {
+      <div class="input-field">
+        @if (prefixText()) {
+          <span class="input-affix input-affix--prefix">{{ prefixText() }}</span>
+        }
+
+        <input
+          [id]="controlId()"
+          class="input-element"
+          [class.size-sm]="size() === 'sm'"
+          [class.size-md]="size() === 'md'"
+          [class.size-lg]="size() === 'lg'"
+          [attr.name]="inputName()"
+          [attr.type]="resolvedType()"
+          [attr.placeholder]="placeholder() ?? ''"
+          [attr.autocomplete]="autocomplete() ?? undefined"
+          [attr.inputmode]="inputMode() ?? undefined"
+          [attr.maxlength]="maxLength() ?? undefined"
+          [attr.minlength]="minLength() ?? undefined"
+          [attr.pattern]="pattern() ?? undefined"
+          [attr.min]="min() ?? undefined"
+          [attr.max]="max() ?? undefined"
+          [attr.step]="step() ?? undefined"
+          [attr.spellcheck]="spellcheck() ?? undefined"
+          [required]="required()"
+          [disabled]="isDisabled()"
+          [readOnly]="isReadOnly()"
+          [attr.aria-invalid]="shouldDisplayErrors()"
+          [attr.aria-describedby]="describedByAttr() ?? undefined"
+          [value]="value() ?? ''"
+          (input)="onInput($event)"
+          (focus)="handleFocus()"
+          (blur)="handleBlur()"
+        />
+
+        @if (suffixText()) {
+          <span class="input-affix input-affix--suffix">{{ suffixText() }}</span>
+        }
+      </div>
+    }
+  }
+
+  @if (helperText()) {
+    <p class="helper-text" [id]="helperTextId()">
+      {{ helperText() }}
+    </p>
+  }
+
+  @if (currentErrorMessage()) {
+    <p class="error-text" [id]="errorTextId()">
+      {{ currentErrorMessage() }}
+    </p>
+  }
+</div>

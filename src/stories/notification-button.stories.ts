@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { NotificationButton } from '../app/components/ui/notification-button/notification-button';
-import { createLightDarkComparison } from './story-helpers';
+import { createLightDarkComparison, wrapInLightDarkComparison } from './story-helpers';
 import type { Notification } from '../app/components/ui/notification-button/notification-button';
 
 const mockNotifications: Notification[] = [
@@ -283,25 +283,12 @@ export const WithAvatars: Story = {
 
 export const InNavbar: Story = {
   render: () => ({
-    template: `
-      <div class="space-y-8">
-        <!-- Light Mode Navbar -->
-        <div class="bg-white border-b border-gray-200 p-4">
-          <div class="flex items-center justify-end gap-4">
-            <span class="text-sm text-gray-600">Notification in navbar:</span>
-            <app-notification-button [notifications]="notifications" />
-          </div>
+    template: wrapInLightDarkComparison(`
+        <div class="flex items-center justify-end gap-4">
+          <span class="text-sm text-gray-600 dark:text-gray-300">Notification in navbar:</span>
+          <app-notification-button [notifications]="notifications" />
         </div>
-
-        <!-- Dark Mode Navbar -->
-        <div class="dark bg-gray-800 border-b border-gray-700 p-4">
-          <div class="flex items-center justify-end gap-4">
-            <span class="text-sm text-gray-400">Notification in navbar:</span>
-            <app-notification-button [notifications]="notifications" />
-          </div>
-        </div>
-      </div>
-    `,
+            `),
     props: {
       notifications: mockNotifications,
     },
@@ -310,56 +297,26 @@ export const InNavbar: Story = {
 
 export const States: Story = {
   render: () => ({
-    template: `
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-        <div class="space-y-8">
-          <div class="bg-white p-8 rounded-lg">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Light Mode - States</h3>
-            <div class="space-y-4">
-              <div>
-                <p class="text-sm text-gray-600 mb-2">With notifications (2 unread)</p>
-                <app-notification-button [notifications]="withNotifications" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-600 mb-2">Empty</p>
-                <app-notification-button [notifications]="[]" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-600 mb-2">Large count (99+)</p>
-                <app-notification-button [notifications]="withNotifications" [badgeCount]="150" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-600 mb-2">Without badge</p>
-                <app-notification-button [notifications]="withNotifications" [showBadge]="false" />
-              </div>
-            </div>
+    template: wrapInLightDarkComparison(`
+        <div class="space-y-4">
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">With notifications (2 unread)</p>
+            <app-notification-button [notifications]="withNotifications" />
+          </div>
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Empty</p>
+            <app-notification-button [notifications]="[]" />
+          </div>
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Large count (99+)</p>
+            <app-notification-button [notifications]="withNotifications" [badgeCount]="150" />
+          </div>
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Without badge</p>
+            <app-notification-button [notifications]="withNotifications" [showBadge]="false" />
           </div>
         </div>
-        <div class="space-y-8">
-          <div class="dark bg-gray-900 p-8 rounded-lg">
-            <h3 class="text-lg font-semibold text-white mb-4">Dark Mode - States</h3>
-            <div class="space-y-4">
-              <div>
-                <p class="text-sm text-gray-400 mb-2">With notifications (2 unread)</p>
-                <app-notification-button [notifications]="withNotifications" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-400 mb-2">Empty</p>
-                <app-notification-button [notifications]="[]" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-400 mb-2">Large count (99+)</p>
-                <app-notification-button [notifications]="withNotifications" [badgeCount]="150" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-400 mb-2">Without badge</p>
-                <app-notification-button [notifications]="withNotifications" [showBadge]="false" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `,
+    `),
     props: {
       withNotifications: mockNotifications,
     },

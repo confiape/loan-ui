@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { SidenavComponent, SidenavItem } from '../app/layout/sidenav/sidenav';
+import { createVariantComparison, wrapInLightDarkComparison } from './story-helpers';
 
 const meta: Meta<SidenavComponent> = {
   title: 'UI/Sidenav',
@@ -193,13 +194,9 @@ const itemsWithDisabled: SidenavItem[] = [
 ];
 
 // Helper function to create side-by-side comparison template
-const createComparisonTemplate = (extraProps = '') => `
-  <div style="display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh;">
-    <!-- Light Mode -->
-    <div style="background-color: #f9fafb; position: relative; border-right: 2px solid #000;">
-      <div style="position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100; background: white; padding: 0.5rem 1rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: bold;">
-        Light Mode
-      </div>
+const createComparisonTemplate = (extraBindings = '') =>
+  wrapInLightDarkComparison(`
+    <div class="flex w-full justify-center p-8">
       <app-sidenav
         [items]="items"
         [header]="header"
@@ -212,32 +209,10 @@ const createComparisonTemplate = (extraProps = '') => `
         [logo]="logo"
         [logoCollapsed]="logoCollapsed"
         [footer]="footer"
-        ${extraProps}
+        ${extraBindings}
       />
     </div>
-
-    <!-- Dark Mode -->
-    <div class="dark" style="background-color: #1f2937; position: relative;">
-      <div style="position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100; background: #374151; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-weight: bold;">
-        Dark Mode
-      </div>
-      <app-sidenav
-        [items]="items"
-        [header]="header"
-        [position]="position"
-        [variant]="variant"
-        [collapsible]="collapsible"
-        [showToggle]="showToggle"
-        [collapsed]="collapsed"
-        [selectedValue]="selectedValue"
-        [logo]="logo"
-        [logoCollapsed]="logoCollapsed"
-        [footer]="footer"
-        ${extraProps}
-      />
-    </div>
-  </div>
-`;
+  `);
 
 // Stories with Light vs Dark comparison
 
@@ -442,103 +417,15 @@ export const AllVariantsComparison: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `
-      <div style="min-height: 100vh;">
-        <!-- Light Mode Variants -->
-        <div style="background-color: #f9fafb; padding: 2rem 0 1rem 0;">
-          <h2 style="text-align: center; margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: bold; color: #111827;">
-            Light Mode - All Variants
-          </h2>
-          <div style="display: grid; grid-template-columns: repeat(3, 16rem); gap: 2rem; justify-content: center;">
-            <!-- Default -->
-            <div style="position: relative;">
-              <div style="position: absolute; top: -1.5rem; left: 50%; transform: translateX(-50%); background: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
-                Default
-              </div>
-              <app-sidenav
-                [items]="items"
-                [header]="header"
-                [variant]="'default'"
-                [selectedValue]="selectedValue"
-              />
-            </div>
-
-            <!-- Bordered -->
-            <div style="position: relative;">
-              <div style="position: absolute; top: -1.5rem; left: 50%; transform: translateX(-50%); background: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
-                Bordered
-              </div>
-              <app-sidenav
-                [items]="items"
-                [header]="header"
-                [variant]="'bordered'"
-                [selectedValue]="selectedValue"
-              />
-            </div>
-
-            <!-- Pills -->
-            <div style="position: relative;">
-              <div style="position: absolute; top: -1.5rem; left: 50%; transform: translateX(-50%); background: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
-                Pills
-              </div>
-              <app-sidenav
-                [items]="items"
-                [header]="header"
-                [variant]="'pills'"
-                [selectedValue]="selectedValue"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- Dark Mode Variants -->
-        <div class="dark" style="background-color: #1f2937; padding: 2rem 0 1rem 0;">
-          <h2 style="text-align: center; margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: bold; color: white;">
-            Dark Mode - All Variants
-          </h2>
-          <div style="display: grid; grid-template-columns: repeat(3, 16rem); gap: 2rem; justify-content: center;">
-            <!-- Default -->
-            <div style="position: relative;">
-              <div style="position: absolute; top: -1.5rem; left: 50%; transform: translateX(-50%); background: #374151; color: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
-                Default
-              </div>
-              <app-sidenav
-                [items]="items"
-                [header]="header"
-                [variant]="'default'"
-                [selectedValue]="selectedValue"
-              />
-            </div>
-
-            <!-- Bordered -->
-            <div style="position: relative;">
-              <div style="position: absolute; top: -1.5rem; left: 50%; transform: translateX(-50%); background: #374151; color: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
-                Bordered
-              </div>
-              <app-sidenav
-                [items]="items"
-                [header]="header"
-                [variant]="'bordered'"
-                [selectedValue]="selectedValue"
-              />
-            </div>
-
-            <!-- Pills -->
-            <div style="position: relative;">
-              <div style="position: absolute; top: -1.5rem; left: 50%; transform: translateX(-50%); background: #374151; color: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
-                Pills
-              </div>
-              <app-sidenav
-                [items]="items"
-                [header]="header"
-                [variant]="'pills'"
-                [selectedValue]="selectedValue"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    `,
+    template: createVariantComparison(
+      'app-sidenav',
+      ['Default', 'Bordered', 'Pills'],
+      `
+        [items]="items"
+        [header]="header"
+        [selectedValue]="selectedValue"
+      `,
+    ),
   }),
 };
 

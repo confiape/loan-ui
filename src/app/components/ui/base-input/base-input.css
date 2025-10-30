@@ -1,0 +1,178 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  width: 100%;
+  color: var(--color-text-primary);
+  transition:
+    color var(--transition-duration-150) var(--transition-timing-ease-in-out),
+    opacity var(--transition-duration-150) var(--transition-timing-ease-in-out);
+}
+
+.input-container--disabled {
+  opacity: 0.6;
+}
+
+.input-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--input-label-color, var(--color-text-primary));
+  transition: color var(--transition-duration-150) var(--transition-timing-ease-in-out);
+}
+
+.input-meta {
+  font-size: 0.75rem;
+}
+
+.input-meta--optional {
+  color: var(--color-text-secondary);
+}
+
+.input-meta--required {
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.input-field {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.input-affix {
+  font-size: 0.875rem;
+  color: var(--input-prefix-color, var(--color-text-muted));
+  white-space: nowrap;
+}
+
+.input-element {
+  width: 100%;
+  border-radius: var(--border-radius-lg);
+  border: var(--border-width-1) solid var(--input-border-color, var(--color-border));
+  background-color: var(--input-bg-color, var(--color-bg-primary));
+  color: var(--input-text-color, var(--color-text-primary));
+  font-size: 0.875rem;
+  transition:
+    border-color var(--transition-duration-150) var(--transition-timing-ease-in-out),
+    box-shadow var(--transition-duration-150) var(--transition-timing-ease-in-out),
+    background-color var(--transition-duration-150) var(--transition-timing-ease-in-out),
+    color var(--transition-duration-150) var(--transition-timing-ease-in-out);
+  padding: var(--spacing-3) var(--spacing-3);
+  line-height: 1.4;
+}
+
+.input-element.size-sm {
+  padding: calc(var(--spacing-2) + 2px) var(--spacing-3);
+  font-size: 0.8125rem;
+}
+
+.input-element.size-lg {
+  padding: var(--spacing-4) var(--spacing-4);
+  font-size: 0.9375rem;
+}
+
+.input-element--textarea {
+  min-height: 6.75rem;
+  resize: vertical;
+}
+
+.input-element:focus-visible {
+  outline: none;
+  border-color: var(--input-focus-border-color, var(--color-primary));
+  box-shadow: 0 0 0 3px var(--input-ring-color, var(--color-primary-focus-ring));
+}
+
+.input-element:disabled,
+.input-element[readonly] {
+  cursor: not-allowed;
+}
+
+.choice-field {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  font-size: 0.875rem;
+  color: var(--input-text-color, var(--color-text-primary));
+  transition:
+    color var(--transition-duration-150) var(--transition-timing-ease-in-out),
+    opacity var(--transition-duration-150) var(--transition-timing-ease-in-out);
+}
+
+.choice-field--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.choice-input {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: calc(var(--spacing-1) / 2);
+  border-radius: var(--border-radius-sm);
+  border: var(--border-width-1) solid var(--input-border-color, var(--color-border));
+  accent-color: var(--input-focus-border-color, var(--color-primary));
+}
+
+.choice-input--radio {
+  border-radius: 9999px;
+}
+
+.choice-content {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-1) / 2);
+}
+
+.choice-label {
+  font-weight: 500;
+}
+
+.choice-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.radio-group--horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+}
+
+.helper-text {
+  font-size: 0.75rem;
+  color: var(--input-helper-color, var(--color-text-secondary));
+  margin-top: var(--spacing-1);
+}
+
+.error-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-error-700);
+  margin-top: var(--spacing-1);
+}
+
+.input-container[data-state='success'] .helper-text {
+  font-weight: 500;
+}
+
+.input-container[data-state='success'] .choice-hint {
+  color: var(--color-success-700);
+}
+
+.input-container[data-state='error'] .choice-hint {
+  color: var(--color-error-700);
+}

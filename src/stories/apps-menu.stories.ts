@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { AppsMenu } from '../app/components/ui/apps-menu/apps-menu';
-import { createLightDarkComparison } from './story-helpers';
+import { createLightDarkComparison, wrapInLightDarkComparison } from './story-helpers';
 import type { AppMenuItem } from '../app/components/ui/apps-menu/apps-menu';
 
 const mockApps: AppMenuItem[] = [
@@ -193,25 +193,18 @@ export const MixedLinks: Story = {
 
 export const InNavbar: Story = {
   render: () => ({
-    template: `
-      <div class="space-y-8">
-        <!-- Light Mode Navbar -->
-        <div class="bg-white border-b border-gray-200 p-4">
-          <div class="flex items-center justify-end gap-4">
-            <span class="text-sm text-gray-600">Apps menu in navbar:</span>
-            <app-apps-menu [apps]="apps" />
-          </div>
-        </div>
-
-        <!-- Dark Mode Navbar -->
-        <div class="dark bg-gray-800 border-b border-gray-700 p-4">
-          <div class="flex items-center justify-end gap-4">
-            <span class="text-sm text-gray-400">Apps menu in navbar:</span>
-            <app-apps-menu [apps]="apps" />
-          </div>
+    template: wrapInLightDarkComparison(`
+      <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+          <span class="dark:hidden">Light Mode Navbar</span>
+          <span class="hidden dark:inline">Dark Mode Navbar</span>
+        </p>
+        <div class="flex items-center justify-end gap-4">
+          <span class="text-sm text-gray-600 dark:text-gray-300">Apps menu in navbar:</span>
+          <app-apps-menu [apps]="apps" />
         </div>
       </div>
-    `,
+    `),
     props: {
       apps: mockApps,
     },
@@ -220,56 +213,32 @@ export const InNavbar: Story = {
 
 export const States: Story = {
   render: () => ({
-    template: `
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-        <div class="space-y-8">
-          <div class="bg-white p-8 rounded-lg">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Light Mode - States</h3>
-            <div class="space-y-4">
-              <div>
-                <p class="text-sm text-gray-600 mb-2">With apps (6 items)</p>
-                <app-apps-menu [apps]="apps" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-600 mb-2">Empty</p>
-                <app-apps-menu [apps]="[]" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-600 mb-2">Custom title</p>
-                <app-apps-menu [apps]="apps" [title]="'Quick Access'" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-600 mb-2">Few apps (3 items)</p>
-                <app-apps-menu [apps]="fewApps" />
-              </div>
-            </div>
+    template: wrapInLightDarkComparison(`
+      <div class="space-y-6 rounded-lg bg-white p-8 shadow-sm dark:bg-gray-900">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          <span class="dark:hidden">Light Mode - States</span>
+          <span class="hidden dark:inline">Dark Mode - States</span>
+        </h3>
+        <div class="space-y-4">
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">With apps (6 items)</p>
+            <app-apps-menu [apps]="apps" />
           </div>
-        </div>
-        <div class="space-y-8">
-          <div class="dark bg-gray-900 p-8 rounded-lg">
-            <h3 class="text-lg font-semibold text-white mb-4">Dark Mode - States</h3>
-            <div class="space-y-4">
-              <div>
-                <p class="text-sm text-gray-400 mb-2">With apps (6 items)</p>
-                <app-apps-menu [apps]="apps" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-400 mb-2">Empty</p>
-                <app-apps-menu [apps]="[]" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-400 mb-2">Custom title</p>
-                <app-apps-menu [apps]="apps" [title]="'Quick Access'" />
-              </div>
-              <div>
-                <p class="text-sm text-gray-400 mb-2">Few apps (3 items)</p>
-                <app-apps-menu [apps]="fewApps" />
-              </div>
-            </div>
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Empty</p>
+            <app-apps-menu [apps]="[]" />
+          </div>
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Custom title</p>
+            <app-apps-menu [apps]="apps" [title]="'Quick Access'" />
+          </div>
+          <div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Few apps (3 items)</p>
+            <app-apps-menu [apps]="fewApps" />
           </div>
         </div>
       </div>
-    `,
+    `),
     props: {
       apps: mockApps,
       fewApps: mockApps.slice(0, 3),

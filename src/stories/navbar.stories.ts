@@ -6,6 +6,8 @@ import { of } from 'rxjs';
 import { NavbarComponent } from '../app/layout/navbar/navbar';
 import { UserApiService } from '../app/core/openapi/api/user.service';
 import { UserDto } from '../app/core/openapi/model/userDto';
+import { AuthService } from '../app/services/auth.service';
+import { createLightDarkComparison } from './story-helpers';
 
 const mockUser: UserDto = {
   id: '123',
@@ -37,6 +39,27 @@ const mockUserApiService = {
   getCurrentUser: () => of(mockUser),
 };
 
+const mockAuthService = {
+  logout: () => of(void 0),
+};
+
+const renderNavbar = (args: Record<string, unknown>) => ({
+  props: args,
+  template: createLightDarkComparison(
+    'app-navbar',
+    `
+      [appTitle]="appTitle"
+      [showSearch]="showSearch"
+      [notifications]="notifications"
+      [apps]="apps"
+      [userMenuItems]="userMenuItems"
+      [userName]="userName"
+      [userEmail]="userEmail"
+      [userAvatar]="userAvatar"
+    `,
+  ),
+});
+
 const meta: Meta<NavbarComponent> = {
   title: 'Layout/Navbar',
   component: NavbarComponent,
@@ -46,6 +69,7 @@ const meta: Meta<NavbarComponent> = {
       providers: [
         provideZonelessChangeDetection(),
         { provide: UserApiService, useValue: mockUserApiService },
+        { provide: AuthService, useValue: mockAuthService },
       ],
     }),
   ],
@@ -137,6 +161,9 @@ const meta: Meta<NavbarComponent> = {
         action: 'logout',
       },
     ],
+    userName: 'John Doe',
+    userEmail: 'john.doe@example.com',
+    userAvatar: '',
   },
 };
 
@@ -144,27 +171,7 @@ export default meta;
 type Story = StoryObj<NavbarComponent>;
 
 export const Default: Story = {
-  name: 'Default (Light Mode)',
-};
-
-export const DarkMode: Story = {
-  name: 'Dark Mode',
-  parameters: {
-    backgrounds: { default: 'dark' },
-  },
-  decorators: [
-    (story) => {
-      const storyResult = story();
-      // Add dark class to the component's host element
-      setTimeout(() => {
-        const element = document.querySelector('app-navbar');
-        if (element) {
-          element.classList.add('dark');
-        }
-      });
-      return storyResult;
-    },
-  ],
+  render: renderNavbar,
 };
 
 export const WithoutSearch: Story = {
@@ -172,6 +179,7 @@ export const WithoutSearch: Story = {
   args: {
     showSearch: false,
   },
+  render: renderNavbar,
 };
 
 export const MinimalNotifications: Story = {
@@ -187,6 +195,7 @@ export const MinimalNotifications: Story = {
       },
     ],
   },
+  render: renderNavbar,
 };
 
 export const NoNotifications: Story = {
@@ -194,6 +203,7 @@ export const NoNotifications: Story = {
   args: {
     notifications: [],
   },
+  render: renderNavbar,
 };
 
 export const LoadingUserError: Story = {
@@ -210,7 +220,9 @@ export const LoadingUserError: Story = {
             },
           },
         },
+        { provide: AuthService, useValue: mockAuthService },
       ],
     }),
   ],
+  render: renderNavbar,
 };
