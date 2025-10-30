@@ -15,6 +15,8 @@ export {
   type ToastPosition as ToastPos,
 } from './toast/toast';
 export { ToastContainerComponent } from './toast/toast-container';
+export { IconComponent } from './icon/icon';
+export { IconService } from './icon/icon.service';
 
 // Table Components
 export {
