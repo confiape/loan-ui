@@ -96,6 +96,12 @@ export class SidenavComponent {
       return;
     }
 
+    // Don't prevent default if item has routerLink (let Angular routing handle it)
+    // Only prevent default if no routerLink
+    if (!item.routerLink) {
+      event.preventDefault();
+    }
+
     this.selectedItem.set(item.value);
     this.itemClick.emit(item);
     this.selectionChange.emit(item);

@@ -110,6 +110,8 @@
               [class.rounded-full]="variant() === 'pills'"
               [class.mx-2]="variant() === 'pills'"
               [class.my-1]="variant() === 'pills'"
+              [routerLink]="item.routerLink || null"
+              routerLinkActive="active"
               (click)="onItemClick(item, $event)"
               (keydown)="onKeyDown($event, item)"
               (mouseenter)="onItemMouseEnter(item.value)"
@@ -119,7 +121,6 @@
               [attr.aria-expanded]="
                 item.children && item.children.length > 0 ? isItemExpanded(item.value) : null
               "
-              [attr.href]="item.disabled ? null : '#'"
               [attr.tabindex]="item.disabled ? -1 : 0"
               role="menuitem"
             >
@@ -219,11 +220,12 @@
                       [class.opacity-50]="child.disabled"
                       [class.cursor-not-allowed]="child.disabled"
                       [class.pointer-events-none]="child.disabled"
+                      [routerLink]="child.routerLink || null"
+                      routerLinkActive="active"
                       (click)="onItemClick(child, $event)"
                       (keydown)="onKeyDown($event, child)"
                       [attr.aria-disabled]="child.disabled"
                       [attr.aria-current]="isItemSelected(child.value) ? 'page' : null"
-                      [attr.href]="child.disabled ? null : '#'"
                       [attr.tabindex]="child.disabled ? -1 : 0"
                       role="menuitem"
                     >
