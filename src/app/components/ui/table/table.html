@@ -9,6 +9,21 @@
     >
       <thead class="table-header">
         <tr>
+          <!-- Checkbox Column -->
+          @if (selectable()) {
+            <th scope="col" class="table-header-cell" style="width: 48px">
+              <input
+                type="checkbox"
+                class="form-checkbox"
+                [checked]="isAllSelected()"
+                [indeterminate]="isIndeterminate()"
+                (change)="onSelectAll($event)"
+                [attr.aria-label]="'Select all rows'"
+              />
+            </th>
+          }
+
+          <!-- Data Columns -->
           @for (column of columns(); track column.key) {
             <th
               scope="col"
@@ -77,8 +92,10 @@
               </div>
             </th>
           }
+
+          <!-- Actions Column -->
           @if (rowActions().length > 0) {
-            <th scope="col" class="table-header-cell actions-column">
+            <th scope="col" class="table-header-cell actions-column text-right">
               <span class="sr-only">Actions</span>
             </th>
           }
@@ -88,7 +105,9 @@
         @if (loading()) {
           <tr>
             <td
-              [attr.colspan]="columns().length + (rowActions().length > 0 ? 1 : 0)"
+              [attr.colspan]="
+                columns().length + (rowActions().length > 0 ? 1 : 0) + (selectable() ? 1 : 0)
+              "
               class="loading-cell"
             >
               <div class="loading-spinner">
@@ -100,7 +119,9 @@
         } @else if (sortedData().length === 0) {
           <tr>
             <td
-              [attr.colspan]="columns().length + (rowActions().length > 0 ? 1 : 0)"
+              [attr.colspan]="
+                columns().length + (rowActions().length > 0 ? 1 : 0) + (selectable() ? 1 : 0)
+              "
               class="empty-cell"
             >
               {{ emptyMessage() }}
@@ -110,18 +131,32 @@
           @for (row of sortedData(); track $index) {
             <tr
               class="table-row"
-              (click)="onRowClick(row)"
               [attr.tabindex]="'0'"
               [attr.role]="'row'"
-              (keydown.enter)="onRowClick(row)"
             >
-              @for (column of columns(); track column.key) {
-                @if ($index === 0) {
+              <!-- Checkbox Cell -->
+              @if (selectable()) {
+                <td class="table-cell">
+                  <input
+                    type="checkbox"
+                    class="form-checkbox"
+                    [checked]="isSelected(row)"
+                    (change)="onSelectRow(row, $event)"
+                    (click)="$event.stopPropagation()"
+                    [attr.aria-label]="'Select row ' + ($index + 1)"
+                  />
+                </td>
+              }
+
+              <!-- Data Cells -->
+              @for (column of columns(); track column.key; let colIndex = $index) {
+                @if (colIndex === 0) {
                   <th
                     scope="row"
                     class="table-cell table-cell-first"
                     [class.text-center]="column.align === 'center'"
                     [class.text-right]="column.align === 'right'"
+                    (click)="onRowClick(row)"
                     [innerHTML]="getCellValue(row, column)"
                   ></th>
                 } @else {
@@ -129,45 +164,71 @@
                     class="table-cell"
                     [class.text-center]="column.align === 'center'"
                     [class.text-right]="column.align === 'right'"
+                    (click)="onRowClick(row)"
                     [innerHTML]="getCellValue(row, column)"
                   ></td>
                 }
               }
+
+              <!-- Actions Cell -->
               @if (rowActions().length > 0) {
-                <td class="table-cell actions-cell">
-                  <div class="actions-wrapper">
-                    <button
-                      type="button"
-                      class="actions-button"
-                      [attr.aria-label]="'Actions for row ' + ($index + 1)"
-                      (click)="$event.stopPropagation()"
-                    >
-                      <svg
-                        class="icon"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"
-                        />
-                      </svg>
-                    </button>
-                    <div class="actions-menu" role="menu">
-                      @for (action of rowActions(); track action.label) {
+                <td class="table-cell actions-cell text-right">
+                  @if (hasInlineActions()) {
+                    <!-- Inline Action Buttons -->
+                    <div class="inline-actions">
+                      @for (action of getInlineActions(); track action.label) {
                         <button
                           type="button"
-                          class="action-item"
-                          [class.action-danger]="action.variant === 'danger'"
-                          role="menuitem"
+                          [class]="getActionButtonClass(action)"
+                          [title]="action.label"
                           (click)="onActionClick(action, row); $event.stopPropagation()"
                         >
-                          {{ action.label }}
+                          @if (action.icon) {
+                            <span [innerHTML]="getSafeIcon(action.icon)"></span>
+                          } @else {
+                            {{ action.label }}
+                          }
                         </button>
                       }
                     </div>
-                  </div>
+                  }
+
+                  @if (hasDropdownActions()) {
+                    <!-- Dropdown Actions -->
+                    <div class="actions-wrapper">
+                      <button
+                        type="button"
+                        class="actions-button"
+                        [attr.aria-label]="'Actions for row ' + ($index + 1)"
+                        (click)="$event.stopPropagation()"
+                      >
+                        <svg
+                          class="icon"
+                          aria-hidden="true"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"
+                          />
+                        </svg>
+                      </button>
+                      <div class="actions-menu" role="menu">
+                        @for (action of getDropdownActions(); track action.label) {
+                          <button
+                            type="button"
+                            class="action-item"
+                            [class.action-danger]="action.variant === 'danger'"
+                            role="menuitem"
+                            (click)="onActionClick(action, row); $event.stopPropagation()"
+                          >
+                            {{ action.label }}
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
                 </td>
               }
             </tr>

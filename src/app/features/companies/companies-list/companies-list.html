@@ -1,0 +1,71 @@
+<div class="p-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Companies</h1>
+    <p class="text-sm text-[var(--color-text-secondary)] mt-1">
+      Manage your company records
+    </p>
+  </div>
+
+  <!-- Toolbar with Search, Primary Action and Bulk Actions -->
+  <div class="mb-4">
+    <app-table-toolbar
+      searchPlaceholder="Search by name or ID..."
+      [primaryAction]="primaryAction"
+      [bulkActions]="hasSelection() ? bulkActions : []"
+      [showFilters]="false"
+      (searchChange)="onSearch($event)"
+      (bulkActionClick)="onBulkAction($event)"
+    ></app-table-toolbar>
+  </div>
+
+  <!-- Table Card -->
+  <div class="bg-white rounded-lg shadow-sm border border-[var(--color-border)]">
+    <app-table
+      [columns]="columns"
+      [data]="filteredCompanies()"
+      [rowActions]="rowActions"
+      [selectable]="true"
+      [selectedItems]="selectedCompanies()"
+      [rowIdKey]="'id'"
+      [striped]="false"
+      [hoverable]="true"
+      [bordered]="false"
+      [loading]="loading()"
+      emptyMessage="No companies found"
+      (selectionChange)="onSelectionChange($event)"
+      (selectAll)="onSelectAll($event)"
+    >
+    </app-table>
+  </div>
+
+  <!-- Create/Edit Modal -->
+  <app-modal
+    [isOpen]="showModal()"
+    [title]="editingCompany() ? 'Edit Company' : 'New Company'"
+    size="md"
+    (closed)="onFormCancel()"
+  >
+    <app-company-form
+      [company]="editingCompany()"
+      (save)="onFormSave($event)"
+      (cancel)="onFormCancel()"
+    ></app-company-form>
+  </app-modal>
+
+  <!-- Delete Confirmation Modal -->
+  <app-modal
+    [isOpen]="showDeleteConfirm()"
+    title="Delete Company"
+    size="sm"
+    (closed)="cancelDelete()"
+  >
+    <div class="p-4">
+      <p class="text-[var(--color-text-primary)] mb-4" [innerHTML]="deleteMessage"></p>
+      <div class="flex gap-3 justify-end">
+        <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+        <button class="btn btn-error" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </app-modal>
+</div>

@@ -1,5 +1,6 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, input, output, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface TableColumn<T = any> {
@@ -14,8 +15,9 @@ export interface TableColumn<T = any> {
 export interface TableRowAction {
   label: string;
   icon?: string;
-  variant?: 'default' | 'danger';
+  variant?: 'default' | 'danger' | 'secondary';
   onClick?: (row: unknown) => void;
+  inline?: boolean; // If true, show as button instead of in dropdown
 }
 
 export type SortDirection = 'asc' | 'desc' | null;
@@ -34,6 +36,8 @@ export interface SortState {
 })
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class TableComponent<T = any> {
+  private sanitizer = inject(DomSanitizer);
+
   // ==================== INPUTS ====================
   columns = input.required<TableColumn<T>[]>();
   data = input.required<T[]>();
@@ -45,10 +49,17 @@ export class TableComponent<T = any> {
   loading = input<boolean>(false);
   emptyMessage = input<string>('No data available');
 
+  // Selection inputs
+  selectable = input<boolean>(false);
+  selectedItems = input<Set<string>>(new Set());
+  rowIdKey = input<string>('id'); // Key to use for row identification
+
   // ==================== OUTPUTS ====================
   rowClick = output<T>();
   actionClick = output<{ action: TableRowAction; row: T }>();
   sortChange = output<SortState>();
+  selectionChange = output<Set<string>>();
+  selectAll = output<boolean>();
 
   // ==================== STATE ====================
   sortState = signal<SortState>({ column: '', direction: null });
@@ -131,5 +142,82 @@ export class TableComponent<T = any> {
     if (state.column !== column.key) return 'sort';
 
     return state.direction === 'asc' ? 'sort-asc' : 'sort-desc';
+  }
+
+  // ==================== SELECTION METHODS ====================
+  isSelected(row: T): boolean {
+    const id = this.getRowId(row);
+    return this.selectedItems().has(id);
+  }
+
+  isAllSelected(): boolean {
+    const items = this.sortedData();
+    if (items.length === 0) return false;
+    return items.every((row) => this.isSelected(row));
+  }
+
+  isIndeterminate(): boolean {
+    const items = this.sortedData();
+    const selectedCount = items.filter((row) => this.isSelected(row)).length;
+    return selectedCount > 0 && selectedCount < items.length;
+  }
+
+  onSelectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.selectAll.emit(checked);
+  }
+
+  onSelectRow(row: T, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    const id = this.getRowId(row);
+    const selected = new Set(this.selectedItems());
+
+    if (checked) {
+      selected.add(id);
+    } else {
+      selected.delete(id);
+    }
+
+    this.selectionChange.emit(selected);
+  }
+
+  private getRowId(row: T): string {
+    const key = this.rowIdKey();
+    return this.getNestedValue(row, key)?.toString() ?? '';
+  }
+
+  // ==================== ACTION METHODS ====================
+  getInlineActions(): TableRowAction[] {
+    return this.rowActions().filter((action) => action.inline);
+  }
+
+  getDropdownActions(): TableRowAction[] {
+    return this.rowActions().filter((action) => !action.inline);
+  }
+
+  hasInlineActions(): boolean {
+    return this.getInlineActions().length > 0;
+  }
+
+  hasDropdownActions(): boolean {
+    return this.getDropdownActions().length > 0;
+  }
+
+  getActionButtonClass(action: TableRowAction): string {
+    const baseClass = 'btn btn-xs';
+
+    switch (action.variant) {
+      case 'danger':
+        return `${baseClass} btn-outline-error`;
+      case 'secondary':
+        return `${baseClass} btn-secondary`;
+      default:
+        return `${baseClass} btn-secondary`;
+    }
+  }
+
+  getSafeIcon(icon?: string): SafeHtml | null {
+    if (!icon) return null;
+    return this.sanitizer.bypassSecurityTrustHtml(icon);
   }
 }

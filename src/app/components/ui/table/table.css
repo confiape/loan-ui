@@ -132,6 +132,15 @@
 /* ==================== ACTIONS CELL ==================== */
 .actions-cell {
   position: relative;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.inline-actions {
+  display: inline-flex;
+  gap: var(--spacing-2);
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .actions-wrapper {

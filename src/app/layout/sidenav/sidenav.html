@@ -23,13 +23,13 @@
           class="flex items-center justify-center text-2xl font-bold text-[var(--color-primary)]"
         >
           @if (!isCollapsed() && logo()) {
-            <span [innerHTML]="logo()"></span>
+            <app-icon [svg]="logo()" [size]="32"></app-icon>
           }
           @if (isCollapsed() && logoCollapsed()) {
-            <span [innerHTML]="logoCollapsed()"></span>
+            <app-icon [svg]="logoCollapsed()" [size]="32"></app-icon>
           }
           @if (isCollapsed() && !logoCollapsed() && logo()) {
-            <span [innerHTML]="logo()"></span>
+            <app-icon [svg]="logo()" [size]="32"></app-icon>
           }
         </div>
       }
@@ -125,10 +125,7 @@
             >
               <!-- Icon -->
               @if (item.icon) {
-                <span
-                  class="flex items-center justify-center w-5 h-5 flex-shrink-0 text-lg"
-                  [innerHTML]="item.icon"
-                ></span>
+                <app-icon [svg]="item.icon" [size]="24" class="flex-shrink-0"></app-icon>
               }
 
               <!-- Label -->
@@ -232,10 +229,7 @@
                     >
                       <!-- Icon -->
                       @if (child.icon) {
-                        <span
-                          class="flex items-center justify-center w-4 h-4 flex-shrink-0 text-base"
-                          [innerHTML]="child.icon"
-                        ></span>
+                        <app-icon [svg]="child.icon" [size]="16" class="flex-shrink-0"></app-icon>
                       }
 
                       <!-- Label -->

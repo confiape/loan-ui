@@ -31,7 +31,8 @@ export class IconComponent {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly emptyIcon = this.sanitizer.bypassSecurityTrustHtml('');
 
-  name = input.required<string>();
+  name = input<string>('');
+  svg = input<string>(''); // Inline SVG string
   size = input<'sm' | 'md' | 'lg' | number>('md');
   ariaLabel = input<string | null>(null);
 
@@ -51,7 +52,16 @@ export class IconComponent {
     { initialValue: null, requireSync: false },
   );
 
-  protected readonly svgContent = computed(() => this.iconContent() ?? this.emptyIcon);
+  protected readonly svgContent = computed(() => {
+    // If inline SVG is provided, use it directly
+    const inlineSvg = this.svg();
+    if (inlineSvg) {
+      return this.sanitizer.bypassSecurityTrustHtml(inlineSvg);
+    }
+
+    // Otherwise, use the loaded icon content
+    return this.iconContent() ?? this.emptyIcon;
+  });
 
   protected readonly numericSize = computed(() => {
     const current = this.size();

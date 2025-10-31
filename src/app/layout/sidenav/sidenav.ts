@@ -1,4 +1,7 @@
 import { Component, input, output, signal, computed, effect } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { IconComponent } from '../../components/ui/icon/icon';
 
 export interface SidenavItem {
   label: string;
@@ -17,7 +20,7 @@ export type SidenavVariant = 'default' | 'bordered' | 'pills';
 
 @Component({
   selector: 'app-sidenav',
-  imports: [],
+  imports: [CommonModule, RouterModule, IconComponent],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.css',
   standalone: true,
