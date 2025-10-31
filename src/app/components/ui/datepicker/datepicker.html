@@ -1,8 +1,11 @@
-<div class="datepicker-container" [class.datepicker-inline]="displayMode() === 'inline'">
+<div
+  class="datepicker-container relative w-full"
+  [class.datepicker-inline]="displayMode() === 'inline'"
+>
   <!-- Label -->
   @if (label()) {
     <label
-      class="datepicker-label"
+      class="block mb-2 text-sm font-medium text-[var(--color-text-primary)]"
       [attr.for]="displayMode() === 'popup' ? 'datepicker-input' : null"
       >{{ label() }}</label
     >
@@ -10,12 +13,15 @@
 
   <!-- Input field (only for popup mode) -->
   @if (displayMode() === 'popup') {
-    <div class="datepicker-input-wrapper" [class]="'datepicker-' + size()">
+    <div
+      class="datepicker-input-wrapper relative flex items-center"
+      [class]="'datepicker-' + size()"
+    >
       <input
         #dateInput
         id="datepicker-input"
         type="text"
-        class="datepicker-input"
+        class="datepicker-input w-full py-[var(--spacing-2)] pr-[var(--spacing-10)] pl-[var(--spacing-3)] text-[length:var(--font-size-base)] leading-[var(--line-height-normal)] text-[var(--color-text-primary)] bg-[var(--color-bg-primary)] border-[length:var(--border-width-1)] border-[var(--color-border)] rounded-[var(--border-radius-md)] outline-none cursor-pointer transition-[border-color] duration-[var(--transition-duration-150)] ease-[var(--transition-timing-ease)]"
         [value]="displayValue()"
         [placeholder]="placeholder()"
         [disabled]="disabled()"
@@ -29,11 +35,13 @@
         (keydown)="onKeyDown($event)"
       />
 
-      <div class="datepicker-input-icons">
+      <div
+        class="datepicker-input-icons absolute right-[var(--spacing-1)] flex items-center gap-[var(--spacing-1)]"
+      >
         @if (showClearButton() && displayValue()) {
           <button
             type="button"
-            class="datepicker-clear-btn"
+            class="datepicker-clear-btn flex items-center justify-center p-[var(--spacing-1)] bg-transparent border-none rounded-[var(--border-radius-sm)] text-[var(--color-text-secondary)] cursor-pointer transition-all duration-[var(--transition-duration-150)] ease-[var(--transition-timing-ease)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)] disabled:cursor-not-allowed disabled:opacity-50"
             [disabled]="disabled()"
             (click)="clear(); $event.stopPropagation()"
             aria-label="Limpiar selección"
@@ -54,7 +62,7 @@
 
         <button
           type="button"
-          class="datepicker-toggle-btn"
+          class="datepicker-toggle-btn flex items-center justify-center p-[var(--spacing-1)] bg-transparent border-none rounded-[var(--border-radius-sm)] text-[var(--color-text-secondary)] cursor-pointer transition-all duration-[var(--transition-duration-150)] ease-[var(--transition-timing-ease)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)] disabled:cursor-not-allowed disabled:opacity-50"
           [disabled]="disabled()"
           (click)="toggle(); $event.stopPropagation()"
           aria-label="Abrir calendario"
@@ -88,12 +96,14 @@
       [attr.aria-label]="'Calendario para ' + (label() || 'seleccionar fecha')"
     >
       <!-- Calendar Header -->
-      <div class="datepicker-header">
+      <div
+        class="datepicker-header flex items-center justify-between p-[var(--spacing-4)] border-b-[length:var(--border-width-1)] border-[var(--color-border)]"
+      >
         <!-- Navigation buttons for days view -->
         @if (viewMode() === 'days') {
           <button
             type="button"
-            class="datepicker-nav-btn"
+            class="datepicker-nav-btn flex items-center justify-center w-8 h-8 p-[var(--spacing-1)] bg-transparent border-none rounded-[var(--border-radius-md)] text-[var(--color-text-primary)] cursor-pointer transition-all duration-[var(--transition-duration-150)] ease-[var(--transition-timing-ease)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-primary)]"
             (click)="previousMonth()"
             aria-label="Mes anterior"
           >
@@ -109,10 +119,10 @@
             </svg>
           </button>
 
-          <div class="datepicker-header-title">
+          <div class="datepicker-header-title flex-1 text-center">
             <button
               type="button"
-              class="datepicker-month-btn"
+              class="datepicker-month-btn px-[var(--spacing-3)] py-[var(--spacing-2)] text-[length:var(--font-size-base)] font-[var(--font-weight-semibold)] text-[var(--color-text-primary)] bg-transparent border-none rounded-[var(--border-radius-md)] cursor-pointer transition-all duration-[var(--transition-duration-150)] ease-[var(--transition-timing-ease)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-primary)] disabled:cursor-default"
               (click)="showMonthPicker()"
               [disabled]="!showMonthYearPicker()"
               [attr.aria-label]="'Seleccionar mes, actualmente ' + currentMonthYear()"

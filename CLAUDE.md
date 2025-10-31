@@ -8,39 +8,6 @@ Angular 20 application with semantic design system on Tailwind CSS v4. Zoneless,
 
 **NEVER** modify files in `src/app/core/openapi/**` - Auto-generated from OpenAPI specs. Any changes will be overwritten.
 
-### MANDATORY WORKFLOW (ALWAYS FOLLOW)
-
-Before starting ANY work:
-
-1. **Check Angular Best Practices** - Run MCP tool `mcp__angular-cli__get_best_practices` for nomenclature, signals, modern syntax
-2. **Create GitHub Issue** - Create detailed issue (bug/feature/hotfix) with:
-   - Clear description of work
-   - Acceptance criteria
-   - Technical approach if complex
-3. **Confirm with User** - Present issue details, ask if ready to proceed or if changes needed
-4. **Create Branch** - From updated `master`:
-   ```bash
-   git checkout master && git pull origin master
-   git checkout -b <type>/<descriptive-name>
-   # Types: feature, bug, hotfix, refactor, docs
-   # Example: feature/user-authentication
-   ```
-5. **Implement Changes** - Follow Angular 20 standards (see below)
-6. **Update/Create Tests** - MANDATORY unit tests with Vitest
-7. **Update Stories** - If UI component, update/create Storybook stories
-8. **Run Quality Checks**:
-   ```bash
-   npx prettier --write .           # Format code
-   npm run lint                      # Fix lint errors
-   npm test                          # Run unit tests - MUST PASS
-   ```
-9. **Resolve ALL Errors** - Fix any lint/test failures from YOUR changes only
-10. **User Testing** - Ask user to test changes
-11. **Create PR** - If user approves:
-    - Create PR from your branch to `master`
-    - Include issue reference
-    - Describe changes and testing done
-
 ## Quick Reference
 
 ### Commands

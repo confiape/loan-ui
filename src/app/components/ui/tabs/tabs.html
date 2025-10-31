@@ -1,10 +1,15 @@
-<div [ngClass]="containerClasses()">
+<div [ngClass]="containerClasses()" class="w-full flex flex-col gap-4">
   <!-- Tab List -->
-  <div [ngClass]="tabListClasses()" role="tablist" [attr.aria-orientation]="orientation()">
+  <div
+    [ngClass]="tabListClasses()"
+    role="tablist"
+    [attr.aria-orientation]="orientation()"
+    class="flex relative"
+  >
     @for (tab of tabs(); track tab.id; let i = $index) {
       <button
         type="button"
-        class="tab-button"
+        class="tab-button bg-transparent border-none text-sm font-medium px-4 py-3 cursor-pointer transition-all duration-150 ease-in-out inline-flex items-center gap-2 whitespace-nowrap outline-none relative hover:text-[var(--color-text-primary)] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-[var(--color-primary)] focus-visible:outline-offset-2 focus-visible:rounded-[var(--border-radius-base)] focus-visible:shadow-[0_0_0_3px_var(--color-primary-focus-ring)]"
         [class.tab-button-active]="isActive(tab)"
         [disabled]="tab.disabled"
         [attr.data-index]="i"
@@ -19,7 +24,7 @@
         (keydown)="handleKeyDown($event, i)"
       >
         @if (tab.icon) {
-          <span class="tab-icon">{{ tab.icon }}</span>
+          <span class="text-base flex items-center">{{ tab.icon }}</span>
         }
         <span>{{ tab.label }}</span>
         @if (tab.badge !== undefined && tab.badge !== null) {
@@ -28,7 +33,10 @@
               {{ tab.badge }}
             </span>
           } @else {
-            <span class="tab-badge">{{ tab.badge }}</span>
+            <span
+              class="tab-badge inline-flex items-center justify-center min-w-5 h-5 px-1 text-xs font-semibold rounded-full ml-1"
+              >{{ tab.badge }}</span
+            >
           }
         }
       </button>
@@ -38,14 +46,14 @@
   <!-- Tab Content -->
   @if (useRouter()) {
     <!-- Router Mode: Use router-outlet -->
-    <div class="tab-content" role="tabpanel">
+    <div class="tab-content p-4 rounded-lg flex-1" role="tabpanel">
       <router-outlet></router-outlet>
     </div>
   } @else {
     <!-- Content Mode: Display static content -->
     @if (activeTabItem()) {
       <div
-        class="tab-content"
+        class="tab-content p-4 rounded-lg flex-1"
         role="tabpanel"
         [attr.id]="'tabpanel-' + activeTabItem()!.id"
         [attr.aria-labelledby]="'tab-' + activeTabItem()!.id"

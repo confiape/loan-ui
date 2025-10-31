@@ -1,71 +1,34 @@
-/* Tabs Container */
-.tabs-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-}
+/* Tabs Container Vertical */
 .tabs-container-vertical {
   flex-direction: row;
   gap: var(--spacing-6);
 }
 
-/* Tab List */
-.tabs-list {
-  display: flex;
-  position: relative;
-}
+/* Tab List Variants - Horizontal */
 .tabs-list-horizontal {
   flex-direction: row;
   border-bottom: 2px solid var(--color-border);
   gap: var(--spacing-1);
 }
+
+/* Tab List Variants - Vertical */
 .tabs-list-vertical {
   flex-direction: column;
   border-right: 2px solid var(--color-border);
   gap: var(--spacing-1);
   min-width: 200px;
 }
+
+/* Tab List - Justified & Full Width */
 .tabs-list-justified .tab-button,
 .tabs-list-full-width .tab-button {
   flex: 1;
   justify-content: center;
 }
 
-/* Tab Button */
+/* Tab Button - Color initial */
 .tab-button {
-  background: transparent;
-  border: none;
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  padding: var(--spacing-3) var(--spacing-4);
-  cursor: pointer;
-  transition: all var(--transition-duration-150) var(--transition-timing-ease-in-out);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-2);
-  white-space: nowrap;
-  outline: none;
-  position: relative;
-}
-.tab-button:hover:not(:disabled) {
-  color: var(--color-text-primary);
-}
-.tab-button:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-  border-radius: var(--border-radius-base);
-  box-shadow: 0 0 0 3px var(--color-primary-focus-ring);
-}
-.tab-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.tab-icon {
-  font-size: var(--font-size-base);
-  display: flex;
-  align-items: center;
 }
 
 /* Variant: Default */
@@ -208,12 +171,9 @@
 
 /* Tab Content */
 .tab-content {
-  padding: var(--spacing-4);
   color: var(--color-text-primary);
   background-color: var(--color-bg-primary);
-  border-radius: var(--border-radius-lg);
   animation: fadeIn var(--transition-duration-200) var(--transition-timing-ease-out);
-  flex: 1;
 }
 @keyframes fadeIn {
   from {
@@ -230,18 +190,6 @@
 }
 
 /* Badge */
-.tab-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.25rem;
-  height: 1.25rem;
-  padding: 0 var(--spacing-1);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  border-radius: var(--border-radius-full);
-  margin-left: var(--spacing-1);
-}
 .tab-button:not(.tab-button-active) .tab-badge {
   background-color: var(--color-bg-tertiary);
   color: var(--color-text-secondary);
