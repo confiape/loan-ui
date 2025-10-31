@@ -1,13 +1,8 @@
-<form [formGroup]="companyForm" (ngSubmit)="onSubmit()" class="p-6">
+<form [formGroup]="companyForm" (ngSubmit)="onSubmit()" class="p-6" data-testid="company-form">
   <!-- Error Alert -->
   @if (error()) {
     <div class="alert alert-error mb-4">
-      <svg
-        class="alert-icon"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg class="alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -23,26 +18,14 @@
   <div class="space-y-4">
     <!-- Company Name -->
     <div>
-      <label class="form-label" for="companyName">
-        Company Name
-        <span class="text-[var(--color-error)]">*</span>
-      </label>
       <app-base-input
         id="companyName"
+        [testId]="'company-name-input'"
+        [label]="'Company Name'"
+        [required]="true"
         formControlName="name"
         placeholder="Enter company name"
-        [class.form-input-error]="nameControl?.invalid && nameControl?.touched"
       ></app-base-input>
-      @if (nameControl?.invalid && nameControl?.touched) {
-        <div class="text-sm text-[var(--color-error)] mt-1">
-          @if (nameControl?.errors?.['required']) {
-            <span>Company name is required</span>
-          }
-          @if (nameControl?.errors?.['minlength']) {
-            <span>Company name must be at least 2 characters</span>
-          }
-        </div>
-      }
     </div>
   </div>
 
@@ -50,6 +33,7 @@
   <div class="flex gap-3 justify-end mt-6 pt-4 border-t border-[var(--color-border)]">
     <button
       type="button"
+      data-testid="company-form-cancel-button"
       class="btn btn-secondary"
       (click)="onCancel()"
       [disabled]="loading()"
@@ -58,6 +42,7 @@
     </button>
     <button
       type="submit"
+      data-testid="company-form-submit-button"
       class="btn btn-primary"
       [disabled]="loading() || companyForm.invalid"
     >

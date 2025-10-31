@@ -15,6 +15,7 @@
   <div
     class="modal-container"
     [class.modal-centered]="centered()"
+    [attr.data-testid]="testId() || null"
     role="dialog"
     [attr.aria-modal]="true"
     [attr.aria-labelledby]="modalId() + '-title'"

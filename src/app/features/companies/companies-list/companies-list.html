@@ -2,15 +2,15 @@
   <!-- Header -->
   <div class="mb-6">
     <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Companies</h1>
-    <p class="text-sm text-[var(--color-text-secondary)] mt-1">
-      Manage your company records
-    </p>
+    <p class="text-sm text-[var(--color-text-secondary)] mt-1">Manage your company records</p>
   </div>
 
   <!-- Toolbar with Search, Primary Action and Bulk Actions -->
   <div class="mb-4">
     <app-table-toolbar
+      data-testid="companies-toolbar"
       searchPlaceholder="Search by name or ID..."
+      [searchTestId]="'companies-search-input'"
       [primaryAction]="primaryAction"
       [bulkActions]="hasSelection() ? bulkActions : []"
       [showFilters]="false"
@@ -22,6 +22,7 @@
   <!-- Table Card -->
   <div class="bg-white rounded-lg shadow-sm border border-[var(--color-border)]">
     <app-table
+      data-testid="companies-table"
       [columns]="columns"
       [data]="filteredCompanies()"
       [rowActions]="rowActions"
@@ -41,6 +42,7 @@
 
   <!-- Create/Edit Modal -->
   <app-modal
+    [testId]="'company-form-modal'"
     [isOpen]="showModal()"
     [title]="editingCompany() ? 'Edit Company' : 'New Company'"
     size="md"
@@ -48,13 +50,14 @@
   >
     <app-company-form
       [company]="editingCompany()"
-      (save)="onFormSave($event)"
-      (cancel)="onFormCancel()"
+      (companySaved)="onFormSave()"
+      (formCancelled)="onFormCancel()"
     ></app-company-form>
   </app-modal>
 
   <!-- Delete Confirmation Modal -->
   <app-modal
+    [testId]="'company-delete-modal'"
     [isOpen]="showDeleteConfirm()"
     title="Delete Company"
     size="sm"
@@ -63,8 +66,16 @@
     <div class="p-4">
       <p class="text-[var(--color-text-primary)] mb-4" [innerHTML]="deleteMessage"></p>
       <div class="flex gap-3 justify-end">
-        <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
-        <button class="btn btn-error" (click)="confirmDelete()">Delete</button>
+        <button
+          data-testid="delete-cancel-button"
+          class="btn btn-secondary"
+          (click)="cancelDelete()"
+        >
+          Cancel
+        </button>
+        <button data-testid="delete-confirm-button" class="btn btn-error" (click)="confirmDelete()">
+          Delete
+        </button>
       </div>
     </div>
   </app-modal>

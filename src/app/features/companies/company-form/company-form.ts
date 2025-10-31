@@ -1,4 +1,4 @@
-import { Component, input, output, effect, signal } from '@angular/core';
+import { Component, input, output, effect, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BaseInputComponent } from '../../../components/ui/base-input/base-input';
@@ -13,35 +13,54 @@ import { SaveCompanyDto } from '../../../core/openapi/model/saveCompanyDto';
   templateUrl: './company-form.html',
 })
 export class CompanyFormComponent {
+  // Services
+  private fb = inject(FormBuilder);
+  private companyService = inject(CompanyApiService);
+
   // Inputs
   company = input<CompanyDto | null>(null);
 
   // Outputs
-  save = output<CompanyDto>();
-  cancel = output<void>();
+  companySaved = output<CompanyDto>();
+  formCancelled = output<void>();
 
   // State
   companyForm: FormGroup;
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
 
-  constructor(
-    private fb: FormBuilder,
-    private companyService: CompanyApiService,
-  ) {
+  constructor() {
     this.companyForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
+      name: [
+        '',
+        {
+          validators: [
+            Validators.required,
+            Validators.minLength(2),
+            Validators.maxLength(15),
+            Validators.pattern(/^[a-zA-Z0-9\s-]+$/),
+          ],
+          updateOn: 'blur',
+        },
+      ],
     });
 
     // Update form when company input changes
     effect(() => {
       const currentCompany = this.company();
       if (currentCompany) {
+        // Load existing company data
+        this.companyForm.reset(); // Reset first to clear all state
         this.companyForm.patchValue({
           name: currentCompany.name,
         });
+        this.companyForm.markAsPristine();
+        this.companyForm.markAsUntouched();
       } else {
+        // Reset for new company
         this.companyForm.reset();
+        this.companyForm.markAsPristine();
+        this.companyForm.markAsUntouched();
       }
     });
   }
@@ -68,7 +87,7 @@ export class CompanyFormComponent {
       this.companyService.updateCompany(updateDto).subscribe({
         next: (response) => {
           this.loading.set(false);
-          this.save.emit(response);
+          this.companySaved.emit(response);
         },
         error: (error) => {
           console.error('Error updating company:', error);
@@ -85,7 +104,7 @@ export class CompanyFormComponent {
       this.companyService.createCompany(createDto).subscribe({
         next: (response) => {
           this.loading.set(false);
-          this.save.emit(response);
+          this.companySaved.emit(response);
         },
         error: (error) => {
           console.error('Error creating company:', error);
@@ -97,7 +116,7 @@ export class CompanyFormComponent {
   }
 
   onCancel(): void {
-    this.cancel.emit();
+    this.formCancelled.emit();
     this.companyForm.reset();
     this.error.set(null);
   }

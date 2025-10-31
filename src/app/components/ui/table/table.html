@@ -129,11 +129,7 @@
           </tr>
         } @else {
           @for (row of sortedData(); track $index) {
-            <tr
-              class="table-row"
-              [attr.tabindex]="'0'"
-              [attr.role]="'row'"
-            >
+            <tr class="table-row" [attr.tabindex]="'0'" [attr.role]="'row'">
               <!-- Checkbox Cell -->
               @if (selectable()) {
                 <td class="table-cell">

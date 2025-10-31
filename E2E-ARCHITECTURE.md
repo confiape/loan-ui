@@ -5,6 +5,7 @@ Arquitectura de testing end-to-end para loan-ui usando Playwright.
 ## Análisis del Proyecto
 
 **Stack actual:**
+
 - Angular 20 (standalone, signals, zoneless)
 - Playwright instalado (`@playwright/test`: ^1.56.1)
 - 30+ componentes UI reutilizables
@@ -12,6 +13,7 @@ Arquitectura de testing end-to-end para loan-ui usando Playwright.
 - Auth con guards (authGuard, loginGuard)
 
 **Lo que necesitamos testear:**
+
 1. **Autenticación** - Login/logout flows
 2. **CRUDs** - Companies (referencia para otros)
 3. **UI Components** - Modals, tables, forms, dropdowns, etc.
@@ -47,6 +49,7 @@ tests/
 ## 1. Fixtures (tests/fixtures/)
 
 ### auth.fixture.ts
+
 Manejo centralizado de autenticación para evitar login repetido.
 
 ```typescript
@@ -66,6 +69,7 @@ export const test = base.extend({
 ```
 
 **Uso:**
+
 ```typescript
 test('should access companies', async ({ authenticatedPage }) => {
   await authenticatedPage.goto('/companies');
@@ -74,6 +78,7 @@ test('should access companies', async ({ authenticatedPage }) => {
 ```
 
 ### mock-data.ts
+
 Data centralizada para tests consistentes.
 
 ```typescript
@@ -102,6 +107,7 @@ export const testUsers = {
 ```
 
 ### test-helpers.ts
+
 Utilidades comunes reutilizables.
 
 ```typescript
@@ -130,6 +136,7 @@ export async function fillForm(page, formData: Record<string, string>) {
 Page Object Model para encapsular lógica de interacción con páginas.
 
 ### base.page.ts
+
 Clase base con métodos comunes.
 
 ```typescript
@@ -165,6 +172,7 @@ export class BasePage {
 ```
 
 ### login.page.ts
+
 Página de login con métodos específicos.
 
 ```typescript
@@ -188,6 +196,7 @@ export class LoginPage extends BasePage {
 ```
 
 ### companies-list.page.ts
+
 Página de listado CRUD.
 
 ```typescript
@@ -262,6 +271,7 @@ export class CompaniesListPage extends BasePage {
 ```
 
 ### company-form.page.ts
+
 Formulario modal.
 
 ```typescript
@@ -380,19 +390,14 @@ export default defineConfig({
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [
-    ['html'],
-    ['json', { outputFile: 'test-results/results.json' }],
-  ],
+  reporter: [['html'], ['json', { outputFile: 'test-results/results.json' }]],
   use: {
     baseURL: 'http://localhost:4200',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-  ],
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: 'npm start',
     url: 'http://localhost:4200',
@@ -419,6 +424,7 @@ export default defineConfig({
 ## 5. Patrones y Best Practices
 
 ### Patrón de Espera
+
 ```typescript
 // ❌ Evitar
 await page.waitForTimeout(1000);
@@ -429,24 +435,26 @@ await page.waitForLoadState('networkidle');
 ```
 
 ### Selectors Preferidos
+
 ```typescript
 // 1. Role (más semántico)
-page.getByRole('button', { name: 'Submit' })
+page.getByRole('button', { name: 'Submit' });
 
 // 2. Label
-page.getByLabel('Email')
+page.getByLabel('Email');
 
 // 3. Placeholder
-page.getByPlaceholder('Search...')
+page.getByPlaceholder('Search...');
 
 // 4. Test ID (cuando es necesario)
-page.getByTestId('company-row-1')
+page.getByTestId('company-row-1');
 
 // 5. CSS (último recurso)
-page.locator('.btn-primary')
+page.locator('.btn-primary');
 ```
 
 ### Assertions Específicas
+
 ```typescript
 // Visibilidad
 await expect(element).toBeVisible();

@@ -1,7 +1,10 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { SidenavComponent, SidenavItem } from './sidenav';
+import { of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
@@ -36,11 +39,21 @@ describe('SidenavComponent', () => {
     { label: 'Messages', value: 'messages', badge: 5 },
     { label: 'Notifications', value: 'notifications', badge: 'New' },
   ];
+  let httpClient: {
+    get: Mock;
+  };
 
   beforeEach(async () => {
+    httpClient = {
+      get: vi.fn(() => of('<svg data-test="icon"></svg>')) as Mock,
+    };
     await TestBed.configureTestingModule({
       imports: [SidenavComponent],
-      providers: [provideZonelessChangeDetection()],
+      providers: [
+        provideZonelessChangeDetection(),
+        { provide: HttpClient, useValue: httpClient },
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SidenavComponent);

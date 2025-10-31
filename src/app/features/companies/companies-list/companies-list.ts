@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
@@ -50,6 +50,10 @@ export class CompaniesListComponent implements OnInit {
 
   hasSelection = computed(() => this.selectedCompanies().size > 0);
 
+  companyService = inject(CompanyApiService);
+  router = inject(Router);
+  route = inject(ActivatedRoute);
+
   // Table configuration
   columns: TableColumn<CompanyDto>[] = [
     { key: 'name', label: 'Name', sortable: true },
@@ -93,12 +97,6 @@ export class CompaniesListComponent implements OnInit {
       variant: 'outline',
     },
   ];
-
-  constructor(
-    private companyService: CompanyApiService,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {}
 
   ngOnInit(): void {
     this.loadCompanies();
@@ -196,7 +194,7 @@ export class CompaniesListComponent implements OnInit {
     }
   }
 
-  onFormSave(company: CompanyDto): void {
+  onFormSave(): void {
     this.showModal.set(false);
     this.editingCompany.set(null);
     this.loadCompanies();

@@ -26,6 +26,7 @@ export interface FilterOption {
 export class TableToolbarComponent {
   // ==================== INPUTS ====================
   searchPlaceholder = input<string>('Search');
+  searchTestId = input<string>(''); // For E2E testing
   showSearch = input<boolean>(true);
   showActions = input<boolean>(true);
   showFilters = input<boolean>(true);
