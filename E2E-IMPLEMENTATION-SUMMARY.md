@@ -5,6 +5,7 @@
 ## 📦 Lo que se creó
 
 ### 1. Estructura de Carpetas
+
 ```
 tests/
 ├── e2e/
@@ -25,6 +26,7 @@ tests/
 ```
 
 ### 2. Configuración
+
 - ✅ `playwright.config.ts` actualizado
   - baseURL: http://localhost:4200
   - webServer auto-start
@@ -32,6 +34,7 @@ tests/
   - Multiple reporters (HTML, JSON, list)
 
 ### 3. Scripts NPM
+
 ```json
 {
   "test:e2e": "playwright test",
@@ -45,6 +48,7 @@ tests/
 ## 🎯 Tests Implementados
 
 ### Auth (tests/e2e/auth/login.spec.ts)
+
 - ✅ Display login page
 - ✅ Login with valid credentials
 - ✅ Show error with invalid credentials
@@ -52,28 +56,34 @@ tests/
 - ✅ Redirect if already logged in
 
 ### Companies CRUD (tests/e2e/cruds/companies.spec.ts)
+
 **Create:**
+
 - ✅ Create company with valid data
 - ✅ Validate required fields
 - ✅ Validate minimum length
 - ✅ Cancel creation
 
 **Read:**
+
 - ✅ Display companies list
 - ✅ Search companies by name
 - ✅ Filter out non-matching companies
 
 **Update:**
+
 - ✅ Edit existing company
 - ✅ Show edit modal with existing data
 - ✅ Validate on update
 
 **Delete:**
+
 - ✅ Delete single company
 - ✅ Cancel delete
 - ✅ Bulk delete selected companies
 
 **Edge Cases:**
+
 - ✅ Handle special characters
 - ✅ Handle very long names
 
@@ -82,6 +92,7 @@ tests/
 ## 🔧 Fixtures & Helpers
 
 ### auth.fixture.ts
+
 ```typescript
 test('my test', async ({ authenticatedPage }) => {
   // Página ya autenticada automáticamente
@@ -89,13 +100,15 @@ test('my test', async ({ authenticatedPage }) => {
 ```
 
 ### mock-data.ts
+
 ```typescript
-testUsers.user.email      // test@example.com
-testCompanies.valid.name  // Test Company Inc.
-generateCompanyName()     // Genera nombres únicos
+testUsers.user.email; // test@example.com
+testCompanies.valid.name; // Test Company Inc.
+generateCompanyName(); // Genera nombres únicos
 ```
 
 ### test-helpers.ts
+
 - `waitForTableLoad(page)`
 - `searchInTable(page, term)`
 - `fillForm(page, data)`
@@ -105,7 +118,9 @@ generateCompanyName()     // Genera nombres únicos
 ## 📘 Page Objects
 
 ### BasePage
+
 Métodos comunes para todas las páginas:
+
 - `goto(path)`
 - `clickButton(text)`
 - `fillInput(label, value)`
@@ -113,13 +128,16 @@ Métodos comunes para todas las páginas:
 - `expectUrl(path)`
 
 ### LoginPage
+
 - `login(email, password)`
 - `loginAndWait(email, password)`
 - `expectLoginError()`
 - `expectRedirectToDashboard()`
 
 ### CompaniesListPage
+
 **Actions:**
+
 - `openNewForm()`
 - `searchCompany(term)`
 - `editCompany(name)`
@@ -128,13 +146,16 @@ Métodos comunes para todas las páginas:
 - `bulkDelete()`
 
 **Assertions:**
+
 - `expectCompanyInList(name)`
 - `expectCompanyNotInList(name)`
 - `expectEmptyState()`
 - `expectRowCount(count)`
 
 ### CompanyFormPage
+
 **Actions:**
+
 - `fillCompanyName(name)`
 - `submit()`
 - `submitAndWait()`
@@ -142,6 +163,7 @@ Métodos comunes para todas las páginas:
 - `fillAndSubmit(name)`
 
 **Assertions:**
+
 - `expectModalOpen(title)`
 - `expectModalClosed()`
 - `expectValidationError(message)`
@@ -150,6 +172,7 @@ Métodos comunes para todas las páginas:
 ## 🚀 Cómo Usar
 
 ### Ejecutar Tests
+
 ```bash
 # Modo UI (recomendado para desarrollo)
 npm run test:e2e:ui
@@ -170,6 +193,7 @@ npm run test:e2e:report
 ### Crear Test para Nuevo CRUD
 
 1. **Copiar archivos:**
+
 ```bash
 cp tests/e2e/cruds/companies.spec.ts tests/e2e/cruds/loans.spec.ts
 cp tests/pages/companies-list.page.ts tests/pages/loans-list.page.ts
@@ -177,6 +201,7 @@ cp tests/pages/company-form.page.ts tests/pages/loan-form.page.ts
 ```
 
 2. **Reemplazar:**
+
 - `Company` → `Loan`
 - `companies` → `loans`
 

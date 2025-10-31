@@ -106,19 +106,19 @@ export class MyEntityListPage extends BasePage {
 
 ```typescript
 // 1. Role (más semántico)
-page.getByRole('button', { name: 'Submit' })
+page.getByRole('button', { name: 'Submit' });
 
 // 2. Label
-page.getByLabel('Email')
+page.getByLabel('Email');
 
 // 3. Placeholder
-page.getByPlaceholder('Search...')
+page.getByPlaceholder('Search...');
 
 // 4. Test ID
-page.getByTestId('company-row')
+page.getByTestId('company-row');
 
 // 5. CSS (último recurso)
-page.locator('.btn-primary')
+page.locator('.btn-primary');
 ```
 
 ### Esperas
@@ -144,11 +144,13 @@ await expect(checkbox).toBeChecked();
 ## Crear Test para Nuevo CRUD
 
 1. **Copiar companies.spec.ts**
+
 ```bash
 cp tests/e2e/cruds/companies.spec.ts tests/e2e/cruds/my-entity.spec.ts
 ```
 
 2. **Crear Page Objects**
+
 ```bash
 # List page
 cp tests/pages/companies-list.page.ts tests/pages/my-entity-list.page.ts
@@ -168,28 +170,34 @@ cp tests/pages/company-form.page.ts tests/pages/my-entity-form.page.ts
 ## Debugging
 
 ### Playwright UI Mode
+
 ```bash
 npm run test:e2e:ui
 ```
+
 - Ver tests en tiempo real
 - Time travel debugging
 - Inspeccionar locators
 
 ### Debug Mode
+
 ```bash
 npm run test:e2e:debug
 ```
+
 - Paso a paso
 - Breakpoints
 - Consola disponible
 
 ### Screenshots/Videos
+
 - Automáticos en fallos
 - Ver en `test-results/` y `playwright-report/`
 
 ## CI/CD
 
 El config ya incluye ajustes para CI:
+
 - Retries: 2 en CI
 - Workers: 1 en CI (evita race conditions)
 - Screenshots/videos en fallos
@@ -198,13 +206,16 @@ El config ya incluye ajustes para CI:
 ## Troubleshooting
 
 **Tests fallan por timeouts:**
+
 - Aumentar `actionTimeout` en `playwright.config.ts`
 - Verificar que el server esté corriendo
 
 **"Element not found":**
+
 - Usar Playwright Inspector: `npm run test:e2e:debug`
 - Revisar selectores con `page.locator('selector').highlight()`
 
 **Auth no funciona:**
+
 - Verificar credenciales en `mock-data.ts`
 - Revisar que guards permitan acceso

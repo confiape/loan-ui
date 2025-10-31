@@ -71,7 +71,9 @@ export class CompaniesListPage extends BasePage {
   }
 
   async expectEmptyState() {
-    await expect(this.page.getByTestId('companies-table').getByText(/no companies found/i)).toBeVisible();
+    await expect(
+      this.page.getByTestId('companies-table').getByText(/no companies found/i),
+    ).toBeVisible();
   }
 
   async expectRowCount(count: number) {

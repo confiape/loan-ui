@@ -47,6 +47,7 @@ npx playwright test -g "should create"
 ## Durante Desarrollo
 
 **Mejor workflow:**
+
 1. `npm run test:e2e:ui` - Abre UI mode
 2. Selecciona el test que quieres ejecutar
 3. Ve ejecución en tiempo real
@@ -56,6 +57,7 @@ npx playwright test -g "should create"
 ## Troubleshooting
 
 **Server no inicia:**
+
 ```bash
 # Iniciar manualmente en otra terminal
 npm start
@@ -65,12 +67,14 @@ npm run test:e2e
 ```
 
 **Tests muy lentos:**
+
 ```bash
 # Ejecutar solo chromium (más rápido)
 npx playwright test --project=chromium
 ```
 
 **Ver qué está pasando:**
+
 ```bash
 # Headed mode muestra el navegador
 npm run test:e2e:headed
@@ -111,6 +115,7 @@ npm run test:e2e:ui
 ## CI/CD
 
 El config ya está listo para CI:
+
 - Auto-retries en fallos
 - Screenshots/videos automáticos
 - Ejecuta en paralelo cuando es posible

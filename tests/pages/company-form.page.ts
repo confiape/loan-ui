@@ -22,9 +22,9 @@ export class CompanyFormPage extends BasePage {
   async triggerValidation() {
     // Fill and clear to trigger Angular validation (makes field dirty + touched)
     const input = this.page.getByTestId('company-name-input');
-    await input.fill('x');  // Write something
-    await input.clear();    // Clear it (marks dirty + touched)
-    await input.blur();     // Ensure blur event fires
+    await input.fill('x'); // Write something
+    await input.clear(); // Clear it (marks dirty + touched)
+    await input.blur(); // Ensure blur event fires
   }
 
   async submitAndWait() {

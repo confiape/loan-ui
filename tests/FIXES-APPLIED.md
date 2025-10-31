@@ -37,8 +37,8 @@ Se agregaron `data-testid` a todos los elementos críticos para tests más confi
 
 <!-- Delete Modal -->
 <app-modal data-testid="company-delete-modal" ... />
-  <button data-testid="delete-cancel-button" ... />
-  <button data-testid="delete-confirm-button" ... />
+<button data-testid="delete-cancel-button" ... />
+<button data-testid="delete-confirm-button" ... />
 ```
 
 ### 3. Company Form (`company-form.html`)
@@ -58,6 +58,7 @@ Se agregaron `data-testid` a todos los elementos críticos para tests más confi
 ### 4. Page Objects Actualizados
 
 **login.page.ts:**
+
 ```typescript
 get emailInput() {
   return this.page.getByTestId('login-email-input');
@@ -73,6 +74,7 @@ get submitButton() {
 ```
 
 **companies-list.page.ts:**
+
 ```typescript
 get table() {
   return this.page.getByTestId('companies-table');
@@ -88,6 +90,7 @@ get formModal() {
 ```
 
 **company-form.page.ts:**
+
 ```typescript
 get modal() {
   return this.page.getByTestId('company-form-modal');
@@ -107,6 +110,7 @@ get submitButton() {
 ```
 
 **auth.fixture.ts:**
+
 ```typescript
 await page.getByTestId('login-email-input').fill('admin@confia.com');
 await page.getByTestId('login-password-input').fill('password123');
@@ -164,15 +168,16 @@ Siempre agregar `data-testid` a elementos que necesiten testing:
 
 <!-- Modals -->
 <app-modal data-testid="feature-modal">
-
-<!-- Tables -->
-<app-table data-testid="feature-table">
+  <!-- Tables -->
+  <app-table data-testid="feature-table"></app-table
+></app-modal>
 ```
 
 **Naming convention:**
 `{feature}-{element}-{type}`
 
 Ejemplos:
+
 - `login-email-input`
 - `company-form-submit-button`
 - `companies-table`

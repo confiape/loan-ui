@@ -5,6 +5,7 @@ Guía compacta para escribir tests E2E con Playwright en Angular 20.
 ## 1. Estructura de Page Objects
 
 ### Pattern Básico
+
 ```typescript
 export class MyPage extends BasePage {
   // Actions - Usa data-testid directamente
@@ -38,6 +39,7 @@ export class MyPage extends BasePage {
 ```
 
 **Reglas:**
+
 - ❌ **NO** uses getters - accede a elementos directamente
 - ✅ Métodos específicos para cada acción
 - ✅ Separar métodos de acción vs assertion
@@ -47,6 +49,7 @@ export class MyPage extends BasePage {
 ### En Componentes Angular
 
 **Base Input Component:**
+
 ```typescript
 // Component
 readonly testId = input<string | null>(null);
@@ -61,6 +64,7 @@ readonly testId = input<string | null>(null);
 ```
 
 **Modal Component:**
+
 ```typescript
 // Component
 readonly testId = input<string>('');
@@ -70,13 +74,11 @@ readonly testId = input<string>('');
 ```
 
 **Uso:**
-```html
-<app-base-input
-  [testId]="'company-name-input'"
-  formControlName="name"
-/>
 
-<app-modal [testId]="'company-form-modal'">
+```html
+<app-base-input [testId]="'company-name-input'" formControlName="name" />
+
+<app-modal [testId]="'company-form-modal'"></app-modal>
 ```
 
 ## 3. Validación de Formularios
@@ -86,15 +88,18 @@ readonly testId = input<string>('');
 ```typescript
 // Component
 this.form = this.fb.group({
-  name: ['', {
-    validators: [
-      Validators.required,
-      Validators.minLength(2),
-      Validators.maxLength(15),
-      Validators.pattern(/^[a-zA-Z0-9\s-]+$/)
-    ],
-    updateOn: 'blur'  // Valida solo en blur
-  }]
+  name: [
+    '',
+    {
+      validators: [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(15),
+        Validators.pattern(/^[a-zA-Z0-9\s-]+$/),
+      ],
+      updateOn: 'blur', // Valida solo en blur
+    },
+  ],
 });
 ```
 
@@ -151,6 +156,7 @@ test('should validate pattern', async () => {
 ### Hybrid Approach (Real Backend + Selective Mocking)
 
 **Default:** Usa el backend real
+
 ```typescript
 test('should create company', async () => {
   const name = generateCompanyName(); // Nombres únicos
@@ -161,6 +167,7 @@ test('should create company', async () => {
 ```
 
 **Mock solo edge cases:**
+
 ```typescript
 test('should handle empty search', async ({ authenticatedPage }) => {
   await authenticatedPage.route('**/api/companies*', (route) => {
@@ -169,7 +176,7 @@ test('should handle empty search', async ({ authenticatedPage }) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify([])
+        body: JSON.stringify([]),
       });
     } else {
       route.continue();
@@ -184,21 +191,21 @@ test('should handle empty search', async ({ authenticatedPage }) => {
 ## 5. Selectors - Manejo de Caracteres Especiales
 
 ### ❌ Incorrecto
+
 ```typescript
 return this.page.locator(`tr:has-text("${name}")`); // Falla con comillas
 ```
 
 ### ✅ Correcto
+
 ```typescript
-return this.page
-  .getByTestId('companies-table')
-  .locator('tbody tr')
-  .filter({ hasText: name }); // Maneja cualquier carácter
+return this.page.getByTestId('companies-table').locator('tbody tr').filter({ hasText: name }); // Maneja cualquier carácter
 ```
 
 ## 6. Problemas Comunes
 
 ### Click en Botón Deshabilitado
+
 ```typescript
 // ❌ Error: elemento deshabilitado
 await button.click();
@@ -208,6 +215,7 @@ await button.click({ force: true });
 ```
 
 ### Múltiples Elementos con Mismo Texto
+
 ```typescript
 // ❌ Error: strict mode violation
 const rows = this.page.locator('tr:has-text("Company 123")');
@@ -220,6 +228,7 @@ await listPage.searchCompany(name); // Filtra antes de verificar
 ```
 
 ### Toasts/Alerts No Aparecen
+
 ```typescript
 // Verificar que toast-container esté en app.html:
 <router-outlet />
@@ -235,6 +244,7 @@ await expect(alert).toBeVisible({ timeout: 10000 });
 **Problema:** `controlState` no se actualiza con touched/dirty.
 
 **Solución en base-input.base.ts:**
+
 ```typescript
 handleBlur(): void {
   this.markAsTouched();
@@ -300,6 +310,7 @@ test.describe('Entity CRUD', () => {
 ## 8. Checklist para Nuevos Tests
 
 **Componente:**
+
 - [ ] Todos los inputs tienen `[testId]="'unique-id'"`
 - [ ] Todos los botones tienen `data-testid`
 - [ ] Modales tienen `[testId]` en el container
@@ -307,6 +318,7 @@ test.describe('Entity CRUD', () => {
 - [ ] Toast container está en `app.html`
 
 **Page Object:**
+
 - [ ] Extiende `BasePage`
 - [ ] Métodos usan `getByTestId()` directamente (no getters)
 - [ ] `fill()` + `blur()` para validación on blur
@@ -314,6 +326,7 @@ test.describe('Entity CRUD', () => {
 - [ ] Métodos `expectX()` para assertions
 
 **Tests:**
+
 - [ ] Usa `generateCompanyName()` para nombres únicos
 - [ ] Un test por escenario (no multiple assertions no relacionadas)
 - [ ] Tests de validación usan `triggerValidation()` para required
@@ -345,6 +358,7 @@ npx playwright show-report
 ## 10. Ejemplo Completo
 
 **company-form.page.ts:**
+
 ```typescript
 export class CompanyFormPage extends BasePage {
   async fillCompanyName(name: string) {
@@ -379,6 +393,7 @@ export class CompanyFormPage extends BasePage {
 ```
 
 **companies.spec.ts:**
+
 ```typescript
 test('should validate required field', async () => {
   await listPage.openNewForm();

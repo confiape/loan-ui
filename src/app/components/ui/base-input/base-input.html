@@ -170,7 +170,11 @@
   }
 
   @if (currentErrorMessage()) {
-    <p class="error-text" [id]="errorTextId()" [attr.data-testid]="testId() ? testId() + '-error' : undefined">
+    <p
+      class="error-text"
+      [id]="errorTextId()"
+      [attr.data-testid]="testId() ? testId() + '-error' : undefined"
+    >
       {{ currentErrorMessage() }}
     </p>
   }

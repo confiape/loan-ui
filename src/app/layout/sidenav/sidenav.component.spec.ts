@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { SidenavComponent, SidenavItem } from './sidenav';
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
@@ -48,7 +49,11 @@ describe('SidenavComponent', () => {
     };
     await TestBed.configureTestingModule({
       imports: [SidenavComponent],
-      providers: [provideZonelessChangeDetection(), { provide: HttpClient, useValue: httpClient }],
+      providers: [
+        provideZonelessChangeDetection(),
+        { provide: HttpClient, useValue: httpClient },
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SidenavComponent);

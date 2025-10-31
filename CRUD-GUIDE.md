@@ -51,8 +51,8 @@ export class EntityListComponent {
   // Computed
   filteredEntities = computed(() => {
     const term = this.searchTerm().toLowerCase();
-    return this.allEntities().filter(e =>
-      e.name.toLowerCase().includes(term) || e.id.includes(term)
+    return this.allEntities().filter(
+      (e) => e.name.toLowerCase().includes(term) || e.id.includes(term),
     );
   });
   hasSelection = computed(() => this.selectedEntities().size > 0);
@@ -64,15 +64,29 @@ export class EntityListComponent {
   ];
 
   rowActions = [
-    { label: 'Edit', variant: 'secondary', inline: true,
-      onClick: (row) => this.router.navigate(['/entities', row.id]) },
-    { label: 'Delete', variant: 'danger', inline: true,
-      onClick: (row) => { this.deletingEntity.set(row); this.showDeleteConfirm.set(true); } },
+    {
+      label: 'Edit',
+      variant: 'secondary',
+      inline: true,
+      onClick: (row) => this.router.navigate(['/entities', row.id]),
+    },
+    {
+      label: 'Delete',
+      variant: 'danger',
+      inline: true,
+      onClick: (row) => {
+        this.deletingEntity.set(row);
+        this.showDeleteConfirm.set(true);
+      },
+    },
   ];
 
   primaryAction = {
     label: 'New Entity',
-    onClick: () => { this.editingEntity.set(null); this.showModal.set(true); }
+    onClick: () => {
+      this.editingEntity.set(null);
+      this.showModal.set(true);
+    },
   };
 
   bulkActions = [{ label: 'Delete Selected', variant: 'outline' }];
@@ -85,12 +99,13 @@ export class EntityListComponent {
 
   ngOnInit() {
     this.loadEntities();
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const id = params['id'];
       if (id && this.allEntities().length) {
-        const entity = this.allEntities().find(e => e.id === id);
-        entity ? (this.editingEntity.set(entity), this.showModal.set(true))
-               : this.router.navigate(['/entities']);
+        const entity = this.allEntities().find((e) => e.id === id);
+        entity
+          ? (this.editingEntity.set(entity), this.showModal.set(true))
+          : this.router.navigate(['/entities']);
       }
     });
   }
@@ -123,9 +138,10 @@ export class EntityListComponent {
     const selected = this.selectedEntities();
     const single = this.deletingEntity();
 
-    const requests = selected.size > 0
-      ? Array.from(selected).map(id => this.entityService.delete(id))
-      : [this.entityService.delete(single!.id)];
+    const requests =
+      selected.size > 0
+        ? Array.from(selected).map((id) => this.entityService.delete(id))
+        : [this.entityService.delete(single!.id)];
 
     forkJoin(requests).subscribe(() => {
       this.showDeleteConfirm.set(false);
@@ -222,7 +238,10 @@ export class EntityFormComponent {
     name: ['', [Validators.required, Validators.minLength(2)]],
   });
 
-  constructor(private fb: FormBuilder, private service: EntityApiService) {
+  constructor(
+    private fb: FormBuilder,
+    private service: EntityApiService,
+  ) {
     effect(() => {
       const e = this.entity();
       e ? this.form.patchValue(e) : this.form.reset();
@@ -252,8 +271,12 @@ export class EntityFormComponent {
     });
   }
 
-  get nameControl() { return this.form.get('name'); }
-  get isEditMode() { return this.entity() !== null; }
+  get nameControl() {
+    return this.form.get('name');
+  }
+  get isEditMode() {
+    return this.entity() !== null;
+  }
 }
 ```
 
@@ -263,7 +286,7 @@ export class EntityFormComponent {
 <!-- {entity}-form.html -->
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6">
   @if (error()) {
-    <div class="alert alert-error mb-4">{{ error() }}</div>
+  <div class="alert alert-error mb-4">{{ error() }}</div>
   }
 
   <div class="space-y-4">
@@ -275,10 +298,10 @@ export class EntityFormComponent {
         [class.form-input-error]="nameControl?.invalid && nameControl?.touched"
       />
       @if (nameControl?.invalid && nameControl?.touched) {
-        <div class="text-sm text-[var(--color-error)] mt-1">
-          @if (nameControl?.errors?.['required']) { <span>Required</span> }
-          @if (nameControl?.errors?.['minlength']) { <span>Min 2 chars</span> }
-        </div>
+      <div class="text-sm text-[var(--color-error)] mt-1">
+        @if (nameControl?.errors?.['required']) { <span>Required</span> } @if
+        (nameControl?.errors?.['minlength']) { <span>Min 2 chars</span> }
+      </div>
       }
     </div>
   </div>
