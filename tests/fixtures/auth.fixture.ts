@@ -1,8 +1,9 @@
 import { test as base, Page } from '@playwright/test';
+import { testUsers } from './mock-data';
 
-type AuthFixtures = {
+interface AuthFixtures {
   authenticatedPage: Page;
-};
+}
 
 export const test = base.extend<AuthFixtures>({
   authenticatedPage: async ({ page }, use) => {
@@ -10,8 +11,8 @@ export const test = base.extend<AuthFixtures>({
     await page.goto('/login');
 
     // Fill login form
-    await page.getByTestId('login-email-input').fill('admin@confia.com');
-    await page.getByTestId('login-password-input').fill('password123');
+    await page.getByTestId('login-email-input').fill(testUsers.user.email);
+    await page.getByTestId('login-password-input').fill(testUsers.user.password);
 
     // Submit and wait for redirect
     await page.getByTestId('login-submit-button').click();

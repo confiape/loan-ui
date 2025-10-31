@@ -235,15 +235,18 @@ export class EntityFormComponent {
   error = signal<string | null>(null);
 
   form = this.fb.group({
-    name: ['', {
-      validators: [
-        Validators.required,
-        Validators.minLength(2),
-        Validators.maxLength(100),
-        Validators.pattern(/^[a-zA-Z0-9\s-]+$/),
-      ],
-      updateOn: 'blur',  // Valida solo cuando el usuario sale del campo
-    }],
+    name: [
+      '',
+      {
+        validators: [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(100),
+          Validators.pattern(/^[a-zA-Z0-9\s-]+$/),
+        ],
+        updateOn: 'blur', // Valida solo cuando el usuario sale del campo
+      },
+    ],
   });
 
   constructor(
@@ -294,10 +297,13 @@ export class EntityFormComponent {
 
 ```typescript
 // ✅ Recomendado: 'blur' - Valida cuando el usuario sale del campo
-name: ['', {
-  validators: [Validators.required, Validators.minLength(2)],
-  updateOn: 'blur',
-}]
+name: [
+  '',
+  {
+    validators: [Validators.required, Validators.minLength(2)],
+    updateOn: 'blur',
+  },
+];
 
 // ❌ Evitar: 'change' - Valida en cada tecla (UX agresiva)
 // ⚠️  Default: Si no especificas, usa 'change'
@@ -306,13 +312,13 @@ name: ['', {
 **Validadores comunes:**
 
 ```typescript
-Validators.required                           // Campo requerido
-Validators.minLength(2)                       // Mínimo 2 caracteres
-Validators.maxLength(100)                     // Máximo 100 caracteres
-Validators.email                              // Email válido
-Validators.pattern(/^[a-zA-Z0-9\s-]+$/)      // Solo alfanuméricos, espacios y guiones
-Validators.min(0)                             // Número mínimo
-Validators.max(100)                           // Número máximo
+Validators.required; // Campo requerido
+Validators.minLength(2); // Mínimo 2 caracteres
+Validators.maxLength(100); // Máximo 100 caracteres
+Validators.email; // Email válido
+Validators.pattern(/^[a-zA-Z0-9\s-]+$/); // Solo alfanuméricos, espacios y guiones
+Validators.min(0); // Número mínimo
+Validators.max(100); // Número máximo
 ```
 
 ## Form Template
@@ -376,10 +382,11 @@ Validators.max(100)                           // Número máximo
 <button [attr.data-testid]="'entity-form-submit-button'">Submit</button>
 
 <!-- Modales usan [testId] -->
-<app-modal [testId]="'entity-form-modal'" [isOpen]="showModal()">
+<app-modal [testId]="'entity-form-modal'" [isOpen]="showModal()"></app-modal>
 ```
 
 **Patrón de nombres:**
+
 - Inputs: `{entity}-{field}-input`
 - Botones: `{entity}-form-{action}-button`
 - Modales: `{entity}-form-modal`

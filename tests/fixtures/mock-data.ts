@@ -1,11 +1,11 @@
 export const testUsers = {
   admin: {
     email: 'admin@confia.com',
-    password: 'password123',
+    password: process.env.user_pass,
   },
   user: {
     email: 'admin@confia.com',
-    password: 'password123',
+    password: process.env.user_pass,
   },
 };
 

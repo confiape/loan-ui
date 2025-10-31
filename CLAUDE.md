@@ -375,6 +375,7 @@ npm run test:e2e       # Headless (CI)
 ### Development Guides
 
 **If implementing a CRUD**: Read `docs/CRUD-GUIDE.md` first for:
+
 - Component structure (list, form)
 - Form validation patterns
 - data-testid for E2E testing

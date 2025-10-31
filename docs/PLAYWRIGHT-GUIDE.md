@@ -31,7 +31,7 @@ export class MyPage extends BasePage {
     const input = this.page.getByTestId('my-name-input');
     await input.fill(name);
     await input.blur();
-    await this.page.waitForTimeout(100);   // Angular processing
+    await this.page.waitForTimeout(100); // Angular processing
   }
 
   async submitAndWait() {
@@ -62,7 +62,7 @@ export class MyPage extends BasePage {
 <button [attr.data-testid]="'entity-form-submit-button'">Submit</button>
 
 <!-- Modales -->
-<app-modal [testId]="'entity-form-modal'" [isOpen]="showModal()">
+<app-modal [testId]="'entity-form-modal'" [isOpen]="showModal()"></app-modal>
 ```
 
 **Patrón:** `{entity}-{field}-input`, `{entity}-form-{action}-button`, `{entity}-form-modal`
@@ -141,16 +141,24 @@ test.describe('Entity CRUD', () => {
   });
 
   test.describe('Create', () => {
-    test('should create with valid data', async () => {/* ... */});
-    test('should validate required fields', async () => {/* ... */});
+    test('should create with valid data', async () => {
+      /* ... */
+    });
+    test('should validate required fields', async () => {
+      /* ... */
+    });
   });
 
   test.describe('Update', () => {
-    test('should edit existing', async () => {/* ... */});
+    test('should edit existing', async () => {
+      /* ... */
+    });
   });
 
   test.describe('Delete', () => {
-    test('should delete single', async () => {/* ... */});
+    test('should delete single', async () => {
+      /* ... */
+    });
   });
 });
 ```
@@ -237,27 +245,30 @@ npx playwright show-report
 ## 10. Checklist
 
 **Componente:**
+
 - [ ] Inputs tienen `[testId]`
 - [ ] Botones tienen `data-testid`
 - [ ] Modales tienen `[testId]`
 
 **Page Object:**
+
 - [ ] Extiende `BasePage`
 - [ ] Usa `getByTestId()` (no getters)
 - [ ] `fill()` + `blur()` + `waitForTimeout(100)`
 - [ ] Métodos `expectX()` para assertions
 
 **Tests:**
+
 - [ ] Usa `generateName()` para nombres únicos
 - [ ] Backend real por defecto
 - [ ] Un test por escenario
 
 ## Referencia Rápida
 
-| Acción | Código |
-|--------|--------|
-| Selector | `getByTestId('id')` |
+| Acción          | Código                                      |
+| --------------- | ------------------------------------------- |
+| Selector        | `getByTestId('id')`                         |
 | Validación blur | `fill()` + `blur()` + `waitForTimeout(100)` |
-| Click forzado | `click({ force: true })` |
-| Texto seguro | `filter({ hasText })` |
-| Auto-login | `authenticatedPage` fixture |
+| Click forzado   | `click({ force: true })`                    |
+| Texto seguro    | `filter({ hasText })`                       |
+| Auto-login      | `authenticatedPage` fixture                 |
