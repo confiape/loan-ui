@@ -235,7 +235,15 @@ export class EntityFormComponent {
   error = signal<string | null>(null);
 
   form = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
+    name: ['', {
+      validators: [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(100),
+        Validators.pattern(/^[a-zA-Z0-9\s-]+$/),
+      ],
+      updateOn: 'blur',  // Valida solo cuando el usuario sale del campo
+    }],
   });
 
   constructor(
@@ -280,6 +288,33 @@ export class EntityFormComponent {
 }
 ```
 
+### Validación de Formularios
+
+**updateOn Strategy:**
+
+```typescript
+// ✅ Recomendado: 'blur' - Valida cuando el usuario sale del campo
+name: ['', {
+  validators: [Validators.required, Validators.minLength(2)],
+  updateOn: 'blur',
+}]
+
+// ❌ Evitar: 'change' - Valida en cada tecla (UX agresiva)
+// ⚠️  Default: Si no especificas, usa 'change'
+```
+
+**Validadores comunes:**
+
+```typescript
+Validators.required                           // Campo requerido
+Validators.minLength(2)                       // Mínimo 2 caracteres
+Validators.maxLength(100)                     // Máximo 100 caracteres
+Validators.email                              // Email válido
+Validators.pattern(/^[a-zA-Z0-9\s-]+$/)      // Solo alfanuméricos, espacios y guiones
+Validators.min(0)                             // Número mínimo
+Validators.max(100)                           // Número máximo
+```
+
 ## Form Template
 
 ```html
@@ -295,6 +330,7 @@ export class EntityFormComponent {
       <app-base-input
         formControlName="name"
         placeholder="Enter name"
+        [testId]="'entity-name-input'"
         [class.form-input-error]="nameControl?.invalid && nameControl?.touched"
       />
       @if (nameControl?.invalid && nameControl?.touched) {
@@ -307,15 +343,47 @@ export class EntityFormComponent {
   </div>
 
   <div class="flex gap-3 justify-end mt-6 pt-4 border-t">
-    <button type="button" class="btn btn-secondary" (click)="cancel.emit()" [disabled]="loading()">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      [attr.data-testid]="'entity-form-cancel-button'"
+      (click)="cancel.emit()"
+      [disabled]="loading()"
+    >
       Cancel
     </button>
-    <button type="submit" class="btn btn-primary" [disabled]="loading() || form.invalid">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [attr.data-testid]="'entity-form-submit-button'"
+      [disabled]="loading() || form.invalid"
+    >
       {{ loading() ? 'Saving...' : (isEditMode ? 'Update' : 'Create') }}
     </button>
   </div>
 </form>
 ```
+
+### data-testid para E2E Testing
+
+**Agregar data-testid facilita los tests E2E con Playwright:**
+
+```html
+<!-- Inputs usan [testId] -->
+<app-base-input [testId]="'entity-name-input'" formControlName="name" />
+
+<!-- Botones usan [attr.data-testid] -->
+<button [attr.data-testid]="'entity-form-submit-button'">Submit</button>
+
+<!-- Modales usan [testId] -->
+<app-modal [testId]="'entity-form-modal'" [isOpen]="showModal()">
+```
+
+**Patrón de nombres:**
+- Inputs: `{entity}-{field}-input`
+- Botones: `{entity}-form-{action}-button`
+- Modales: `{entity}-form-modal`
+- Errores: `{entity}-{field}-input-error` (automático en base-input)
 
 ## Checklist
 

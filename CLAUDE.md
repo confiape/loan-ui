@@ -363,6 +363,23 @@ await TestBed.configureTestingModule({
 
 **MUST pass** before creating PR!
 
+### E2E Tests (Playwright)
+
+```bash
+npm run test:e2e:ui    # Modo UI (recomendado para desarrollo)
+npm run test:e2e       # Headless (CI)
+```
+
+**If developing E2E tests**: Read `docs/testing/PLAYWRIGHT.md` first
+
+### Development Guides
+
+**If implementing a CRUD**: Read `docs/CRUD-GUIDE.md` first for:
+- Component structure (list, form)
+- Form validation patterns
+- data-testid for E2E testing
+- Signals and state management
+
 ## Component Checklist
 
 Before considering work complete:
@@ -433,6 +450,8 @@ Import from: `src/app/components/ui/index.ts`
 - **Angular Docs**: Use MCP `mcp__angular-cli__search_documentation` for current patterns
 - **Angular Best Practices**: Use MCP `mcp__angular-cli__get_best_practices` before coding
 - **Tailwind v4**: https://tailwindcss.com/docs
+- **CRUD Guide**: `docs/CRUD-GUIDE.md` - How to implement CRUDs
+- **Playwright Guide**: `docs/PLAYWRIGHT-GUIDE.md` - How to write E2E tests
 - **Project Components**: Copy existing components as templates
 
 ---
@@ -440,8 +459,10 @@ Import from: `src/app/components/ui/index.ts`
 **Remember:**
 
 1. Always start with Angular MCP for best practices
-2. Always follow GitHub workflow (issue -> branch -> tests -> PR)
-3. Never edit `src/app/core/openapi/**`
-4. Prefer Tailwind over CSS files
-5. All UI components need Storybook stories
-6. Tests must pass before PR
+2. If implementing CRUD: Read `docs/CRUD-GUIDE.md` first
+3. If writing E2E tests: Read `docs/PLAYWRIGHT-GUIDE.md` first
+4. Always follow GitHub workflow (issue -> branch -> tests -> PR)
+5. Never edit `src/app/core/openapi/**`
+6. Prefer Tailwind over CSS files
+7. All UI components need Storybook stories
+8. Tests must pass before PR
