@@ -44,6 +44,7 @@
         [attr.minlength]="minLength() ?? undefined"
         [attr.aria-invalid]="shouldDisplayErrors()"
         [attr.aria-describedby]="describedByAttr() ?? undefined"
+        [attr.data-testid]="testId() ?? undefined"
         [required]="required()"
         [disabled]="isDisabled()"
         [readOnly]="isReadOnly()"
@@ -65,6 +66,7 @@
           [id]="controlId()"
           class="choice-input choice-input--checkbox"
           [attr.name]="inputName()"
+          [attr.data-testid]="testId() ?? undefined"
           [checked]="isChecked()"
           [disabled]="isDisabled()"
           [required]="required()"
@@ -142,6 +144,7 @@
           [attr.max]="max() ?? undefined"
           [attr.step]="step() ?? undefined"
           [attr.spellcheck]="spellcheck() ?? undefined"
+          [attr.data-testid]="testId() ?? undefined"
           [required]="required()"
           [disabled]="isDisabled()"
           [readOnly]="isReadOnly()"
@@ -167,7 +170,7 @@
   }
 
   @if (currentErrorMessage()) {
-    <p class="error-text" [id]="errorTextId()">
+    <p class="error-text" [id]="errorTextId()" [attr.data-testid]="testId() ? testId() + '-error' : undefined">
       {{ currentErrorMessage() }}
     </p>
   }

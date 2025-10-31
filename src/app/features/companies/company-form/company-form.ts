@@ -30,18 +30,36 @@ export class CompanyFormComponent {
     private companyService: CompanyApiService,
   ) {
     this.companyForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
+      name: [
+        '',
+        {
+          validators: [
+            Validators.required,
+            Validators.minLength(2),
+            Validators.maxLength(15),
+            Validators.pattern(/^[a-zA-Z0-9\s-]+$/),
+          ],
+          updateOn: 'blur',
+        },
+      ],
     });
 
     // Update form when company input changes
     effect(() => {
       const currentCompany = this.company();
       if (currentCompany) {
+        // Load existing company data
+        this.companyForm.reset(); // Reset first to clear all state
         this.companyForm.patchValue({
           name: currentCompany.name,
         });
+        this.companyForm.markAsPristine();
+        this.companyForm.markAsUntouched();
       } else {
+        // Reset for new company
         this.companyForm.reset();
+        this.companyForm.markAsPristine();
+        this.companyForm.markAsUntouched();
       }
     });
   }

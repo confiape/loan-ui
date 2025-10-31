@@ -37,6 +37,7 @@ export class ModalComponent implements AfterViewInit {
   loading = input<boolean>(false);
   showHeader = input<boolean>(true);
   showFooter = input<boolean>(true);
+  testId = input<string>(''); // For E2E testing
 
   // Outputs
   closed = output<void>();

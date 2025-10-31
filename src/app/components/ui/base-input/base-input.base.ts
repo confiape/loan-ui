@@ -77,6 +77,7 @@ export abstract class BaseInputField<TValue> implements ControlValueAccessor {
   readonly step = input<number | null>(null);
   readonly orientation = input<'vertical' | 'horizontal'>('vertical');
   readonly optionHint = input<string | null>(null);
+  readonly testId = input<string | null>(null); // For E2E testing
 
   // Options (used for radio, checkbox groups)
   readonly options = input<InputOption<TValue>[]>([]);
@@ -357,6 +358,19 @@ export abstract class BaseInputField<TValue> implements ControlValueAccessor {
   handleBlur(): void {
     this.markAsTouched();
     this.markFocus(false);
+
+    // Force update controlState after marking as touched
+    // because statusChanges doesn't emit for touched/dirty changes
+    const control = this.ngControl?.control;
+    if (control) {
+      this.controlState.set({
+        control: control,
+        invalid: control.invalid,
+        touched: control.touched,
+        dirty: control.dirty,
+        errors: control.errors,
+      });
+    }
   }
 
   handleFocus(): void {

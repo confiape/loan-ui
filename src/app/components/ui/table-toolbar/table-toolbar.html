@@ -27,6 +27,7 @@
             [id]="'search-' + searchPlaceholder()"
             class="search-input"
             [placeholder]="searchPlaceholder()"
+            [attr.data-testid]="searchTestId() || undefined"
             (input)="onSearchInput($event)"
           />
         </div>
