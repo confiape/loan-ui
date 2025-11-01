@@ -25,7 +25,8 @@
       "Bash(timeout 20 npm run storybook:*)",
       "Bash(git mv:*)",
       "Bash(npm run lint)",
-      "Bash(npx prettier:*)"
+      "Bash(npx prettier:*)",
+      "Bash(npm run test)"
     ],
     "deny": [],
     "ask": []

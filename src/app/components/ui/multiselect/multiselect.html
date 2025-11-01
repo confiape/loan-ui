@@ -3,12 +3,15 @@
   <button
     type="button"
     [class]="buttonClass()"
-    [disabled]="disabled() || loading()"
+    [class.border-error]="validationState() === 'error'"
+    [disabled]="isDisabled() || loading()"
     (click)="toggle()"
     [attr.aria-haspopup]="true"
     [attr.aria-expanded]="isOpen()"
     [attr.aria-label]="placeholder()"
     [attr.aria-controls]="'multiselect-menu-' + placeholder()"
+    [attr.aria-invalid]="validationState() === 'error'"
+    [attr.aria-describedby]="validationState() === 'error' ? 'multiselect-error' : null"
     role="combobox"
   >
     <span class="multiselect-button-content">
@@ -40,7 +43,7 @@
                 <span class="multiselect-badge-icon">{{ item.icon }}</span>
               }
               <span class="multiselect-badge-text">{{ item.label }}</span>
-              @if (!disabled() && !loading()) {
+              @if (!isDisabled() && !loading()) {
                 <button
                   type="button"
                   class="multiselect-badge-remove"
@@ -80,7 +83,7 @@
 
     <!-- Arrow icon -->
     <span class="multiselect-icons">
-      @if (clearable() && selectedItems().length > 0 && !disabled() && !loading()) {
+      @if (clearable() && selectedItems().length > 0 && !isDisabled() && !loading()) {
         <button
           type="button"
           class="multiselect-clear-icon"
@@ -309,6 +312,33 @@
           <span class="multiselect-max">(max: {{ maxSelections() }})</span>
         }
       </div>
+    </div>
+  }
+
+  <!-- Error Message -->
+  @if (shouldDisplayErrors() && firstErrorKey()) {
+    <div id="multiselect-error" class="multiselect-error" role="alert">
+      <svg
+        class="multiselect-error-icon"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        style="
+          width: 1em;
+          height: 1em;
+          display: inline-block;
+          vertical-align: middle;
+          margin-right: 0.25rem;
+        "
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        ></path>
+      </svg>
+      <span>{{ getErrorMessage() }}</span>
     </div>
   }
 </div>
