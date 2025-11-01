@@ -15,11 +15,11 @@
     "test:e2e:report": "playwright show-report",
     "storybook": "ng run loan-ui:storybook",
     "build-storybook": "ng run loan-ui:build-storybook",
-    "lint": "ng lint",
+    "lint": "ng lint --quiet",
     "coverage": "vitest run --coverage",
     "sonarqube": "sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.token=$SONARQUBE_TOKEN -Dsonar.projectKey=loan-ui",
     "analyze": "npm run coverage && npm run sonarqube",
-    "prettier": "npx prettier --write ."
+    "prettier": "npx prettier --write . --log-level=error"
   },
   "prettier": {
     "printWidth": 100,
