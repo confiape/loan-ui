@@ -5,10 +5,17 @@
   <!-- Label -->
   @if (label()) {
     <label
-      class="block mb-2 text-sm font-medium text-[var(--color-text-primary)]"
+      class="block mb-2 text-sm font-medium"
+      [class.text-[var(--color-error-700)]]="validationState() === 'error'"
+      [class.text-[var(--color-success-700)]]="validationState() === 'success'"
+      [class.text-[var(--color-text-primary)]]="validationState() === 'neutral'"
       [attr.for]="displayMode() === 'popup' ? 'datepicker-input' : null"
-      >{{ label() }}</label
     >
+      {{ label() }}
+      @if (required()) {
+        <span class="text-[var(--color-error)]" aria-label="required">*</span>
+      }
+    </label>
   }
 
   <!-- Input field (only for popup mode) -->
@@ -21,16 +28,26 @@
         #dateInput
         id="datepicker-input"
         type="text"
-        class="datepicker-input w-full py-[var(--spacing-2)] pr-[var(--spacing-10)] pl-[var(--spacing-3)] text-[length:var(--font-size-base)] leading-[var(--line-height-normal)] text-[var(--color-text-primary)] bg-[var(--color-bg-primary)] border-[length:var(--border-width-1)] border-[var(--color-border)] rounded-[var(--border-radius-md)] outline-none cursor-pointer transition-[border-color] duration-[var(--transition-duration-150)] ease-[var(--transition-timing-ease)]"
+        class="datepicker-input w-full py-[var(--spacing-2)] pr-[var(--spacing-10)] pl-[var(--spacing-3)] text-[length:var(--font-size-base)] leading-[var(--line-height-normal)] bg-[var(--color-bg-primary)] border-[length:var(--border-width-1)] rounded-[var(--border-radius-md)] outline-none cursor-pointer transition-[border-color] duration-[var(--transition-duration-150)] ease-[var(--transition-timing-ease)]"
+        [class.text-[var(--color-error-800)]]="validationState() === 'error'"
+        [class.bg-[var(--color-error-lighter)]]="validationState() === 'error'"
+        [class.border-[var(--color-error)]]="validationState() === 'error'"
+        [class.text-[var(--color-success-800)]]="validationState() === 'success'"
+        [class.bg-[var(--color-success-lighter)]]="validationState() === 'success'"
+        [class.border-[var(--color-success)]]="validationState() === 'success'"
+        [class.text-[var(--color-text-primary)]]="validationState() === 'neutral'"
+        [class.border-[var(--color-border)]]="validationState() === 'neutral'"
         [value]="displayValue()"
         [placeholder]="placeholder()"
-        [disabled]="disabled()"
+        [disabled]="isDisabledState()"
         [readonly]="true"
         [required]="required()"
         [attr.aria-label]="label() || placeholder()"
         [attr.aria-expanded]="isOpen()"
         [attr.aria-haspopup]="'dialog'"
         [attr.aria-controls]="'datepicker-popup'"
+        [attr.aria-invalid]="validationState() === 'error'"
+        [attr.aria-describedby]="currentErrorMessage() ? 'datepicker-error' : null"
         (click)="toggle()"
         (keydown)="onKeyDown($event)"
       />
@@ -42,7 +59,7 @@
           <button
             type="button"
             class="datepicker-clear-btn flex items-center justify-center p-[var(--spacing-1)] bg-transparent border-none rounded-[var(--border-radius-sm)] text-[var(--color-text-secondary)] cursor-pointer transition-all duration-[var(--transition-duration-150)] ease-[var(--transition-timing-ease)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)] disabled:cursor-not-allowed disabled:opacity-50"
-            [disabled]="disabled()"
+            [disabled]="isDisabledState()"
             (click)="clear(); $event.stopPropagation()"
             aria-label="Limpiar selección"
           >
@@ -63,7 +80,7 @@
         <button
           type="button"
           class="datepicker-toggle-btn flex items-center justify-center p-[var(--spacing-1)] bg-transparent border-none rounded-[var(--border-radius-sm)] text-[var(--color-text-secondary)] cursor-pointer transition-all duration-[var(--transition-duration-150)] ease-[var(--transition-timing-ease)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)] disabled:cursor-not-allowed disabled:opacity-50"
-          [disabled]="disabled()"
+          [disabled]="isDisabledState()"
           (click)="toggle(); $event.stopPropagation()"
           aria-label="Abrir calendario"
         >
@@ -83,6 +100,18 @@
         </button>
       </div>
     </div>
+
+    <!-- Error message -->
+    @if (currentErrorMessage()) {
+      <p
+        id="datepicker-error"
+        class="mt-2 text-sm text-[var(--color-error-700)]"
+        role="alert"
+        aria-live="polite"
+      >
+        {{ currentErrorMessage() }}
+      </p>
+    }
   }
 
   <!-- Calendar Popup/Inline -->

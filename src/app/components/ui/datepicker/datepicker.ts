@@ -1,14 +1,26 @@
 import {
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
+  forwardRef,
+  inject,
+  Injector,
   input,
   output,
   signal,
   viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  NgControl,
+  ValidationErrors,
+} from '@angular/forms';
 
 export type SelectionMode = 'single' | 'range' | 'multiple';
 export type DisplayMode = 'inline' | 'popup';
@@ -26,8 +38,15 @@ export type DisabledDateFn = (date: Date) => boolean;
   imports: [CommonModule],
   templateUrl: './datepicker.html',
   styleUrl: './datepicker.css',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => Datepicker),
+      multi: true,
+    },
+  ],
 })
-export class Datepicker {
+export class Datepicker implements ControlValueAccessor {
   // ========================================
   // INPUTS
   // ========================================
@@ -60,6 +79,9 @@ export class Datepicker {
   showMonthYearPicker = input<boolean>(true);
   showTodayButton = input<boolean>(true);
   showClearButton = input<boolean>(true);
+
+  // Error messages
+  errorMessage = input<string>('');
 
   // ========================================
   // OUTPUTS
@@ -95,6 +117,26 @@ export class Datepicker {
 
   // ViewChild references
   inputElement = viewChild<ElementRef<HTMLInputElement>>('dateInput');
+
+  // ========================================
+  // CONTROL VALUE ACCESSOR
+  // ========================================
+
+  private readonly injector = inject(Injector);
+  private readonly destroyRef = inject(DestroyRef);
+  private ngControlSignal = signal<NgControl | null>(null);
+  private controlState = signal<{
+    control: AbstractControl | null;
+    invalid: boolean;
+    touched: boolean;
+    dirty: boolean;
+    errors: ValidationErrors | null;
+  }>({ control: null, invalid: false, touched: false, dirty: false, errors: null });
+
+  private disabledFromControl = signal(false);
+  private internalTouched = signal(false);
+  private onChangeFn: ((value: Date | DateRange | Date[] | null) => void) | null = null;
+  private onTouchedFn: (() => void) | null = null;
 
   // ========================================
   // COMPUTED
@@ -196,31 +238,163 @@ export class Datepicker {
     return `${startYear} - ${startYear + 9}`;
   });
 
+  // Form validation computed
+  isDisabledState = computed(() => this.disabledFromControl() || this.disabled());
+
+  shouldDisplayErrors = computed(() => {
+    const state = this.controlState();
+    if (!state.invalid) return false;
+    return state.touched || state.dirty;
+  });
+
+  firstErrorKey = computed(() => {
+    if (!this.shouldDisplayErrors()) return null;
+    const errors = this.controlState().errors;
+    if (!errors) return null;
+    const keys = Object.keys(errors);
+    return keys.length ? keys[0] : null;
+  });
+
+  currentErrorMessage = computed(() => {
+    const customError = this.errorMessage();
+    if (customError) return customError;
+
+    const key = this.firstErrorKey();
+    if (!key) return null;
+
+    const errors = this.controlState().errors ?? {};
+    const error = errors[key];
+
+    // Default error messages
+    if (key === 'required') return 'Este campo es requerido';
+    if (key === 'matDatepickerMin') return 'La fecha es anterior al mínimo permitido';
+    if (key === 'matDatepickerMax') return 'La fecha es posterior al máximo permitido';
+
+    return error?.message ?? `Error de validación: ${key}`;
+  });
+
+  validationState = computed<'neutral' | 'success' | 'error'>(() => {
+    if (this.shouldDisplayErrors()) return 'error';
+
+    const state = this.controlState();
+    if (state.control && (state.touched || state.dirty) && !state.invalid) {
+      return 'success';
+    }
+
+    return 'neutral';
+  });
+
   // ========================================
   // CONSTRUCTOR
   // ========================================
 
   constructor() {
-    // Initialize with input values
+    // Initialize with input values (only if NOT used with Angular Forms)
     effect(() => {
       const val = this.value();
-      if (val) this.selectedDate.set(val);
+      if (val && !this.ngControlSignal()) {
+        this.selectedDate.set(val);
+      }
     });
 
     effect(() => {
       const val = this.rangeValue();
-      if (val) this.selectedRange.set(val);
+      if (val && !this.ngControlSignal()) {
+        this.selectedRange.set(val);
+      }
     });
 
     effect(() => {
       const val = this.multipleValue();
-      if (val) this.selectedMultiple.set(val);
+      if (val && !this.ngControlSignal()) {
+        this.selectedMultiple.set(val);
+      }
+    });
+
+    // Initialize NgControl (NG_VALUE_ACCESSOR provider handles valueAccessor registration)
+    queueMicrotask(() => {
+      const control = this.injector.get(NgControl, null, { self: true, optional: true });
+      this.ngControlSignal.set(control);
+      this.updateControlState(control?.control ?? null);
     });
 
     // Close on outside click
     if (typeof document !== 'undefined') {
       document.addEventListener('click', this.handleOutsideClick.bind(this));
     }
+  }
+
+  // ========================================
+  // CONTROL VALUE ACCESSOR METHODS
+  // ========================================
+
+  writeValue(value: Date | DateRange | Date[] | null): void {
+    const mode = this.selectionMode();
+
+    if (mode === 'single') {
+      this.selectedDate.set(value as Date | null);
+    } else if (mode === 'range') {
+      this.selectedRange.set(value as DateRange);
+    } else if (mode === 'multiple') {
+      this.selectedMultiple.set((value as Date[]) || []);
+    }
+  }
+
+  registerOnChange(fn: (value: Date | DateRange | Date[] | null) => void): void {
+    this.onChangeFn = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouchedFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabledFromControl.set(isDisabled);
+  }
+
+  private markAsTouched(): void {
+    if (!this.internalTouched()) {
+      this.internalTouched.set(true);
+      if (this.onTouchedFn) {
+        this.onTouchedFn();
+      }
+
+      // Force update controlState after marking as touched
+      const control = this.ngControlSignal()?.control;
+      if (control) {
+        this.controlState.set({
+          control: control,
+          invalid: control.invalid,
+          touched: control.touched,
+          dirty: control.dirty,
+          errors: control.errors,
+        });
+      }
+    }
+  }
+
+  private updateControlState(control: AbstractControl | null): void {
+    const applyState = (target: AbstractControl | null) => {
+      this.controlState.set({
+        control: target,
+        invalid: target?.invalid ?? false,
+        touched: target?.touched ?? false,
+        dirty: target?.dirty ?? false,
+        errors: target?.errors ?? null,
+      });
+    };
+
+    applyState(control);
+
+    if (!control) return;
+
+    control.statusChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => applyState(control));
+
+    control.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => applyState(control));
   }
 
   // ========================================
@@ -309,16 +483,24 @@ export class Datepicker {
 
     if (mode === 'single') {
       this.selectedDate.set(date);
-      if (this.showTime()) {
-        const newDate = new Date(date);
-        newDate.setHours(this.selectedHour());
-        newDate.setMinutes(this.selectedMinute());
-        this.dateChange.emit(newDate);
-      } else {
-        this.dateChange.emit(date);
-        if (this.displayMode() === 'popup') {
-          this.close();
-        }
+      const finalDate = this.showTime()
+        ? (() => {
+            const newDate = new Date(date);
+            newDate.setHours(this.selectedHour());
+            newDate.setMinutes(this.selectedMinute());
+            return newDate;
+          })()
+        : date;
+
+      this.dateChange.emit(finalDate);
+
+      // Notify Angular Forms
+      if (this.onChangeFn) {
+        this.onChangeFn(finalDate);
+      }
+
+      if (!this.showTime() && this.displayMode() === 'popup') {
+        this.close();
       }
     } else if (mode === 'range') {
       this.selectRangeDate(date);
@@ -340,6 +522,8 @@ export class Datepicker {
       }
 
       const finalRange = this.selectedRange();
+      let emitRange: DateRange;
+
       if (this.showTime() && finalRange.start && finalRange.end) {
         const startDate = new Date(finalRange.start);
         const endDate = new Date(finalRange.end);
@@ -347,9 +531,16 @@ export class Datepicker {
         startDate.setMinutes(this.selectedMinute());
         endDate.setHours(this.selectedHour());
         endDate.setMinutes(this.selectedMinute());
-        this.rangeChange.emit({ start: startDate, end: endDate });
+        emitRange = { start: startDate, end: endDate };
       } else {
-        this.rangeChange.emit(this.selectedRange());
+        emitRange = this.selectedRange();
+      }
+
+      this.rangeChange.emit(emitRange);
+
+      // Notify Angular Forms
+      if (this.onChangeFn) {
+        this.onChangeFn(emitRange);
       }
 
       if (!this.showTime() && this.displayMode() === 'popup') {
@@ -371,16 +562,24 @@ export class Datepicker {
     dates.sort((a, b) => a.getTime() - b.getTime());
     this.selectedMultiple.set(dates);
 
+    let finalDates: Date[];
+
     if (this.showTime()) {
-      const datesWithTime = dates.map((d) => {
+      finalDates = dates.map((d) => {
         const newDate = new Date(d);
         newDate.setHours(this.selectedHour());
         newDate.setMinutes(this.selectedMinute());
         return newDate;
       });
-      this.multipleChange.emit(datesWithTime);
     } else {
-      this.multipleChange.emit(dates);
+      finalDates = dates;
+    }
+
+    this.multipleChange.emit(finalDates);
+
+    // Notify Angular Forms
+    if (this.onChangeFn) {
+      this.onChangeFn(finalDates);
     }
   }
 
@@ -406,6 +605,9 @@ export class Datepicker {
       date.setHours(this.selectedHour());
       date.setMinutes(this.selectedMinute());
       this.dateChange.emit(date);
+      if (this.onChangeFn) {
+        this.onChangeFn(date);
+      }
     } else if (mode === 'range') {
       const range = this.selectedRange();
       if (range.start && range.end) {
@@ -415,7 +617,11 @@ export class Datepicker {
         start.setMinutes(this.selectedMinute());
         end.setHours(this.selectedHour());
         end.setMinutes(this.selectedMinute());
-        this.rangeChange.emit({ start, end });
+        const emitRange = { start, end };
+        this.rangeChange.emit(emitRange);
+        if (this.onChangeFn) {
+          this.onChangeFn(emitRange);
+        }
       }
     } else if (mode === 'multiple') {
       const dates = this.selectedMultiple().map((d) => {
@@ -425,6 +631,9 @@ export class Datepicker {
         return newDate;
       });
       this.multipleChange.emit(dates);
+      if (this.onChangeFn) {
+        this.onChangeFn(dates);
+      }
     }
   }
 
@@ -456,6 +665,7 @@ export class Datepicker {
     this.isOpen.set(false);
     this.viewMode.set('days');
     this.datePickerClose.emit();
+    this.markAsTouched();
   }
 
   clear(): void {
@@ -464,12 +674,22 @@ export class Datepicker {
     if (mode === 'single') {
       this.selectedDate.set(null);
       this.dateChange.emit(null);
+      if (this.onChangeFn) {
+        this.onChangeFn(null);
+      }
     } else if (mode === 'range') {
-      this.selectedRange.set({ start: null, end: null });
-      this.rangeChange.emit({ start: null, end: null });
+      const emptyRange = { start: null, end: null };
+      this.selectedRange.set(emptyRange);
+      this.rangeChange.emit(emptyRange);
+      if (this.onChangeFn) {
+        this.onChangeFn(emptyRange);
+      }
     } else if (mode === 'multiple') {
       this.selectedMultiple.set([]);
       this.multipleChange.emit([]);
+      if (this.onChangeFn) {
+        this.onChangeFn([]);
+      }
     }
 
     this.close();
