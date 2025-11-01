@@ -7,9 +7,21 @@ import {
   HostListener,
   ElementRef,
   inject,
+  DestroyRef,
+  Injector,
+  effect,
+  forwardRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  FormsModule,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  NgControl,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface MultiSelectItem {
   label: string;
@@ -25,8 +37,15 @@ export interface MultiSelectItem {
   imports: [CommonModule, FormsModule],
   templateUrl: './multiselect.html',
   styleUrl: './multiselect.css',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => MultiSelectComponent),
+      multi: true,
+    },
+  ],
 })
-export class MultiSelectComponent {
+export class MultiSelectComponent implements ControlValueAccessor {
   // Inputs
   items = input.required<MultiSelectItem[]>();
   placeholder = input<string>('Select options');
@@ -51,6 +70,25 @@ export class MultiSelectComponent {
   selectedItems = signal<MultiSelectItem[]>([]);
   searchQuery = signal('');
   highlightedIndex = signal(-1);
+
+  // Form control state
+  private readonly injector = inject(Injector);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly elementRef = inject(ElementRef);
+  private readonly ngControlSignal = signal<NgControl | null>(null);
+  private readonly disabledFromControl = signal(false);
+  private readonly touched = signal(false);
+  private readonly controlState = signal<{
+    control: AbstractControl | null;
+    invalid: boolean;
+    touched: boolean;
+    dirty: boolean;
+    errors: ValidationErrors | null;
+  }>({ control: null, invalid: false, touched: false, dirty: false, errors: null });
+
+  // ControlValueAccessor callbacks
+  private onChangeFn: (value: unknown[]) => void = () => undefined;
+  private onTouchedFn: () => void = () => undefined;
 
   // Computed
   buttonClass = computed(() => {
@@ -98,7 +136,43 @@ export class MultiSelectComponent {
     return `${selected} of ${total} selected (${shown} shown)`;
   });
 
-  private readonly elementRef = inject(ElementRef);
+  // Form validation computed properties
+  isDisabled = computed(() => this.disabledFromControl() || this.disabled());
+
+  shouldDisplayErrors = computed(() => {
+    const state = this.controlState();
+    if (!state.invalid) return false;
+    return state.touched || state.dirty;
+  });
+
+  firstErrorKey = computed(() => {
+    if (!this.shouldDisplayErrors()) return null;
+    const errors = this.controlState().errors;
+    if (!errors) return null;
+    const keys = Object.keys(errors);
+    return keys.length ? keys[0] : null;
+  });
+
+  validationState = computed<'neutral' | 'error'>(() => {
+    if (this.shouldDisplayErrors()) {
+      return 'error';
+    }
+    return 'neutral';
+  });
+
+  constructor() {
+    // Initialize NgControl
+    effect(() => {
+      queueMicrotask(() => {
+        const control = this.injector.get(NgControl, null, { self: true, optional: true });
+        if (control) {
+          control.valueAccessor = this;
+        }
+        this.ngControlSignal.set(control);
+        this.updateControlState(control?.control ?? null);
+      });
+    });
+  }
 
   // Click outside to close
   @HostListener('document:click', ['$event'])
@@ -185,6 +259,7 @@ export class MultiSelectComponent {
     this.isOpen.set(false);
     this.searchQuery.set('');
     this.highlightedIndex.set(-1);
+    this.markAsTouched();
   }
 
   toggleItem(item: MultiSelectItem, event?: Event) {
@@ -201,14 +276,14 @@ export class MultiSelectComponent {
       // Remove item
       const newSelections = currentSelections.filter((i) => i.value !== item.value);
       this.selectedItems.set(newSelections);
-      this.selectionChange.emit(newSelections);
+      this.propagateChanges();
     } else {
       // Add item (check max selections)
       const max = this.maxSelections();
       if (max === null || currentSelections.length < max) {
         const newSelections = [...currentSelections, item];
         this.selectedItems.set(newSelections);
-        this.selectionChange.emit(newSelections);
+        this.propagateChanges();
       }
     }
   }
@@ -229,12 +304,12 @@ export class MultiSelectComponent {
     const itemsToSelect = max === null ? selectableItems : selectableItems.slice(0, max);
 
     this.selectedItems.set(itemsToSelect);
-    this.selectionChange.emit(itemsToSelect);
+    this.propagateChanges();
   }
 
   clearAll() {
     this.selectedItems.set([]);
-    this.selectionChange.emit([]);
+    this.propagateChanges();
   }
 
   onSearchInput(event: Event) {
@@ -314,5 +389,98 @@ export class MultiSelectComponent {
     const items = this.getSelectableItems();
     const itemIndex = items.indexOf(item);
     return itemIndex === this.highlightedIndex();
+  }
+
+  getErrorMessage(): string {
+    const key = this.firstErrorKey();
+    if (!key) return '';
+
+    const errors = this.controlState().errors ?? {};
+    const error = errors[key];
+
+    // Default error messages
+    const defaultMessages: Record<string, string> = {
+      required: 'This field is required',
+      minlength: `Minimum ${(error as { requiredLength: number }).requiredLength} items required`,
+      maxlength: `Maximum ${(error as { requiredLength: number }).requiredLength} items allowed`,
+    };
+
+    return defaultMessages[key] || `Validation error: ${key}`;
+  }
+
+  // ControlValueAccessor implementation
+  writeValue(value: unknown[] | null): void {
+    if (!value || !Array.isArray(value)) {
+      this.selectedItems.set([]);
+      return;
+    }
+
+    // Map values to items
+    const selectedItems = this.items().filter((item) => value.includes(item.value));
+    this.selectedItems.set(selectedItems);
+  }
+
+  registerOnChange(fn: (value: unknown[]) => void): void {
+    this.onChangeFn = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouchedFn = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabledFromControl.set(isDisabled);
+  }
+
+  // Helper methods for form integration
+  private markAsTouched(): void {
+    if (!this.touched()) {
+      this.touched.set(true);
+      this.onTouchedFn();
+
+      // Force update controlState after marking as touched
+      const control = this.ngControlSignal()?.control;
+      if (control) {
+        this.controlState.set({
+          control: control,
+          invalid: control.invalid,
+          touched: control.touched,
+          dirty: control.dirty,
+          errors: control.errors,
+        });
+      }
+    }
+  }
+
+  private updateControlState(control: AbstractControl | null): void {
+    const applyState = (target: AbstractControl | null) => {
+      this.controlState.set({
+        control: target,
+        invalid: target?.invalid ?? false,
+        touched: target?.touched ?? false,
+        dirty: target?.dirty ?? false,
+        errors: target?.errors ?? null,
+      });
+    };
+
+    applyState(control);
+
+    if (!control) {
+      return;
+    }
+
+    control.statusChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => applyState(control));
+
+    control.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => applyState(control));
+  }
+
+  private propagateChanges(): void {
+    const values = this.selectedItems().map((item) => item.value);
+    this.onChangeFn(values);
+    this.selectionChange.emit(this.selectedItems());
   }
 }

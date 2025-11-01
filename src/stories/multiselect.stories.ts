@@ -4,7 +4,9 @@ import {
   MultiSelectComponent,
   MultiSelectItem,
 } from '../app/components/ui/multiselect/multiselect';
-import { createLightDarkComparison } from './story-helpers';
+import { createLightDarkComparison, wrapInLightDarkComparison } from './story-helpers';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, signal } from '@angular/core';
 
 const meta: Meta<MultiSelectComponent> = {
   title: 'UI/MultiSelect',
@@ -655,5 +657,241 @@ export const MinimalConfig: Story = {
         [variant]="variant"
         [size]="size"`,
     ),
+  }),
+};
+
+// Forms Integration Stories
+
+@Component({
+  selector: 'app-multiselect-reactive-form-demo',
+  standalone: true,
+  imports: [MultiSelectComponent, ReactiveFormsModule],
+  template: `
+    <div class="p-8">
+      <h3 class="text-lg font-semibold mb-4">Reactive Form with Multiselect</h3>
+      <form [formGroup]="form" class="space-y-4">
+        <div>
+          <label class="form-label" for="skills-select">Select Skills (Required)</label>
+          <app-multiselect
+            id="skills-select"
+            [items]="skills"
+            placeholder="Select your skills"
+            formControlName="skills"
+            [searchable]="true"
+            [showBadges]="true"
+          />
+        </div>
+
+        <div>
+          <label class="form-label" for="countries-select">Select Countries (Max 3)</label>
+          <app-multiselect
+            id="countries-select"
+            [items]="countries"
+            placeholder="Select up to 3 countries"
+            formControlName="countries"
+            [searchable]="true"
+            [showBadges]="true"
+            [maxSelections]="3"
+          />
+        </div>
+
+        <div class="flex gap-4">
+          <button type="button" class="btn btn-primary" (click)="onSubmit()">Submit</button>
+          <button type="button" class="btn btn-secondary" (click)="onReset()">Reset</button>
+          <button type="button" class="btn btn-outline-primary" (click)="toggleDisabled()">
+            {{ form.disabled ? 'Enable' : 'Disable' }} Form
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+        <h4 class="font-semibold mb-2">Form State:</h4>
+        <pre class="text-sm">{{ formState() }}</pre>
+      </div>
+    </div>
+  `,
+})
+class ReactiveFormDemoComponent {
+  skills: MultiSelectItem[] = [
+    { label: 'JavaScript', value: 'js', icon: '💛' },
+    { label: 'TypeScript', value: 'ts', icon: '💙' },
+    { label: 'Python', value: 'py', icon: '🐍' },
+    { label: 'Java', value: 'java', icon: '☕' },
+    { label: 'Go', value: 'go', icon: '🐹' },
+  ];
+
+  countries: MultiSelectItem[] = [
+    { label: 'United States', value: 'US', icon: '🇺🇸' },
+    { label: 'Canada', value: 'CA', icon: '🇨🇦' },
+    { label: 'Mexico', value: 'MX', icon: '🇲🇽' },
+    { label: 'Brazil', value: 'BR', icon: '🇧🇷' },
+  ];
+
+  form = new FormGroup({
+    skills: new FormControl<unknown[]>([], [Validators.required]),
+    countries: new FormControl<unknown[]>([]),
+  });
+
+  formState = signal('');
+
+  constructor() {
+    this.updateFormState();
+    this.form.valueChanges.subscribe(() => this.updateFormState());
+  }
+
+  updateFormState() {
+    this.formState.set(
+      JSON.stringify(
+        {
+          value: this.form.value,
+          valid: this.form.valid,
+          touched: this.form.touched,
+          dirty: this.form.dirty,
+        },
+        null,
+        2,
+      ),
+    );
+  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      alert(`Form submitted with values:\n${JSON.stringify(this.form.value, null, 2)}`);
+    } else {
+      this.form.markAllAsTouched();
+      alert('Form is invalid. Please check the required fields.');
+    }
+  }
+
+  onReset() {
+    this.form.reset();
+  }
+
+  toggleDisabled() {
+    if (this.form.disabled) {
+      this.form.enable();
+    } else {
+      this.form.disable();
+    }
+  }
+}
+
+export const ReactiveForm: StoryObj = {
+  render: () => ({
+    template: wrapInLightDarkComparison('<app-multiselect-reactive-form-demo />'),
+    moduleMetadata: {
+      imports: [ReactiveFormDemoComponent],
+    },
+  }),
+};
+
+export const WithFormControlRequired: Story = {
+  args: {
+    items: skillsItems,
+    placeholder: 'Select skills (Required)',
+    variant: 'outline',
+    size: 'md',
+    searchable: true,
+    showBadges: true,
+  },
+  render: (args) => ({
+    props: {
+      ...args,
+      formControl: new FormControl([], Validators.required),
+    },
+    template: wrapInLightDarkComparison(`
+      <div class="p-8">
+        <label class="form-label">Skills (Required)</label>
+        <app-multiselect
+          [items]="items"
+          [placeholder]="placeholder"
+          [variant]="variant"
+          [size]="size"
+          [searchable]="searchable"
+          [showBadges]="showBadges"
+          [formControl]="formControl"
+        />
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          Try submitting without selecting any items to see the validation error.
+        </p>
+      </div>
+    `),
+    moduleMetadata: {
+      imports: [ReactiveFormsModule],
+    },
+  }),
+};
+
+export const WithPreSelectedValues: Story = {
+  args: {
+    items: skillsItems,
+    placeholder: 'Select programming languages',
+    variant: 'outline',
+    size: 'md',
+    searchable: true,
+    showBadges: true,
+  },
+  render: (args) => ({
+    props: {
+      ...args,
+      formControl: new FormControl(['js', 'ts']),
+    },
+    template: wrapInLightDarkComparison(`
+      <div class="p-8">
+        <label class="form-label">Programming Languages</label>
+        <app-multiselect
+          [items]="items"
+          [placeholder]="placeholder"
+          [variant]="variant"
+          [size]="size"
+          [searchable]="searchable"
+          [showBadges]="showBadges"
+          [formControl]="formControl"
+        />
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          JavaScript and TypeScript are pre-selected via FormControl.
+        </p>
+      </div>
+    `),
+    moduleMetadata: {
+      imports: [ReactiveFormsModule],
+    },
+  }),
+};
+
+export const DisabledViaFormControl: Story = {
+  args: {
+    items: basicItems,
+    placeholder: 'Select options',
+    variant: 'outline',
+    size: 'md',
+    searchable: true,
+    showBadges: true,
+  },
+  render: (args) => ({
+    props: {
+      ...args,
+      formControl: new FormControl({ value: [1, 2], disabled: true }),
+    },
+    template: wrapInLightDarkComparison(`
+      <div class="p-8">
+        <label class="form-label">Options (Disabled via FormControl)</label>
+        <app-multiselect
+          [items]="items"
+          [placeholder]="placeholder"
+          [variant]="variant"
+          [size]="size"
+          [searchable]="searchable"
+          [showBadges]="showBadges"
+          [formControl]="formControl"
+        />
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          This multiselect is disabled through the FormControl.
+        </p>
+      </div>
+    `),
+    moduleMetadata: {
+      imports: [ReactiveFormsModule],
+    },
   }),
 };
