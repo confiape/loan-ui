@@ -42,7 +42,16 @@ export const routes: Routes = [
       },
       {
         path: 'roles',
-        component: RolesListComponent,
+        children: [
+          {
+            path: '',
+            component: RolesListComponent,
+          },
+          {
+            path: ':id',
+            component: RolesListComponent,
+          },
+        ],
       },
     ],
   },

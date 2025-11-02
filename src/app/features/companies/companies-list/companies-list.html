@@ -12,9 +12,9 @@
       searchPlaceholder="Search by name or ID..."
       [searchTestId]="'companies-search-input'"
       [primaryAction]="primaryAction"
-      [bulkActions]="hasSelection() ? bulkActions : []"
+      [bulkActions]="service.hasSelection() ? bulkActions : []"
       [showFilters]="false"
-      (searchChange)="onSearch($event)"
+      (searchChange)="service.onSearch($event)"
       (bulkActionClick)="onBulkAction($event)"
     ></app-table-toolbar>
   </div>
@@ -24,56 +24,71 @@
     <app-table
       data-testid="companies-table"
       [columns]="columns"
-      [data]="filteredCompanies()"
+      [data]="service.getTableData()"
       [rowActions]="rowActions"
       [selectable]="true"
-      [selectedItems]="selectedCompanies()"
+      [selectedItems]="service.selectedItems()"
       [rowIdKey]="'id'"
       [striped]="false"
       [hoverable]="true"
       [bordered]="false"
-      [loading]="loading()"
+      [loading]="service.loading()"
       emptyMessage="No companies found"
-      (selectionChange)="onSelectionChange($event)"
-      (selectAll)="onSelectAll($event)"
+      (selectionChange)="service.onSelectionChange($event)"
+      (selectAll)="service.onSelectAll($event)"
     >
     </app-table>
+
+    @if (service.filteredItems().length > 0) {
+      <div class="border-t border-[var(--color-border)]">
+        <app-table-pagination
+          [currentPage]="service.currentPage()"
+          [pageSize]="service.pageSize()"
+          [totalItems]="service.filteredItems().length"
+          (pageChange)="service.onPageChange($event)"
+        />
+      </div>
+    }
   </div>
 
   <!-- Create/Edit Modal -->
   <app-modal
     [testId]="'company-form-modal'"
-    [isOpen]="showModal()"
-    [title]="editingCompany() ? 'Edit Company' : 'New Company'"
+    [isOpen]="service.showModal()"
+    [title]="service.editingItem() ? 'Edit Company' : 'New Company'"
     size="md"
-    (closed)="onFormCancel()"
+    (closed)="service.onFormCancel()"
   >
     <app-company-form
-      [company]="editingCompany()"
-      (companySaved)="onFormSave()"
-      (formCancelled)="onFormCancel()"
+      [company]="service.editingItem()"
+      (companySaved)="service.onFormSave()"
+      (formCancelled)="service.onFormCancel()"
     ></app-company-form>
   </app-modal>
 
   <!-- Delete Confirmation Modal -->
   <app-modal
     [testId]="'company-delete-modal'"
-    [isOpen]="showDeleteConfirm()"
+    [isOpen]="service.showDeleteConfirm()"
     title="Delete Company"
     size="sm"
-    (closed)="cancelDelete()"
+    (closed)="service.cancelDelete()"
   >
     <div class="p-4">
-      <p class="text-[var(--color-text-primary)] mb-4" [innerHTML]="deleteMessage"></p>
+      <p class="text-[var(--color-text-primary)] mb-4" [innerHTML]="service.deleteMessage()"></p>
       <div class="flex gap-3 justify-end">
         <button
           data-testid="delete-cancel-button"
           class="btn btn-secondary"
-          (click)="cancelDelete()"
+          (click)="service.cancelDelete()"
         >
           Cancel
         </button>
-        <button data-testid="delete-confirm-button" class="btn btn-error" (click)="confirmDelete()">
+        <button
+          data-testid="delete-confirm-button"
+          class="btn btn-error"
+          (click)="service.confirmDelete()"
+        >
           Delete
         </button>
       </div>

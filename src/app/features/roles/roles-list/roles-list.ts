@@ -1,12 +1,21 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TableToolbarComponent } from '../../../components/ui/table-toolbar/table-toolbar';
-import { TableComponent } from '../../../components/ui/table/table';
+import { Router, ActivatedRoute } from '@angular/router';
+import {
+  TableToolbarComponent,
+  ToolbarAction,
+} from '../../../components/ui/table-toolbar/table-toolbar';
+import { TableComponent, TableColumn } from '../../../components/ui/table/table';
 import { TablePaginationComponent } from '../../../components/ui/table-pagination/table-pagination';
 import { ModalComponent } from '../../../components/ui/modal/modal';
-import { UserApiService, RoleDto, PermissionDto } from '../../../core/openapi';
-import { forkJoin } from 'rxjs';
+import { RoleDto } from '../../../core/openapi';
 import { RolesFormComponent } from '../roles-form/roles-form';
+import { RolesListService } from './roles-list.service';
+import {
+  createStandardRowActions,
+  createPrimaryAction,
+  createBulkActions,
+} from '../../../core/utils/crud-helpers';
 
 @Component({
   selector: 'app-roles-list',
@@ -19,164 +28,72 @@ import { RolesFormComponent } from '../roles-form/roles-form';
     ModalComponent,
     RolesFormComponent,
   ],
+  providers: [RolesListService],
   templateUrl: './roles-list.html',
 })
-export class RolesListComponent {
-  private userService = inject(UserApiService);
-
-  // State
-  allRoles = signal<RoleDto[]>([]);
-  allPermissions = signal<PermissionDto[]>([]);
-  loading = signal(false);
-  showModal = signal(false);
-  editingRole = signal<RoleDto | null>(null);
-  showDeleteConfirm = signal(false);
-  deletingRole = signal<RoleDto | null>(null);
-  searchTerm = signal('');
-  selectedRoles = signal<Set<string>>(new Set());
-  currentPage = signal(1);
-  pageSize = signal(10);
-
-  // Computed
-  filteredRoles = computed(() => {
-    const term = this.searchTerm().toLowerCase();
-    if (!term) return this.allRoles();
-
-    return this.allRoles().filter(
-      (role) => role.name.toLowerCase().includes(term) || role.id.toLowerCase().includes(term),
-    );
-  });
-
-  paginatedRoles = computed(() => {
-    const filtered = this.filteredRoles();
-    const start = (this.currentPage() - 1) * this.pageSize();
-    const end = start + this.pageSize();
-    return filtered.slice(start, end);
-  });
-
-  hasSelection = computed(() => this.selectedRoles().size > 0);
+export class RolesListComponent implements OnInit {
+  service = inject(RolesListService);
+  router = inject(Router);
+  route = inject(ActivatedRoute);
 
   // Table config
-  columns = [
+  columns: TableColumn<RoleDto>[] = [
     { key: 'name', label: 'Name', sortable: true },
     { key: 'permissionsCount', label: 'Permissions', sortable: false },
     { key: 'id', label: 'ID', sortable: true },
   ];
 
-  rowActions = [
-    {
-      label: 'Edit',
-      variant: 'secondary' as const,
-      inline: true,
-      onClick: (row: unknown) => {
-        const roleRow = row as RoleDto;
-        this.editingRole.set(roleRow);
-        this.showModal.set(true);
-      },
-    },
-    {
-      label: 'Delete',
-      variant: 'danger' as const,
-      inline: true,
-      onClick: (row: unknown) => {
-        const roleRow = row as RoleDto;
-        this.deletingRole.set(roleRow);
-        this.showDeleteConfirm.set(true);
-      },
-    },
-  ];
+  rowActions = createStandardRowActions<RoleDto>(
+    (role) => this.service.onEditItem(role),
+    (role) => this.service.onDeleteItem(role),
+  );
 
-  primaryAction = {
-    label: 'New Role',
-    onClick: () => {
-      this.editingRole.set(null);
-      this.showModal.set(true);
-    },
-  };
+  primaryAction: ToolbarAction = createPrimaryAction('New Role', () => this.service.onNewItem());
 
-  bulkActions = [{ label: 'Delete Selected', variant: 'outline' as const }];
+  bulkActions: ToolbarAction[] = createBulkActions();
 
   ngOnInit() {
-    this.loadRoles();
-    this.loadPermissions();
-  }
+    this.service.loadItems();
+    this.service.loadPermissions();
 
-  loadRoles() {
-    this.loading.set(true);
-    this.userService.getAllRoles().subscribe({
-      next: (data) => {
-        this.allRoles.set(data);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
+    // Watch route params to open modal when ID is in URL
+    this.route.params.subscribe((params) => {
+      const id = params['id'];
+      if (id) {
+        // Wait for roles to load if not already loaded
+        if (this.service.items().length === 0) {
+          // Roles will load and then this will trigger again
+          return;
+        }
+        const role = this.service.items().find((r) => r.id === id);
+        if (role) {
+          this.service.editingItem.set(role);
+          this.service.showModal.set(true);
+        } else {
+          // Role not found, navigate back to list
+          this.router.navigate(['/roles']);
+        }
+      } else {
+        // No ID in route, close modal if open
+        if (this.service.showModal() && this.service.editingItem()) {
+          this.service.showModal.set(false);
+          this.service.editingItem.set(null);
+        }
+      }
     });
   }
 
-  loadPermissions() {
-    this.userService.getAllPermissions().subscribe({
-      next: (data) => {
-        this.allPermissions.set(data);
-      },
-      error: (err) => console.error('Error loading permissions:', err),
-    });
-  }
-
-  onFormSave() {
-    this.showModal.set(false);
-    this.editingRole.set(null);
-    this.loadRoles();
-  }
-
-  onFormCancel() {
-    this.showModal.set(false);
-    this.editingRole.set(null);
-  }
-
-  confirmDelete() {
-    const selected = this.selectedRoles();
-    const single = this.deletingRole();
-
-    const requests =
-      selected.size > 0
-        ? Array.from(selected).map((id) => this.userService.deleteRole(id))
-        : single
-          ? [this.userService.deleteRole(single.id)]
-          : [];
-
-    if (requests.length === 0) return;
-
-    forkJoin(requests).subscribe({
-      next: () => {
-        this.showDeleteConfirm.set(false);
-        this.deletingRole.set(null);
-        this.selectedRoles.set(new Set());
-        this.loadRoles();
-      },
-      error: (err) => {
-        console.error('Error deleting role(s):', err);
-        this.showDeleteConfirm.set(false);
-      },
-    });
-  }
-
-  get deleteMessage() {
-    const count = this.selectedRoles().size;
-    return count > 0
-      ? `Delete ${count} role${count > 1 ? 's' : ''}?`
-      : `Delete <strong>${this.deletingRole()?.name}</strong>?`;
+  onBulkAction(action: ToolbarAction): void {
+    if (action.label === 'Delete Selected') {
+      this.service.onBulkDelete();
+    }
   }
 
   // Format data for table display
   get tableData() {
-    return this.paginatedRoles().map((role) => ({
+    return this.service.getTableData().map((role) => ({
       ...role,
       permissionsCount: role.permissions?.length || 0,
     }));
-  }
-
-  onPageChange(page: number) {
-    this.currentPage.set(page);
-    // Reset selection when changing pages
-    this.selectedRoles.set(new Set());
   }
 }

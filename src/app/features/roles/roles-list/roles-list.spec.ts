@@ -2,9 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { RolesListComponent } from './roles-list';
 import { UserApiService, RoleDto, PermissionDto } from '../../../core/openapi';
+import { routes } from '../../../app.routes';
 
 describe('RolesListComponent', () => {
   let component: RolesListComponent;
@@ -41,6 +43,7 @@ describe('RolesListComponent', () => {
         provideZonelessChangeDetection(),
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter(routes),
       ],
     }).compileComponents();
 
@@ -65,96 +68,96 @@ describe('RolesListComponent', () => {
 
   it('should load roles on init', () => {
     expect(userService.getAllRoles).toHaveBeenCalled();
-    expect(component.allRoles()).toEqual(mockRoles);
+    expect(component.service.items()).toEqual(mockRoles);
   });
 
   it('should load permissions on init', () => {
     expect(userService.getAllPermissions).toHaveBeenCalled();
-    expect(component.allPermissions()).toEqual(mockPermissions);
+    expect(component.service.allPermissions()).toEqual(mockPermissions);
   });
 
   it('should filter roles by search term', () => {
-    component.searchTerm.set('Admin');
-    const filtered = component.filteredRoles();
+    component.service.searchTerm.set('Admin');
+    const filtered = component.service.filteredItems();
     expect(filtered.length).toBe(1);
     expect(filtered[0].name).toBe('Admin');
   });
 
   it('should filter roles by ID', () => {
-    component.searchTerm.set('r2');
-    const filtered = component.filteredRoles();
+    component.service.searchTerm.set('r2');
+    const filtered = component.service.filteredItems();
     expect(filtered.length).toBe(1);
     expect(filtered[0].id).toBe('r2');
   });
 
   it('should return all roles when search term is empty', () => {
-    component.searchTerm.set('');
-    const filtered = component.filteredRoles();
+    component.service.searchTerm.set('');
+    const filtered = component.service.filteredItems();
     expect(filtered.length).toBe(mockRoles.length);
   });
 
   it('should detect selection', () => {
-    expect(component.hasSelection()).toBeFalsy();
+    expect(component.service.hasSelection()).toBeFalsy();
 
-    component.selectedRoles.set(new Set(['r1']));
-    expect(component.hasSelection()).toBeTruthy();
+    component.service.selectedItems.set(new Set(['r1']));
+    expect(component.service.hasSelection()).toBeTruthy();
   });
 
   it('should show delete confirm modal for single role', () => {
-    component.rowActions[1].onClick(mockRoles[0]);
-    expect(component.showDeleteConfirm()).toBeTruthy();
-    expect(component.deletingRole()).toEqual(mockRoles[0]);
+    component.rowActions[1].onClick?.(mockRoles[0]);
+    expect(component.service.showDeleteConfirm()).toBeTruthy();
+    expect(component.service.deletingItem()).toEqual(mockRoles[0]);
   });
 
   it('should show form modal when creating new role', () => {
-    component.primaryAction.onClick();
-    expect(component.showModal()).toBeTruthy();
-    expect(component.editingRole()).toBeNull();
+    component.primaryAction.onClick?.();
+    expect(component.service.showModal()).toBeTruthy();
+    expect(component.service.editingItem()).toBeNull();
   });
 
   it('should close form modal on cancel', () => {
-    component.showModal.set(true);
-    component.editingRole.set(mockRoles[0]);
+    component.service.showModal.set(true);
+    component.service.editingItem.set(mockRoles[0]);
 
-    component.onFormCancel();
+    component.service.onFormCancel();
 
-    expect(component.showModal()).toBeFalsy();
-    expect(component.editingRole()).toBeNull();
+    expect(component.service.showModal()).toBeFalsy();
+    expect(component.service.editingItem()).toBeNull();
   });
 
   it('should reload roles after form save', () => {
-    const reloadSpy = vi.spyOn(component, 'loadRoles');
-    component.showModal.set(true);
+    const reloadSpy = vi.spyOn(component.service, 'loadItems');
+    component.service.showModal.set(true);
 
-    component.onFormSave();
+    component.service.onFormSave();
 
-    expect(component.showModal()).toBeFalsy();
-    expect(component.editingRole()).toBeNull();
+    expect(component.service.showModal()).toBeFalsy();
+    expect(component.service.editingItem()).toBeNull();
     expect(reloadSpy).toHaveBeenCalled();
   });
 
   it('should generate correct delete message for single role', () => {
-    component.deletingRole.set(mockRoles[0]);
-    component.selectedRoles.set(new Set());
+    component.service.deletingItem.set(mockRoles[0]);
+    component.service.selectedItems.set(new Set());
 
-    const message = component.deleteMessage;
+    const message = component.service.deleteMessage();
     expect(message).toContain('Admin');
   });
 
   it('should generate correct delete message for multiple roles', () => {
-    component.selectedRoles.set(new Set(['r1', 'r2']));
+    component.service.selectedItems.set(new Set(['r1', 'r2']));
 
-    const message = component.deleteMessage;
-    expect(message).toContain('Delete 2 roles');
+    const message = component.service.deleteMessage();
+    expect(message).toContain('2 roles');
   });
 
   it('should delete single role', () => {
     vi.spyOn(userService, 'deleteRole').mockReturnValue(
       of({}) as unknown as ReturnType<typeof userService.deleteRole>,
     );
-    component.deletingRole.set(mockRoles[0]);
+    component.service.deletingItem.set(mockRoles[0]);
 
-    component.confirmDelete();
+    component.service.confirmDelete();
 
     expect(userService.deleteRole).toHaveBeenCalledWith('r1');
   });
@@ -163,9 +166,9 @@ describe('RolesListComponent', () => {
     vi.spyOn(userService, 'deleteRole').mockReturnValue(
       of({}) as unknown as ReturnType<typeof userService.deleteRole>,
     );
-    component.selectedRoles.set(new Set(['r1', 'r2']));
+    component.service.selectedItems.set(new Set(['r1', 'r2']));
 
-    component.confirmDelete();
+    component.service.confirmDelete();
 
     expect(userService.deleteRole).toHaveBeenCalledTimes(2);
     expect(userService.deleteRole).toHaveBeenCalledWith('r1');
