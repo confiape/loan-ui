@@ -5,73 +5,73 @@ import {
   TableToolbarComponent,
   ToolbarAction,
 } from '../../../components/ui/table-toolbar/table-toolbar';
-import { ModalComponent } from '../../../components/ui/modal/modal';
-import { CompanyDto } from '../../../core/openapi/model/companyDto';
-import { CompanyFormComponent } from '../company-form/company-form';
 import { TableComponent, TableColumn } from '../../../components/ui/table/table';
 import { TablePaginationComponent } from '../../../components/ui/table-pagination/table-pagination';
-import { CompaniesListService } from './companies-list.service';
+import { ModalComponent } from '../../../components/ui/modal/modal';
+import { RoleDto } from '../../../core/openapi';
+import { RolesFormComponent } from '../roles-form/roles-form';
+import { RolesListService } from './roles-list.service';
 import {
   createStandardRowActions,
   createPrimaryAction,
   createBulkActions,
-  createIdColumn,
 } from '../../../core/utils/crud-helpers';
 
 @Component({
-  selector: 'app-companies-list',
+  selector: 'app-roles-list',
   standalone: true,
   imports: [
     CommonModule,
     TableToolbarComponent,
-    ModalComponent,
-    CompanyFormComponent,
     TableComponent,
     TablePaginationComponent,
+    ModalComponent,
+    RolesFormComponent,
   ],
-  providers: [CompaniesListService],
-  templateUrl: './companies-list.html',
+  providers: [RolesListService],
+  templateUrl: './roles-list.html',
 })
-export class CompaniesListComponent implements OnInit {
-  service = inject(CompaniesListService);
+export class RolesListComponent implements OnInit {
+  service = inject(RolesListService);
   router = inject(Router);
   route = inject(ActivatedRoute);
 
-  // Table configuration
-  columns: TableColumn<CompanyDto>[] = [
+  // Table config
+  columns: TableColumn<RoleDto>[] = [
     { key: 'name', label: 'Name', sortable: true },
-    createIdColumn<CompanyDto>(),
+    { key: 'permissionsCount', label: 'Permissions', sortable: false },
+    { key: 'id', label: 'ID', sortable: true },
   ];
 
-  rowActions = createStandardRowActions<CompanyDto>(
-    (company) => this.service.onEditItem(company),
-    (company) => this.service.onDeleteItem(company),
+  rowActions = createStandardRowActions<RoleDto>(
+    (role) => this.service.onEditItem(role),
+    (role) => this.service.onDeleteItem(role),
   );
 
-  // Toolbar configuration
-  primaryAction: ToolbarAction = createPrimaryAction('New Company', () => this.service.onNewItem());
+  primaryAction: ToolbarAction = createPrimaryAction('New Role', () => this.service.onNewItem());
 
   bulkActions: ToolbarAction[] = createBulkActions();
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.service.loadItems();
+    this.service.loadPermissions();
 
     // Watch route params to open modal when ID is in URL
     this.route.params.subscribe((params) => {
       const id = params['id'];
       if (id) {
-        // Wait for companies to load if not already loaded
+        // Wait for roles to load if not already loaded
         if (this.service.items().length === 0) {
-          // Companies will load and then this will trigger again
+          // Roles will load and then this will trigger again
           return;
         }
-        const company = this.service.items().find((c) => c.id === id);
-        if (company) {
-          this.service.editingItem.set(company);
+        const role = this.service.items().find((r) => r.id === id);
+        if (role) {
+          this.service.editingItem.set(role);
           this.service.showModal.set(true);
         } else {
-          // Company not found, navigate back to list
-          this.router.navigate(['/companies']);
+          // Role not found, navigate back to list
+          this.router.navigate(['/roles']);
         }
       } else {
         // No ID in route, close modal if open
@@ -87,5 +87,13 @@ export class CompaniesListComponent implements OnInit {
     if (action.label === 'Delete Selected') {
       this.service.onBulkDelete();
     }
+  }
+
+  // Format data for table display
+  get tableData() {
+    return this.service.getTableData().map((role) => ({
+      ...role,
+      permissionsCount: role.permissions?.length || 0,
+    }));
   }
 }

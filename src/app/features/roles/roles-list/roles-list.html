@@ -1,0 +1,75 @@
+<div class="p-6">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Roles</h1>
+    <p class="text-sm text-[var(--color-text-secondary)] mt-1">Manage user roles and permissions</p>
+  </div>
+
+  <div class="mb-4">
+    <app-table-toolbar
+      searchPlaceholder="Search roles..."
+      [primaryAction]="primaryAction"
+      [bulkActions]="service.hasSelection() ? bulkActions : []"
+      (searchChange)="service.onSearch($event)"
+      (bulkActionClick)="onBulkAction($event)"
+    />
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-[var(--color-border)]">
+    <app-table
+      [columns]="columns"
+      [data]="tableData"
+      [rowActions]="rowActions"
+      [selectable]="true"
+      [selectedItems]="service.selectedItems()"
+      [loading]="service.loading()"
+      (selectionChange)="service.onSelectionChange($event)"
+    />
+
+    @if (service.filteredItems().length > 0) {
+      <div class="border-t border-[var(--color-border)]">
+        <app-table-pagination
+          [currentPage]="service.currentPage()"
+          [pageSize]="service.pageSize()"
+          [totalItems]="service.filteredItems().length"
+          (pageChange)="service.onPageChange($event)"
+        />
+      </div>
+    }
+  </div>
+
+  <!-- Form Modal -->
+  <app-modal
+    [isOpen]="service.showModal()"
+    [title]="service.editingItem() ? 'Edit Role' : 'New Role'"
+    size="lg"
+    (closed)="service.onFormCancel()"
+  >
+    <app-roles-form
+      [role]="service.editingItem()"
+      [allPermissions]="service.allPermissions()"
+      [allRoles]="service.items()"
+      (saveRole)="service.onFormSave()"
+      (cancelForm)="service.onFormCancel()"
+    />
+  </app-modal>
+
+  <!-- Delete Confirmation Modal -->
+  <app-modal
+    [isOpen]="service.showDeleteConfirm()"
+    title="Delete Role"
+    size="sm"
+    (closed)="service.cancelDelete()"
+  >
+    <div class="p-4">
+      <p [innerHTML]="service.deleteMessage()" class="text-[var(--color-text-primary)]"></p>
+      <div class="flex gap-3 justify-end mt-4">
+        <button type="button" class="btn btn-secondary" (click)="service.cancelDelete()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-error" (click)="service.confirmDelete()">
+          Delete
+        </button>
+      </div>
+    </div>
+  </app-modal>
+</div>

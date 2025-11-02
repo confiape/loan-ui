@@ -1,0 +1,84 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6">
+  @if (error()) {
+    <div class="alert alert-error mb-4">{{ error() }}</div>
+  }
+
+  <div class="space-y-4">
+    <!-- Role Name -->
+    <div>
+      <label for="role-name" class="form-label"
+        >Role Name <span class="text-[var(--color-error)]">*</span></label
+      >
+      <app-base-input
+        id="role-name"
+        formControlName="name"
+        placeholder="Enter role name (e.g., Admin, Editor, Viewer)"
+        [testId]="'role-name-input'"
+        [class.form-input-error]="nameControl.invalid && nameControl.touched"
+      />
+      @if (nameControl.invalid && nameControl.touched) {
+        <div class="text-sm text-[var(--color-error)] mt-1">
+          @if (nameControl.errors?.['required']) {
+            <span>Role name is required</span>
+          }
+          @if (nameControl.errors?.['minlength']) {
+            <span>Minimum 2 characters required</span>
+          }
+          @if (nameControl.errors?.['maxlength']) {
+            <span>Maximum 100 characters allowed</span>
+          }
+          @if (nameControl.errors?.['pattern']) {
+            <span>Only letters, numbers, spaces, hyphens and underscores allowed</span>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Permissions Selection -->
+    <div>
+      <div class="form-label">Permissions</div>
+      <app-multiselect
+        formControlName="permissionsId"
+        [items]="permissionItems"
+        placeholder="Select permissions..."
+      />
+      <p class="text-sm text-[var(--color-text-secondary)] mt-1">
+        Select the permissions this role should have
+      </p>
+    </div>
+
+    <!-- Inherited Roles Selection -->
+    <div>
+      <div class="form-label">Inherit from Roles</div>
+      <app-multiselect
+        formControlName="rolesId"
+        [items]="roleItems"
+        placeholder="Select roles to inherit from..."
+      />
+      <p class="text-sm text-[var(--color-text-secondary)] mt-1">
+        This role will inherit all permissions from selected roles
+      </p>
+    </div>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="flex gap-3 justify-end mt-6 pt-4 border-t border-[var(--color-border)]">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      [attr.data-testid]="'role-form-cancel-button'"
+      (click)="onCancel()"
+      [disabled]="loading()"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [attr.data-testid]="'role-form-submit-button'"
+      [disabled]="loading() || form.invalid"
+    >
+      {{ loading() ? 'Saving...' : isEditMode ? 'Update Role' : 'Create Role' }}
+    </button>
+  </div>
+</form>

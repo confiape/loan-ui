@@ -3,6 +3,7 @@ import { MainLayout } from './layout/main-layout/main-layout';
 import { Dashboard } from './features/dashboard/dashboard';
 import { LoginComponent } from './features/auth/login/login';
 import { CompaniesListComponent } from './features/companies/companies-list/companies-list';
+import { RolesListComponent } from './features/roles/roles-list/roles-list';
 import { authGuard } from './guards/auth.guard';
 import { loginGuard } from './guards/login.guard';
 
@@ -36,6 +37,19 @@ export const routes: Routes = [
           {
             path: ':id',
             component: CompaniesListComponent,
+          },
+        ],
+      },
+      {
+        path: 'roles',
+        children: [
+          {
+            path: '',
+            component: RolesListComponent,
+          },
+          {
+            path: ':id',
+            component: RolesListComponent,
           },
         ],
       },
