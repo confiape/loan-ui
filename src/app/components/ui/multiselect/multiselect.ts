@@ -4,12 +4,12 @@ import {
   output,
   signal,
   computed,
+  effect,
   HostListener,
   ElementRef,
   inject,
   DestroyRef,
   Injector,
-  effect,
   forwardRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -48,6 +48,7 @@ export interface MultiSelectItem {
 export class MultiSelectComponent implements ControlValueAccessor {
   // Inputs
   items = input.required<MultiSelectItem[]>();
+  initialSelection = input<unknown[]>([]);
   placeholder = input<string>('Select options');
   disabled = input<boolean>(false);
   maxSelections = input<number | null>(null);
