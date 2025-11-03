@@ -1,5 +1,7 @@
 import { signal, computed, Signal } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
+import { ICrudService } from './crud.interface';
+import { FormFieldMetadata, TableColumnMetadata } from '../models/form-metadata';
 
 /**
  * Configuration options for BaseCrudService
@@ -26,19 +28,25 @@ export interface CrudConfig {
 
 /**
  * Base service for CRUD operations with common state management and logic
+ * Implements ICrudService interface
  *
- * @template TDto - The data transfer object type for the entity
+ * @template TDto - The data transfer object type for the entity (must have id: string)
+ * @template TSaveDto - The DTO for create/update operations (defaults to TDto)
  *
  * @example
  * ```typescript
  * @Injectable()
- * export class CompaniesListService extends BaseCrudService<CompanyDto> {
+ * export class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompanyDto> {
  *   constructor(private companyApi: CompanyApiService) {
- *     super({ enablePagination: false });
+ *     super({ enablePagination: true, enableRouterNavigation: true });
  *   }
  *
  *   protected loadAllItems(): Observable<CompanyDto[]> {
  *     return this.companyApi.getAllCompanies();
+ *   }
+ *
+ *   saveItem(dto: SaveCompanyDto): Observable<CompanyDto> {
+ *     return dto.id ? this.companyApi.updateCompany(dto) : this.companyApi.createCompany(dto);
  *   }
  *
  *   protected deleteItem(id: string): Observable<void> {
@@ -49,10 +57,29 @@ export interface CrudConfig {
  *     return item.name.toLowerCase().includes(term) ||
  *            item.id.toLowerCase().includes(term);
  *   }
+ *
+ *   getTableColumns(): TableColumnMetadata<CompanyDto>[] {
+ *     return [
+ *       { key: 'name', label: 'Name', sortable: true },
+ *       { key: 'id', label: 'ID', sortable: true }
+ *     ];
+ *   }
+ *
+ *   getFormFields(): FormFieldMetadata[] {
+ *     return [
+ *       { key: 'name', label: 'Name', type: 'text', validators: [Validators.required] }
+ *     ];
+ *   }
+ *
+ *   getRouteBasePath(): string {
+ *     return '/companies';
+ *   }
  * }
  * ```
  */
-export abstract class BaseCrudService<TDto extends { id: string }> {
+export abstract class BaseCrudService<TDto extends { id: string }, TSaveDto = TDto>
+  implements ICrudService<TDto, TSaveDto>
+{
   // ==================== CONFIGURATION ====================
   protected config: Required<CrudConfig>;
 
@@ -170,32 +197,53 @@ export abstract class BaseCrudService<TDto extends { id: string }> {
   /**
    * Load all items from the API
    */
-  protected abstract loadAllItems(): Observable<TDto[]>;
+  abstract loadAllItems(): Observable<TDto[]>;
+
+  /**
+   * Save item (create if no id, update if has id)
+   * Implement this to handle both create and update operations
+   */
+  abstract saveItem(dto: TSaveDto): Observable<TDto>;
 
   /**
    * Delete a single item by ID
    */
-  protected abstract deleteItem(id: string): Observable<unknown>;
+  abstract deleteItem(id: string): Observable<unknown>;
 
   /**
    * Check if an item matches the search term
    */
-  protected abstract matchesSearch(item: TDto, term: string): boolean;
+  abstract matchesSearch(item: TDto, term: string): boolean;
+
+  /**
+   * Get table columns configuration
+   */
+  abstract getTableColumns(): TableColumnMetadata<TDto>[];
+
+  /**
+   * Get form fields configuration
+   */
+  abstract getFormFields(): FormFieldMetadata[];
 
   /**
    * Get the singular name of the item type (e.g., "company", "role")
    */
-  protected abstract getItemTypeName(): string;
+  abstract getItemTypeName(): string;
 
   /**
    * Get the plural name of the item type (e.g., "companies", "roles")
    */
-  protected abstract getItemTypePluralName(): string;
+  abstract getItemTypePluralName(): string;
 
   /**
    * Get the display name for an item (used in delete confirmation)
    */
-  protected abstract getItemDisplayName(item: TDto): string;
+  abstract getItemDisplayName(item: TDto): string;
+
+  /**
+   * Get the route base path for router navigation (e.g., '/companies', '/roles')
+   */
+  abstract getRouteBasePath(): string;
 
   // ==================== OPTIONAL HOOKS ====================
   /**
@@ -257,14 +305,26 @@ export abstract class BaseCrudService<TDto extends { id: string }> {
    * Open modal for editing existing item
    */
   onEditItem(item: TDto): void {
-    // If router navigation hook is defined, use it
-    if (this.onEditWithRouter) {
-      this.onEditWithRouter(item);
+    if (this.config.enableRouterNavigation) {
+      // If router navigation is enabled and hook is defined, use it
+      if (this.onEditWithRouter) {
+        this.onEditWithRouter(item);
+      }
+      // Note: Component should handle router navigation and modal opening
     } else {
       // Otherwise, open modal directly
       this.editingItem.set(item);
       this.showModal.set(true);
     }
+  }
+
+  /**
+   * Open modal for editing (used by generic component for router-based navigation)
+   * This bypasses the router navigation and directly opens the modal
+   */
+  openEditModal(item: TDto): void {
+    this.editingItem.set(item);
+    this.showModal.set(true);
   }
 
   /**
@@ -298,7 +358,20 @@ export abstract class BaseCrudService<TDto extends { id: string }> {
           this.showDeleteConfirm.set(false);
           this.selectedItems.set(new Set());
           this.deletingItem.set(null);
-          this.loadItems();
+
+          // Reload items and reset to page 1
+          this.loading.set(true);
+          this.loadAllItems().subscribe({
+            next: (data) => {
+              this.items.set(data);
+              this.currentPage.set(1);
+              this.loading.set(false);
+            },
+            error: (error) => {
+              console.error(`Error loading ${this.getItemTypePluralName()}:`, error);
+              this.loading.set(false);
+            },
+          });
         },
         error: (error) => {
           console.error(`Error deleting ${this.getItemTypePluralName()}:`, error);
@@ -311,7 +384,20 @@ export abstract class BaseCrudService<TDto extends { id: string }> {
         next: () => {
           this.showDeleteConfirm.set(false);
           this.deletingItem.set(null);
-          this.loadItems();
+
+          // Reload items and reset to page 1
+          this.loading.set(true);
+          this.loadAllItems().subscribe({
+            next: (data) => {
+              this.items.set(data);
+              this.currentPage.set(1);
+              this.loading.set(false);
+            },
+            error: (error) => {
+              console.error(`Error loading ${this.getItemTypePluralName()}:`, error);
+              this.loading.set(false);
+            },
+          });
         },
         error: (error) => {
           console.error(`Error deleting ${this.getItemTypeName()}:`, error);
@@ -335,12 +421,25 @@ export abstract class BaseCrudService<TDto extends { id: string }> {
   onFormSave(): void {
     this.showModal.set(false);
     this.editingItem.set(null);
-    this.loadItems();
 
-    // Call hook if defined
-    if (this.onAfterFormSave) {
-      this.onAfterFormSave();
-    }
+    // Load items first, then reset page in the callback
+    this.loading.set(true);
+    this.loadAllItems().subscribe({
+      next: (data) => {
+        this.items.set(data);
+        this.currentPage.set(1); // Reset to first page after items are loaded
+        this.loading.set(false);
+
+        // Call hook if defined
+        if (this.onAfterFormSave) {
+          this.onAfterFormSave();
+        }
+      },
+      error: (error) => {
+        console.error(`Error loading ${this.getItemTypePluralName()}:`, error);
+        this.loading.set(false);
+      },
+    });
   }
 
   /**

@@ -1,0 +1,97 @@
+<div class="p-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">
+      {{
+        service().getItemTypePluralName().charAt(0).toUpperCase() +
+          service().getItemTypePluralName().slice(1)
+      }}
+    </h1>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="mb-4">
+    <app-table-toolbar
+      [primaryAction]="primaryAction"
+      [bulkActions]="service().hasSelection() ? bulkActions : []"
+      [showFilters]="false"
+      [searchTestId]="testIdPrefix() + '-search-input'"
+      [attr.data-testid]="testIdPrefix() + '-toolbar'"
+      (searchChange)="service().onSearch($event)"
+      (bulkActionClick)="onBulkAction($event)"
+    />
+  </div>
+
+  <!-- Table -->
+  <app-table
+    [data]="service().getTableData()"
+    [columns]="columns"
+    [loading]="service().loading()"
+    [selectedItems]="service().selectedItems()"
+    [rowActions]="rowActions"
+    [attr.data-testid]="testIdPrefix() + '-table'"
+    (selectionChange)="service().onSelectionChange($event)"
+    (selectAll)="service().onSelectAll($event)"
+  />
+
+  <!-- Pagination (if enabled) -->
+  @if (service().pageSize() > 0) {
+    <app-table-pagination
+      [currentPage]="service().currentPage()"
+      [pageSize]="service().pageSize()"
+      [totalItems]="service().filteredItems().length"
+      (pageChange)="service().onPageChange($event)"
+    />
+  }
+
+  <!-- Form Modal -->
+  <app-modal
+    [isOpen]="service().showModal()"
+    [title]="modalTitle"
+    [size]="'lg'"
+    [testId]="testIdPrefix() + '-modal'"
+    (close)="onFormCancel()"
+  >
+    <app-generic-crud-form
+      [item]="service().editingItem()"
+      [fields]="service().getFormFields()"
+      [loading]="formLoading"
+      [error]="formError"
+      [testIdPrefix]="testIdPrefix()"
+      (save)="onFormSave($event)"
+      (cancel)="onFormCancel()"
+    />
+  </app-modal>
+
+  <!-- Delete Confirmation Modal -->
+  <app-modal
+    [isOpen]="service().showDeleteConfirm()"
+    [title]="'Confirm Delete'"
+    [size]="'sm'"
+    [testId]="testIdPrefix() + '-delete-modal'"
+    (close)="service().cancelDelete()"
+  >
+    <div class="space-y-4">
+      <p [innerHTML]="service().deleteMessage()" class="text-gray-700 dark:text-gray-300"></p>
+
+      <div class="flex justify-end gap-3 pt-4">
+        <button
+          type="button"
+          (click)="service().cancelDelete()"
+          class="btn btn-secondary"
+          [attr.data-testid]="testIdPrefix() + '-btn-cancel-delete'"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="service().confirmDelete()"
+          class="btn btn-error"
+          [attr.data-testid]="testIdPrefix() + '-btn-confirm-delete'"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </app-modal>
+</div>

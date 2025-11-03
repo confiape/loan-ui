@@ -451,8 +451,11 @@ Import from: `src/app/components/ui/index.ts`
 - **Angular Docs**: Use MCP `mcp__angular-cli__search_documentation` for current patterns
 - **Angular Best Practices**: Use MCP `mcp__angular-cli__get_best_practices` before coding
 - **Tailwind v4**: https://tailwindcss.com/docs
-- **CRUD Guide**: `docs/CRUD-GUIDE.md` - How to implement CRUDs
-- **Playwright Guide**: `docs/PLAYWRIGHT-GUIDE.md` - How to write E2E tests
+- **CRUD Guides**:
+  - `docs/CRUD-GUIDE.md` - Quick start guide (how to create a CRUD)
+  - `docs/CRUD-ARCHITECTURE.md` - Technical architecture (how it works)
+  - `docs/GENERIC-CRUD-POC.md` - Complete POC documentation
+- **Playwright Guide**: `docs/testing/PLAYWRIGHT-GUIDE.md` - How to write E2E tests
 - **Project Components**: Copy existing components as templates
 
 ---
@@ -460,8 +463,10 @@ Import from: `src/app/components/ui/index.ts`
 **Remember:**
 
 1. Always start with Angular MCP for best practices
-2. If implementing CRUD: Read `docs/CRUD-GUIDE.md` first
-3. If writing E2E tests: Read `docs/PLAYWRIGHT-GUIDE.md` first
+2. If implementing CRUD:
+   - Quick start: Read `docs/CRUD-GUIDE.md`
+   - Understanding: Read `docs/CRUD-ARCHITECTURE.md`
+3. If writing E2E tests: Read `docs/testing/PLAYWRIGHT-GUIDE.md` first
 4. Always follow GitHub workflow (issue -> branch -> tests -> PR)
 5. Never edit `src/app/core/openapi/**`
 6. Prefer Tailwind over CSS files

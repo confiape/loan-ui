@@ -5,7 +5,7 @@ export class CompaniesListPage extends BasePage {
   // Actions
   async openNewForm() {
     await this.page.getByRole('button', { name: /new company/i }).click();
-    await this.page.getByTestId('company-form-modal').waitFor({ state: 'visible' });
+    await this.page.getByTestId('companies-modal').waitFor({ state: 'visible' });
   }
 
   async searchCompany(term: string) {
@@ -27,17 +27,17 @@ export class CompaniesListPage extends BasePage {
   async deleteCompany(name: string) {
     const row = await this.getRowByName(name);
     await row.getByRole('button', { name: /delete/i }).click();
-    await expect(this.page.getByTestId('company-delete-modal')).toBeVisible();
+    await expect(this.page.getByTestId('companies-delete-modal')).toBeVisible();
   }
 
   async confirmDelete() {
-    await this.page.getByTestId('delete-confirm-button').click();
-    await this.page.getByTestId('company-delete-modal').waitFor({ state: 'hidden' });
+    await this.page.getByTestId('companies-btn-confirm-delete').click();
+    await this.page.getByTestId('companies-delete-modal').waitFor({ state: 'hidden' });
   }
 
   async cancelDelete() {
-    await this.page.getByTestId('delete-cancel-button').click();
-    await this.page.getByTestId('company-delete-modal').waitFor({ state: 'hidden' });
+    await this.page.getByTestId('companies-btn-cancel-delete').click();
+    await this.page.getByTestId('companies-delete-modal').waitFor({ state: 'hidden' });
   }
 
   async selectRow(name: string) {
@@ -51,7 +51,7 @@ export class CompaniesListPage extends BasePage {
 
   async bulkDelete() {
     await this.page.getByRole('button', { name: /delete selected/i }).click();
-    await expect(this.page.getByTestId('company-delete-modal')).toBeVisible();
+    await expect(this.page.getByTestId('companies-delete-modal')).toBeVisible();
     await this.confirmDelete();
   }
 
@@ -83,11 +83,11 @@ export class CompaniesListPage extends BasePage {
   }
 
   async expectDeleteModalVisible() {
-    await expect(this.page.getByTestId('company-delete-modal')).toBeVisible();
+    await expect(this.page.getByTestId('companies-delete-modal')).toBeVisible();
   }
 
   async expectDeleteModalHidden() {
-    await expect(this.page.getByTestId('company-delete-modal')).not.toBeVisible();
+    await expect(this.page.getByTestId('companies-delete-modal')).not.toBeVisible();
   }
 
   async expectPageTitle(title: string | RegExp) {
