@@ -101,16 +101,10 @@ export class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompan
   }
 
   protected override onAfterFormSave(): void {
-    // Only navigate if we're not already on the base route
-    if (this.router.url !== '/companies') {
-      this.router.navigate(['/companies']);
-    }
+    this.router.navigate(['/companies']);
   }
 
   protected override onAfterFormCancel(): void {
-    // Only navigate if we're not already on the base route
-    if (this.router.url !== '/companies') {
-      this.router.navigate(['/companies']);
-    }
+    this.router.navigate(['/companies']);
   }
 }

@@ -61,6 +61,8 @@ export class CompaniesListPage extends BasePage {
 
   // Assertions
   async expectCompanyInList(name: string) {
+    // Search for the company first to handle pagination
+    await this.searchCompany(name);
     const row = await this.getRowByName(name);
     await expect(row).toBeVisible();
   }

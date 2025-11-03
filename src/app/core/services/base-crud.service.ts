@@ -358,20 +358,7 @@ export abstract class BaseCrudService<TDto extends { id: string }, TSaveDto = TD
           this.showDeleteConfirm.set(false);
           this.selectedItems.set(new Set());
           this.deletingItem.set(null);
-
-          // Reload items and reset to page 1
-          this.loading.set(true);
-          this.loadAllItems().subscribe({
-            next: (data) => {
-              this.items.set(data);
-              this.currentPage.set(1);
-              this.loading.set(false);
-            },
-            error: (error) => {
-              console.error(`Error loading ${this.getItemTypePluralName()}:`, error);
-              this.loading.set(false);
-            },
-          });
+          this.loadItems();
         },
         error: (error) => {
           console.error(`Error deleting ${this.getItemTypePluralName()}:`, error);
@@ -384,20 +371,7 @@ export abstract class BaseCrudService<TDto extends { id: string }, TSaveDto = TD
         next: () => {
           this.showDeleteConfirm.set(false);
           this.deletingItem.set(null);
-
-          // Reload items and reset to page 1
-          this.loading.set(true);
-          this.loadAllItems().subscribe({
-            next: (data) => {
-              this.items.set(data);
-              this.currentPage.set(1);
-              this.loading.set(false);
-            },
-            error: (error) => {
-              console.error(`Error loading ${this.getItemTypePluralName()}:`, error);
-              this.loading.set(false);
-            },
-          });
+          this.loadItems();
         },
         error: (error) => {
           console.error(`Error deleting ${this.getItemTypeName()}:`, error);
@@ -421,25 +395,12 @@ export abstract class BaseCrudService<TDto extends { id: string }, TSaveDto = TD
   onFormSave(): void {
     this.showModal.set(false);
     this.editingItem.set(null);
+    this.loadItems();
 
-    // Load items first, then reset page in the callback
-    this.loading.set(true);
-    this.loadAllItems().subscribe({
-      next: (data) => {
-        this.items.set(data);
-        this.currentPage.set(1); // Reset to first page after items are loaded
-        this.loading.set(false);
-
-        // Call hook if defined
-        if (this.onAfterFormSave) {
-          this.onAfterFormSave();
-        }
-      },
-      error: (error) => {
-        console.error(`Error loading ${this.getItemTypePluralName()}:`, error);
-        this.loading.set(false);
-      },
-    });
+    // Call hook if defined
+    if (this.onAfterFormSave) {
+      this.onAfterFormSave();
+    }
   }
 
   /**

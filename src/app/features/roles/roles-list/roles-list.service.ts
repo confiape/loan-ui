@@ -172,20 +172,14 @@ export class RolesListService extends BaseCrudService<RoleDto, SaveRoleDto> {
    * Navigate back to /roles after save
    */
   protected override onAfterFormSave(): void {
-    // Only navigate if we're not already on the base route
-    if (this.router.url !== '/roles') {
-      this.router.navigate(['/roles']);
-    }
+    this.router.navigate(['/roles']);
   }
 
   /**
    * Navigate back to /roles after cancel
    */
   protected override onAfterFormCancel(): void {
-    // Only navigate if we're not already on the base route
-    if (this.router.url !== '/roles') {
-      this.router.navigate(['/roles']);
-    }
+    this.router.navigate(['/roles']);
   }
 
   /**
