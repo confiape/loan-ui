@@ -28,3 +28,13 @@ export const generateCompanyName = (prefix = 'Company') => {
   const id = Math.random().toString(36).substring(2, 6).toUpperCase();
   return `${prefix}-${id}`;
 };
+
+export const generateUserEmail = (prefix = 'user') => {
+  const id = Math.random().toString(36).substring(2, 6).toLowerCase();
+  return `${prefix}.${id}@test.com`;
+};
+
+export const generateDni = () => {
+  const randomNum = Math.floor(10000000 + Math.random() * 90000000);
+  return randomNum.toString();
+};
