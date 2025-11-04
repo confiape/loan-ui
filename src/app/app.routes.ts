@@ -6,6 +6,7 @@ import { authGuard } from './guards/auth.guard';
 import { loginGuard } from './guards/login.guard';
 import { CompaniesListComponent } from './features/companies/companies-list/companies-list';
 import { RolesListComponent } from './features/roles/roles-list/roles-list';
+import { UsersListComponent } from './features/users/users-list/users-list';
 
 export const routes: Routes = [
   {
@@ -50,6 +51,19 @@ export const routes: Routes = [
           {
             path: ':id',
             component: RolesListComponent,
+          },
+        ],
+      },
+      {
+        path: 'users',
+        children: [
+          {
+            path: '',
+            component: UsersListComponent,
+          },
+          {
+            path: ':id',
+            component: UsersListComponent,
           },
         ],
       },
