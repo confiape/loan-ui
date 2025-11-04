@@ -167,6 +167,15 @@ export abstract class BaseCrudService<TDto extends { id: string }, TSaveDto = TD
   hasSelection = computed(() => this.selectedItems().size > 0);
 
   /**
+   * Get the full items that are currently selected
+   */
+  selectedItemsData = computed(() => {
+    const selectedIds = this.selectedItems();
+    const allItems = this.items();
+    return allItems.filter((item) => selectedIds.has(item.id));
+  });
+
+  /**
    * Delete confirmation message
    */
   deleteMessage = computed(() => {
@@ -436,13 +445,29 @@ export abstract class BaseCrudService<TDto extends { id: string }, TSaveDto = TD
   }
 
   /**
+   * Remove a specific item from selection
+   */
+  removeFromSelection(id: string): void {
+    const selected = new Set(this.selectedItems());
+    selected.delete(id);
+    this.selectedItems.set(selected);
+  }
+
+  /**
+   * Clear all selections
+   */
+  clearSelection(): void {
+    this.selectedItems.set(new Set());
+  }
+
+  /**
    * Change page (if pagination is enabled)
    */
   onPageChange(page: number): void {
     if (!this.config.enablePagination) return;
 
     this.currentPage.set(page);
-    this.selectedItems.set(new Set()); // Reset selection on page change
+    // Keep selections across pages - do not reset
   }
 
   /**

@@ -60,6 +60,9 @@ describe('RolesListComponent', () => {
     );
 
     fixture.detectChanges();
+
+    // Load permissions after component init
+    component.service.loadPermissions();
   });
 
   it('should create', () => {
@@ -104,13 +107,13 @@ describe('RolesListComponent', () => {
   });
 
   it('should show delete confirm modal for single role', () => {
-    component.rowActions[1].onClick?.(mockRoles[0]);
+    component.service.onDeleteItem(mockRoles[0]);
     expect(component.service.showDeleteConfirm()).toBeTruthy();
     expect(component.service.deletingItem()).toEqual(mockRoles[0]);
   });
 
   it('should show form modal when creating new role', () => {
-    component.primaryAction.onClick?.();
+    component.service.onNewItem();
     expect(component.service.showModal()).toBeTruthy();
     expect(component.service.editingItem()).toBeNull();
   });
@@ -176,23 +179,30 @@ describe('RolesListComponent', () => {
   });
 
   it('should format table data with permissions count', () => {
-    const tableData = component.tableData;
-    expect(tableData[0].permissionsCount).toBe(2);
-    expect(tableData[1].permissionsCount).toBe(1);
-    expect(tableData[2].permissionsCount).toBe(0);
+    const tableData = component.service.getTableData();
+    expect(tableData[0].permissions?.length).toBe(2);
+    expect(tableData[1].permissions?.length).toBe(1);
+    expect(tableData[2].permissions?.length).toBe(0);
   });
 
   it('should have correct table columns', () => {
-    expect(component.columns).toEqual([
-      { key: 'name', label: 'Name', sortable: true },
-      { key: 'permissionsCount', label: 'Permissions', sortable: false },
-      { key: 'id', label: 'ID', sortable: true },
-    ]);
+    const columns = component.service.getTableColumns();
+    expect(columns.length).toBe(3);
+    expect(columns[0]).toMatchObject({ key: 'name', label: 'Name', sortable: true });
+    expect(columns[1]).toMatchObject({
+      key: 'permissionsCount',
+      label: 'Permissions',
+      sortable: false,
+    });
+    expect(columns[1].valueGetter).toBeDefined();
+    expect(columns[2]).toMatchObject({ key: 'id', label: 'ID', sortable: true });
   });
 
-  it('should have correct row actions', () => {
-    expect(component.rowActions.length).toBe(2);
-    expect(component.rowActions[0].label).toBe('Edit');
-    expect(component.rowActions[1].label).toBe('Delete');
+  it('should have correct form fields', () => {
+    const fields = component.service.getFormFields();
+    expect(fields.length).toBe(3);
+    expect(fields[0].key).toBe('name');
+    expect(fields[1].key).toBe('permissionsId');
+    expect(fields[2].key).toBe('rolesId');
   });
 });

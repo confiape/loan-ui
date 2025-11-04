@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TableToolbarComponent, ToolbarAction } from '../../ui/table-toolbar/table-toolbar';
 import { ModalComponent } from '../../ui/modal/modal';
-import { TableComponent, TableColumn } from '../../ui/table/table';
+import { TableComponent, TableColumn, TableRowAction } from '../../ui/table/table';
 import { TablePaginationComponent } from '../../ui/table-pagination/table-pagination';
 import { GenericCrudFormComponent } from '../generic-crud-form/generic-crud-form';
 import { ICrudService } from '../../../core/services/crud.interface';
@@ -50,14 +50,14 @@ export class GenericCrudListComponent<TDto extends { id: string }> implements On
   private route = inject(ActivatedRoute);
 
   // Input: CRUD service (required)
-  service = input.required<ICrudService<TDto, any>>();
+  service = input.required<ICrudService<TDto, unknown>>();
 
   // Input: Test ID prefix for E2E testing (optional)
   testIdPrefix = input<string>('crud');
 
   // Table configuration
   columns: TableColumn<TDto>[] = [];
-  rowActions: any[] = [];
+  rowActions: TableRowAction[] = [];
   primaryAction!: ToolbarAction;
   bulkActions: ToolbarAction[] = [];
 
@@ -171,7 +171,7 @@ export class GenericCrudListComponent<TDto extends { id: string }> implements On
   /**
    * Handle form save
    */
-  onFormSave(dto: any): void {
+  onFormSave(dto: unknown): void {
     this.formLoading = true;
     this.formError = null;
 
@@ -182,9 +182,10 @@ export class GenericCrudListComponent<TDto extends { id: string }> implements On
           this.formLoading = false;
           this.service().onFormSave();
         },
-        error: (error: any) => {
+        error: (error: unknown) => {
           console.error('Error saving item:', error);
-          this.formError = error.error?.message || 'Failed to save. Please try again.';
+          const errorObj = error as { error?: { message?: string } };
+          this.formError = errorObj.error?.message || 'Failed to save. Please try again.';
           this.formLoading = false;
         },
       });

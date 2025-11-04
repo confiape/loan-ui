@@ -155,6 +155,7 @@ export const routes: Routes = [
 ## ✅ ¡Listo!
 
 Navega a `/entities` y verás:
+
 - ✅ Tabla con datos
 - ✅ Búsqueda y filtros
 - ✅ Botón "New Entity"
@@ -506,10 +507,7 @@ describe('EntityListService', () => {
     apiMock = jasmine.createSpyObj('EntityApiService', ['getAll', 'save', 'delete']);
 
     TestBed.configureTestingModule({
-      providers: [
-        EntityListService,
-        { provide: EntityApiService, use: apiMock },
-      ],
+      providers: [EntityListService, { provide: EntityApiService, use: apiMock }],
     });
 
     service = TestBed.inject(EntityListService);
@@ -596,6 +594,7 @@ constructor() {
 **Causa**: El efecto que escucha cambios de ruta no está funcionando.
 
 **Solución**: Verifica que:
+
 1. La ruta incluye `:id` parameter
 2. `enableRouterNavigation = true` en el servicio
 3. Items están cargados antes de navegar
@@ -605,6 +604,7 @@ constructor() {
 **Problema**: Async validator no se ejecuta.
 
 **Solución**: Verifica que:
+
 1. Agregaste `asyncValidators` en metadata
 2. El form control tiene el validator aplicado
 3. El método retorna `Observable<boolean>`
@@ -623,6 +623,7 @@ isNameAvailable(name: string): Observable<boolean> {
 Antes de considerar el CRUD completo:
 
 **Servicio**:
+
 - [ ] Extiende `BaseCrudService<TDto, TSaveDto>`
 - [ ] Implementa `fetchAllItems()`
 - [ ] Implementa `performSave()`
@@ -633,19 +634,23 @@ Antes de considerar el CRUD completo:
 - [ ] Hooks `onAfterFormSave()` y `onAfterFormCancel()` si necesario
 
 **Componente**:
+
 - [ ] Importa `GenericCrudListComponent`
 - [ ] Provee el servicio
 - [ ] Template: `<app-generic-crud-list [service]="service" />`
 
 **Rutas**:
+
 - [ ] Ruta base: `{ path: 'entities', component: ... }`
 - [ ] Ruta edit: `{ path: ':id', component: ... }`
 
 **Testing** (opcional pero recomendado):
+
 - [ ] Unit tests del servicio
 - [ ] E2E test de crear/editar/eliminar
 
 **Validación**:
+
 - [ ] Validaciones client-side en metadata
 - [ ] **CRÍTICO**: Validaciones server-side en API
 

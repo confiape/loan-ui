@@ -32,10 +32,11 @@ export class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompan
 
   saveItem(dto: SaveCompanyDto): Observable<CompanyDto> {
     // Check if we're updating (has id) or creating (no id)
-    if ((dto as any).id) {
+    const dtoWithId = dto as SaveCompanyDto & { id?: string };
+    if (dtoWithId.id) {
       // Update existing company
       const updateDto: CompanyDto = {
-        id: (dto as any).id,
+        id: dtoWithId.id,
         name: dto.name,
       };
       return this.companyApi.updateCompany(updateDto);

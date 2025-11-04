@@ -200,7 +200,7 @@ test.describe('Companies CRUD', () => {
       await listPage.openNewForm();
       await formPage.fillAndSubmit(company2);
 
-      // Select both
+      // Select both companies individually (searches for each one)
       await listPage.selectRow(company1);
       await listPage.selectRow(company2);
 
@@ -219,7 +219,7 @@ test.describe('Companies CRUD', () => {
       await formPage.fillCompanyName(specialName);
 
       // Should show validation error for invalid pattern
-      await formPage.expectValidationError(/does not match/i);
+      await formPage.expectValidationError(/invalid/i);
       await formPage.expectSubmitDisabled();
     });
 

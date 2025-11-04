@@ -13,18 +13,27 @@ export class CompaniesListPage extends BasePage {
     await this.page.waitForTimeout(300); // Debounce
   }
 
+  async clearSearch() {
+    await this.page.getByTestId('companies-search-input').clear();
+    await this.page.waitForTimeout(300); // Debounce
+  }
+
   async getRowByName(name: string): Promise<Locator> {
     // Use filter with getByText to handle special characters correctly
     return this.page.getByTestId('companies-table').locator('tbody tr').filter({ hasText: name });
   }
 
   async editCompany(name: string) {
+    // Search for the company first to handle pagination
+    await this.searchCompany(name);
     const row = await this.getRowByName(name);
     await row.getByRole('button', { name: /edit/i }).click();
     await this.page.waitForURL(`/companies/**`);
   }
 
   async deleteCompany(name: string) {
+    // Search for the company first to handle pagination
+    await this.searchCompany(name);
     const row = await this.getRowByName(name);
     await row.getByRole('button', { name: /delete/i }).click();
     await expect(this.page.getByTestId('companies-delete-modal')).toBeVisible();
@@ -41,6 +50,8 @@ export class CompaniesListPage extends BasePage {
   }
 
   async selectRow(name: string) {
+    // Search for the company first to handle pagination
+    await this.searchCompany(name);
     const row = await this.getRowByName(name);
     await row.locator('input[type="checkbox"]').check();
   }

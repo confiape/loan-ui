@@ -81,10 +81,10 @@ For a **practical guide** on creating a CRUD, see [CRUD-GUIDE.md](./CRUD-GUIDE.m
 ```typescript
 export interface ICrudService<TDto extends { id: string }, TSaveDto = TDto> {
   // STATE (signals)
-  items: Signal<TDto[]>;              // List of items
-  loading: Signal<boolean>;           // Loading state
-  showModal: Signal<boolean>;         // Modal visibility
-  editingItem: Signal<TDto | null>;   // Current item being edited
+  items: Signal<TDto[]>; // List of items
+  loading: Signal<boolean>; // Loading state
+  showModal: Signal<boolean>; // Modal visibility
+  editingItem: Signal<TDto | null>; // Current item being edited
 
   // DATA OPERATIONS (observables)
   loadAllItems(): Observable<TDto[]>;
@@ -103,6 +103,7 @@ export interface ICrudService<TDto extends { id: string }, TSaveDto = TDto> {
 ```
 
 **Key Design**: Separation between:
+
 - **State** (signals) - reactive, synchronous
 - **Operations** (observables) - async, side effects
 - **Metadata** (arrays) - configuration
@@ -118,6 +119,7 @@ export interface ICrudService<TDto extends { id: string }, TSaveDto = TDto> {
 #### Responsibilities:
 
 1. **State Management**:
+
 ```typescript
 protected _items = signal<TDto[]>([]);
 protected _loading = signal(false);
@@ -130,6 +132,7 @@ public loading = this._loading.asReadonly();
 ```
 
 2. **CRUD Lifecycle**:
+
 ```typescript
 // Load all items
 loadAllItems(): Observable<TDto[]> {
@@ -156,6 +159,7 @@ saveItem(dto: TSaveDto): Observable<TDto> {
 ```
 
 3. **Router Integration**:
+
 ```typescript
 onEditItem(item: TDto): void {
   if (this.enableRouterNavigation) {
@@ -184,6 +188,7 @@ protected onAfterFormCancel(): void {} // Override to navigate after cancel
 #### Key Features:
 
 1. **Table Rendering**:
+
 ```typescript
 <app-table
   [columns]="tableColumns()"
@@ -194,6 +199,7 @@ protected onAfterFormCancel(): void {} // Override to navigate after cancel
 ```
 
 2. **Toolbar Integration**:
+
 ```typescript
 <app-table-toolbar
   [totalItems]="service().items().length"
@@ -204,6 +210,7 @@ protected onAfterFormCancel(): void {} // Override to navigate after cancel
 ```
 
 3. **Modal Management**:
+
 ```typescript
 @if (service().showModal()) {
   <app-modal [title]="modalTitle()" (close)="onCloseModal()">
@@ -217,6 +224,7 @@ protected onAfterFormCancel(): void {} // Override to navigate after cancel
 ```
 
 4. **Route-based Modal Opening**:
+
 ```typescript
 constructor() {
   effect(() => {
@@ -244,6 +252,7 @@ constructor() {
 #### Key Features:
 
 1. **Dynamic Form Building**:
+
 ```typescript
 private buildForm(): void {
   const group: Record<string, any> = {};
@@ -264,6 +273,7 @@ private buildForm(): void {
 ```
 
 2. **Value Transformers**:
+
 ```typescript
 constructor() {
   effect(() => {
@@ -286,6 +296,7 @@ constructor() {
 ```
 
 3. **Dynamic Options Loading**:
+
 ```typescript
 private loadAllOptions(): void {
   const fieldsWithOptions = this.fields().filter(
@@ -308,6 +319,7 @@ private loadAllOptions(): void {
 4. **Field Type Rendering**:
 
 The component supports 8+ field types:
+
 - `text`, `email`, `password`, `number` → `<input>`
 - `textarea` → `<textarea>`
 - `date` → `<input type="date">`
@@ -439,6 +451,7 @@ public editingItem = this._editingItem.asReadonly();
 ```
 
 **Benefits**:
+
 - ✅ No need for manual change detection
 - ✅ Fine-grained updates (only affected components re-render)
 - ✅ Predictable state changes
@@ -447,6 +460,7 @@ public editingItem = this._editingItem.asReadonly();
 ### No NgRx/Redux Needed
 
 This system deliberately avoids state management libraries because:
+
 1. State is **local to the feature** (not global)
 2. State is **simple** (list + modal state)
 3. Signals provide **sufficient reactivity**
@@ -460,16 +474,17 @@ This system deliberately avoids state management libraries because:
 
 ```typescript
 interface TableColumnMetadata<T> {
-  key: keyof T | string;        // Property key or custom identifier
-  label: string;                 // Column header
-  sortable?: boolean;            // Enable sorting
+  key: keyof T | string; // Property key or custom identifier
+  label: string; // Column header
+  sortable?: boolean; // Enable sorting
   customTemplate?: TemplateRef<any>; // Custom cell rendering
   formatter?: (value: any) => string; // Value formatting
-  width?: string;                // Column width (CSS)
+  width?: string; // Column width (CSS)
 }
 ```
 
 **Example**:
+
 ```typescript
 getTableColumns(): TableColumnMetadata<RoleDto>[] {
   return [
@@ -488,12 +503,12 @@ getTableColumns(): TableColumnMetadata<RoleDto>[] {
 
 ```typescript
 interface FormFieldMetadata {
-  key: string;                          // Form control name
-  label: string;                        // Field label
-  type: FormFieldType;                  // Field type
-  validators?: ValidatorFn[];           // Sync validators
+  key: string; // Form control name
+  label: string; // Field label
+  type: FormFieldType; // Field type
+  validators?: ValidatorFn[]; // Sync validators
   asyncValidators?: AsyncValidatorFn[]; // Async validators
-  options?: SelectOption[];             // Static options
+  options?: SelectOption[]; // Static options
   loadOptions?: () => Observable<SelectOption[]>; // Dynamic options
   valueTransformer?: (item: any) => any; // DTO → Form value
   placeholder?: string;
@@ -504,6 +519,7 @@ interface FormFieldMetadata {
 ```
 
 **Example**:
+
 ```typescript
 getFormFields(): FormFieldMetadata[] {
   return [
@@ -545,11 +561,13 @@ getFormFields(): FormFieldMetadata[] {
 The system uses router navigation to control modals:
 
 **URLs**:
+
 - `/companies` → List view, modal closed
 - `/companies/new` → List view, modal open (new item)
 - `/companies/123` → List view, modal open (edit item 123)
 
 **Benefits**:
+
 1. ✅ **Shareable URLs**: Users can share direct links to edit forms
 2. ✅ **Browser navigation**: Back/forward buttons work
 3. ✅ **Bookmarkable**: Can bookmark edit pages
@@ -558,6 +576,7 @@ The system uses router navigation to control modals:
 ### How It Works
 
 1. **Opening Modal via Router**:
+
 ```typescript
 onEditItem(item: TDto): void {
   if (this.enableRouterNavigation) {
@@ -567,6 +586,7 @@ onEditItem(item: TDto): void {
 ```
 
 2. **Effect Watches Route Params**:
+
 ```typescript
 private currentRouteId = signal<string | null>(null);
 
@@ -590,6 +610,7 @@ constructor() {
 ```
 
 3. **Closing Modal Navigates Back**:
+
 ```typescript
 onCloseModal(): void {
   this.service().closeModal();
@@ -609,7 +630,7 @@ onCloseModal(): void {
 export function uniqueValueValidator(
   checkFn: (value: string) => Observable<boolean>,
   currentValue?: string | null,
-  debounceMs = 500
+  debounceMs = 500,
 ): AsyncValidatorFn {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {
     if (!control.value || control.value === currentValue) {
@@ -617,17 +638,18 @@ export function uniqueValueValidator(
     }
 
     return of(control.value).pipe(
-      debounceTime(debounceMs),        // Wait 500ms after typing stops
-      switchMap(value => checkFn(value)), // Check if unique
-      map(isUnique => isUnique ? null : { notUnique: true }),
-      catchError(() => of(null)),      // Don't block on error
-      first()
+      debounceTime(debounceMs), // Wait 500ms after typing stops
+      switchMap((value) => checkFn(value)), // Check if unique
+      map((isUnique) => (isUnique ? null : { notUnique: true })),
+      catchError(() => of(null)), // Don't block on error
+      first(),
     );
   };
 }
 ```
 
 **Usage**:
+
 ```typescript
 {
   key: 'name',
@@ -656,6 +678,7 @@ Transform complex DTO values to form-compatible values:
 ```
 
 **Reverse transform on save**:
+
 ```typescript
 saveItem(dto: SaveRoleDto): Observable<RoleDto> {
   // Form value: { permissionsId: ['READ', 'WRITE'] }
@@ -697,15 +720,12 @@ public loadingOptions = this._loadingOptions.asReadonly();
 
 ```html
 <!-- In template -->
-<app-multiselect
-  [items]="options"
-  [disabled]="loadingOptions()"
-/>
+<app-multiselect [items]="options" [disabled]="loadingOptions()" />
 @if (loadingOptions()) {
-  <p class="text-blue-600">
-    <svg class="animate-spin">...</svg>
-    Loading options...
-  </p>
+<p class="text-blue-600">
+  <svg class="animate-spin">...</svg>
+  Loading options...
+</p>
 }
 ```
 
@@ -718,6 +738,7 @@ public loadingOptions = this._loadingOptions.asReadonly();
 **Decision**: Use signals for state, observables for operations.
 
 **Rationale**:
+
 - Signals are **synchronous** and perfect for UI state
 - Observables are **asynchronous** and perfect for HTTP calls
 - Mixing both gives best of both worlds
@@ -739,6 +760,7 @@ loadAllItems(): Observable<TDto[]> {
 **Decision**: Use `getFormFields()` and `getTableColumns()` instead of component inputs.
 
 **Alternative (rejected)**:
+
 ```typescript
 // ❌ Too verbose
 <app-generic-crud-form
@@ -749,6 +771,7 @@ loadAllItems(): Observable<TDto[]> {
 ```
 
 **Chosen approach**:
+
 ```typescript
 // ✅ Clean and scalable
 getFormFields(): FormFieldMetadata[] {
@@ -765,6 +788,7 @@ getFormFields(): FormFieldMetadata[] {
 **Decision**: Use `BaseCrudService` abstract class.
 
 **Alternative (rejected)**:
+
 ```typescript
 // ❌ Too much boilerplate per CRUD
 class CompaniesListService implements ICrudService {
@@ -776,6 +800,7 @@ class CompaniesListService implements ICrudService {
 ```
 
 **Chosen approach**:
+
 ```typescript
 // ✅ Only implement what's unique
 class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompanyDto> {
@@ -791,6 +816,7 @@ class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompanyDto> {
 **Decision**: Separate `GenericCrudListComponent` and `GenericCrudFormComponent`.
 
 **Rationale**:
+
 - Forms can be reused standalone (e.g., in wizards)
 - Tables can be reused without forms
 - Easier to test in isolation
@@ -801,6 +827,7 @@ class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompanyDto> {
 **Decision**: Use `any` for `valueTransformer` and some metadata properties.
 
 **Alternative (rejected)**:
+
 ```typescript
 // ❌ Too complex, doesn't add real value
 interface FormFieldMetadata<TDto, TFormValue> {
@@ -809,12 +836,14 @@ interface FormFieldMetadata<TDto, TFormValue> {
 ```
 
 **Rationale**:
+
 - This is a **generic** system working with **any** DTO
 - The `any` types are **encapsulated** in the generic layer
 - Concrete services (Companies, Roles) are **type-safe**
 - Runtime behavior is safe (Angular forms handle validation)
 
 **Mitigation**:
+
 ```typescript
 // Concrete service is type-safe
 class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompanyDto> {
@@ -822,8 +851,8 @@ class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompanyDto> {
     return [
       {
         key: 'name',
-        valueTransformer: (company: CompanyDto) => company.name // Type-safe here
-      }
+        valueTransformer: (company: CompanyDto) => company.name, // Type-safe here
+      },
     ];
   }
 }
@@ -835,17 +864,18 @@ class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompanyDto> {
 
 ### Current Performance Characteristics
 
-| Aspect | Performance | Notes |
-|--------|-------------|-------|
-| **Initial Load** | ✅ Good | Single API call, signals update efficiently |
-| **Form Rendering** | ✅ Good | Built once, signals track changes |
-| **Table Rendering** | ⚠️ OK | Fine for < 1000 rows, consider virtual scroll for more |
-| **Options Loading** | ✅ Good | Loaded once per form open, cached in signal |
-| **Async Validation** | ✅ Good | Debounced 500ms, prevents excessive calls |
+| Aspect               | Performance | Notes                                                  |
+| -------------------- | ----------- | ------------------------------------------------------ |
+| **Initial Load**     | ✅ Good     | Single API call, signals update efficiently            |
+| **Form Rendering**   | ✅ Good     | Built once, signals track changes                      |
+| **Table Rendering**  | ⚠️ OK       | Fine for < 1000 rows, consider virtual scroll for more |
+| **Options Loading**  | ✅ Good     | Loaded once per form open, cached in signal            |
+| **Async Validation** | ✅ Good     | Debounced 500ms, prevents excessive calls              |
 
 ### Optimization Strategies (if needed)
 
 1. **For Large Tables (> 1000 rows)**:
+
 ```typescript
 // Add virtual scrolling
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -858,6 +888,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 ```
 
 2. **For Expensive Validations**:
+
 ```typescript
 // Cache validation results
 private validationCache = new Map<string, boolean>();
@@ -874,6 +905,7 @@ isNameAvailable(name: string): Observable<boolean> {
 ```
 
 3. **For Frequently Accessed Options**:
+
 ```typescript
 // Use shareReplay for options that don't change
 private industries$ = this.api.getIndustries().pipe(
@@ -925,14 +957,14 @@ describe('GenericCrudFormComponent', () => {
 ```typescript
 describe('CompaniesListService', () => {
   it('should load companies', () => {
-    service.loadAllItems().subscribe(items => {
+    service.loadAllItems().subscribe((items) => {
       expect(items.length).toBeGreaterThan(0);
     });
   });
 
   it('should save company', () => {
     const dto: SaveCompanyDto = { name: 'Test Corp' };
-    service.saveItem(dto).subscribe(saved => {
+    service.saveItem(dto).subscribe((saved) => {
       expect(saved.name).toBe('Test Corp');
     });
   });
@@ -960,23 +992,30 @@ test('should create new company', async ({ page }) => {
 ### Adding New Field Types
 
 1. Update `FormFieldType`:
+
 ```typescript
 export type FormFieldType =
-  | 'text' | 'email' | 'password' | 'number'
-  | 'textarea' | 'date' | 'checkbox' | 'radio'
-  | 'select' | 'multiselect'
-  | 'file' | 'color' | 'range'; // New types
+  | 'text'
+  | 'email'
+  | 'password'
+  | 'number'
+  | 'textarea'
+  | 'date'
+  | 'checkbox'
+  | 'radio'
+  | 'select'
+  | 'multiselect'
+  | 'file'
+  | 'color'
+  | 'range'; // New types
 ```
 
 2. Add template in `generic-crud-form.html`:
+
 ```html
 @if (field.type === 'file') {
-  <label class="form-label">{{ field.label }}</label>
-  <input
-    type="file"
-    [formControlName]="field.key"
-    class="form-input"
-  />
+<label class="form-label">{{ field.label }}</label>
+<input type="file" [formControlName]="field.key" class="form-input" />
 }
 ```
 
@@ -995,6 +1034,7 @@ export function phoneValidator(): ValidatorFn {
 ```
 
 Use in metadata:
+
 ```typescript
 {
   key: 'phone',
@@ -1011,11 +1051,11 @@ Create an HTTP interceptor:
 export class CrudErrorInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     return next.handle(req).pipe(
-      catchError(error => {
+      catchError((error) => {
         // Show toast notification
         this.toastService.error(error.message);
         return throwError(() => error);
-      })
+      }),
     );
   }
 }
@@ -1030,6 +1070,7 @@ export class CrudErrorInterceptor implements HttpInterceptor {
 **Important**: All validations (sync and async) are **user experience** features, not security.
 
 **Always validate on the server**:
+
 ```csharp
 // Backend (C#)
 public async Task<RoleDto> SaveRole(SaveRoleDto dto) {
@@ -1048,12 +1089,13 @@ Ensure your API uses CSRF tokens or same-site cookies:
 
 ```typescript
 // OpenAPI service includes Authorization header
-headers: localVarHeaders.set('Authorization', 'Bearer ' + token)
+headers: localVarHeaders.set('Authorization', 'Bearer ' + token);
 ```
 
 ### Input Sanitization
 
 Angular automatically sanitizes HTML, but be careful with:
+
 - Dynamic templates
 - `innerHTML` bindings
 - File uploads
@@ -1063,6 +1105,7 @@ Angular automatically sanitizes HTML, but be careful with:
 ## Conclusion
 
 This architecture provides:
+
 - ✅ **Minimal boilerplate**: 10 lines per CRUD
 - ✅ **Type safety**: Generics ensure correctness
 - ✅ **Flexibility**: Metadata-driven forms adapt to any entity

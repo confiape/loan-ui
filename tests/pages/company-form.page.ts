@@ -58,14 +58,18 @@ export class CompanyFormPage extends BasePage {
   async expectValidationError(message: string | RegExp) {
     // Validation errors appear as siblings to the input, not with a specific testId
     const input = this.page.getByTestId('companies-input-name');
-    const errorMessage = input.locator('xpath=following-sibling::p[contains(@class, "text-red")]').first();
+    const errorMessage = input
+      .locator('xpath=following-sibling::p[contains(@class, "text-red")]')
+      .first();
     await expect(errorMessage).toBeVisible();
     await expect(errorMessage).toContainText(message);
   }
 
   async expectNoValidationError() {
     const input = this.page.getByTestId('companies-input-name');
-    const errorMessage = input.locator('xpath=following-sibling::p[contains(@class, "text-red")]').first();
+    const errorMessage = input
+      .locator('xpath=following-sibling::p[contains(@class, "text-red")]')
+      .first();
     await expect(errorMessage).not.toBeVisible();
   }
 

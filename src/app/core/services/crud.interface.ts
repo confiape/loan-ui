@@ -86,6 +86,11 @@ export interface ICrudService<TDto extends { id: string }, TSaveDto = TDto> {
   hasSelection: Signal<boolean>;
 
   /**
+   * Get the full items that are currently selected
+   */
+  selectedItemsData: Signal<TDto[]>;
+
+  /**
    * Delete confirmation message
    */
   deleteMessage: Signal<string>;
@@ -207,6 +212,16 @@ export interface ICrudService<TDto extends { id: string }, TSaveDto = TDto> {
    * Select all or deselect all
    */
   onSelectAll(selectAll: boolean): void;
+
+  /**
+   * Remove a specific item from selection
+   */
+  removeFromSelection(id: string): void;
+
+  /**
+   * Clear all selections
+   */
+  clearSelection(): void;
 
   /**
    * Change page (if pagination is enabled)

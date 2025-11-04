@@ -144,12 +144,12 @@
 
         <!-- Radio buttons -->
         @if (field.type === 'radio') {
-          <label class="form-label">
+          <div class="form-label">
             {{ field.label }}
             @if (isFieldRequired(field.key)) {
               <span class="text-red-500">*</span>
             }
-          </label>
+          </div>
           <div class="space-y-2">
             @for (option of getOptions(field.key); track option.value) {
               <div class="flex items-center">
@@ -244,12 +244,12 @@
 
         <!-- MultiSelect -->
         @if (field.type === 'multiselect') {
-          <label class="form-label">
+          <div class="form-label">
             {{ field.label }}
             @if (isFieldRequired(field.key)) {
               <span class="text-red-500">*</span>
             }
-          </label>
+          </div>
           <app-multiselect
             [items]="toMultiSelectItems(getOptions(field.key))"
             [formControlName]="field.key"

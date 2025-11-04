@@ -36,20 +36,22 @@ export class GenericCrudFormComponent implements OnInit {
   private fb = inject(FormBuilder);
 
   // Inputs
-  item = input<any | null>(null);
+  item = input<Record<string, unknown> | null>(null);
   fields = input.required<FormFieldMetadata[]>();
   loading = input<boolean>(false);
   error = input<string | null>(null);
   testIdPrefix = input<string>('crud');
 
   // Outputs
-  save = output<any>();
-  cancel = output<void>();
+  formSubmit = output<unknown>();
+  formCancel = output<void>();
 
   // State
   form!: FormGroup;
   optionsMap = signal<Map<string, SelectOption[]>>(new Map());
   loadingOptions = signal<boolean>(false);
+
+  private lastItemId: string | null = null;
 
   constructor() {
     // Update form when item changes - must be in constructor for injection context
@@ -57,9 +59,15 @@ export class GenericCrudFormComponent implements OnInit {
       const currentItem = this.item();
       if (!this.form) return; // Guard against form not being initialized yet
 
+      // Only update if item actually changed (by ID)
+      const currentId = currentItem?.['id'] as string | undefined;
+      const itemId = currentId || null;
+      if (itemId === this.lastItemId) return;
+      this.lastItemId = itemId;
+
       if (currentItem) {
         // Transform values using valueTransformer if provided
-        const transformedValues: any = {};
+        const transformedValues: Record<string, unknown> = {};
         this.fields().forEach((field) => {
           if (field.valueTransformer) {
             transformedValues[field.key] = field.valueTransformer(currentItem);
@@ -88,7 +96,7 @@ export class GenericCrudFormComponent implements OnInit {
    * Build reactive form based on field metadata
    */
   private buildForm(): void {
-    const group: { [key: string]: any } = {};
+    const group: Record<string, unknown> = {};
 
     this.fields().forEach((field) => {
       const defaultValue = field.defaultValue ?? this.getDefaultValueForType(field.type);
@@ -169,7 +177,7 @@ export class GenericCrudFormComponent implements OnInit {
   /**
    * Get default value based on field type
    */
-  private getDefaultValueForType(type: string): any {
+  private getDefaultValueForType(type: string): unknown {
     switch (type) {
       case 'checkbox':
         return false;
@@ -197,7 +205,7 @@ export class GenericCrudFormComponent implements OnInit {
     // Merge with existing item if editing
     const dto = currentItem ? { ...currentItem, ...formValue } : formValue;
 
-    this.save.emit(dto);
+    this.formSubmit.emit(dto);
   }
 
   /**
@@ -205,7 +213,7 @@ export class GenericCrudFormComponent implements OnInit {
    */
   onCancel(): void {
     this.form.reset();
-    this.cancel.emit();
+    this.formCancel.emit();
   }
 
   /**

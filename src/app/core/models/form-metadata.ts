@@ -21,7 +21,7 @@ export type FormFieldType =
  */
 export interface SelectOption {
   label: string;
-  value: any;
+  value: unknown;
   disabled?: boolean;
 }
 
@@ -62,7 +62,7 @@ export interface FormFieldMetadata {
   /**
    * Initial/default value
    */
-  defaultValue?: any;
+  defaultValue?: unknown;
 
   /**
    * For select/multiselect/radio: static options
@@ -97,7 +97,7 @@ export interface FormFieldMetadata {
   /**
    * Custom attributes for the input element
    */
-  attributes?: Record<string, any>;
+  attributes?: Record<string, unknown>;
 
   /**
    * Transform value from item to form value
@@ -105,13 +105,14 @@ export interface FormFieldMetadata {
    * @example
    * valueTransformer: (item) => item.permissions?.map(p => p.name) || []
    */
-  valueTransformer?: (item: any) => any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  valueTransformer?: (item: any) => unknown;
 }
 
 /**
  * Table column configuration
  */
-export interface TableColumnMetadata<T = any> {
+export interface TableColumnMetadata<T = Record<string, unknown>> {
   /**
    * Column key (property name in DTO)
    */
@@ -133,14 +134,14 @@ export interface TableColumnMetadata<T = any> {
    * @example
    * valueGetter: (role) => role.permissions?.length || 0
    */
-  valueGetter?: (item: T) => any;
+  valueGetter?: (item: T) => unknown;
 
   /**
    * Custom function to format value for display
    * @example
    * formatter: (value) => value ? 'Yes' : 'No'
    */
-  formatter?: (value: any) => string;
+  formatter?: (value: unknown) => string;
 
   /**
    * CSS class for column cells

@@ -82,11 +82,11 @@ Reusable form component that:
 
 ```typescript
 interface TableColumnMetadata<T> {
-  key: string;                          // Property name
-  label: string;                        // Column header
-  sortable?: boolean;                   // Enable sorting
-  valueGetter?: (item: T) => any;       // Custom value extraction
-  formatter?: (value: any) => string;   // Custom formatting
+  key: string; // Property name
+  label: string; // Column header
+  sortable?: boolean; // Enable sorting
+  valueGetter?: (item: T) => any; // Custom value extraction
+  formatter?: (value: any) => string; // Custom formatting
 }
 ```
 
@@ -94,16 +94,16 @@ interface TableColumnMetadata<T> {
 
 ```typescript
 interface FormFieldMetadata {
-  key: string;                          // Field name
-  label: string;                        // Field label
-  type: FormFieldType;                  // Field type (text, select, etc.)
-  validators?: ValidatorFn[];           // Angular sync validators
+  key: string; // Field name
+  label: string; // Field label
+  type: FormFieldType; // Field type (text, select, etc.)
+  validators?: ValidatorFn[]; // Angular sync validators
   asyncValidators?: AsyncValidatorFn[]; // Angular async validators (e.g., uniqueness)
-  options?: SelectOption[];             // Static options
+  options?: SelectOption[]; // Static options
   loadOptions?: () => Observable<SelectOption[]>; // Dynamic options
   valueTransformer?: (item: any) => any; // Transform DTO to form value
-  helpText?: string;                    // Help text
-  placeholder?: string;                 // Placeholder
+  helpText?: string; // Help text
+  placeholder?: string; // Placeholder
 }
 ```
 
@@ -144,8 +144,7 @@ export class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompan
   }
 
   matchesSearch(item: CompanyDto, term: string): boolean {
-    return item.name.toLowerCase().includes(term) ||
-           item.id.toLowerCase().includes(term);
+    return item.name.toLowerCase().includes(term) || item.id.toLowerCase().includes(term);
   }
 
   // Provide table metadata
@@ -175,10 +174,18 @@ export class CompaniesListService extends BaseCrudService<CompanyDto, SaveCompan
     ];
   }
 
-  getItemTypeName(): string { return 'company'; }
-  getItemTypePluralName(): string { return 'companies'; }
-  getItemDisplayName(item: CompanyDto): string { return item.name; }
-  getRouteBasePath(): string { return '/companies'; }
+  getItemTypeName(): string {
+    return 'company';
+  }
+  getItemTypePluralName(): string {
+    return 'companies';
+  }
+  getItemDisplayName(item: CompanyDto): string {
+    return item.name;
+  }
+  getRouteBasePath(): string {
+    return '/companies';
+  }
 
   // Router navigation hooks
   protected override onEditWithRouter(item: CompanyDto): void {
@@ -281,6 +288,7 @@ That's it! The component is just 10 lines of code. All functionality (table, too
 ### Before (Manual Implementation)
 
 **CompaniesListComponent** (100+ lines):
+
 - Manual table definition
 - Manual toolbar configuration
 - Manual modal management
@@ -291,6 +299,7 @@ That's it! The component is just 10 lines of code. All functionality (table, too
 ### After (Generic Implementation)
 
 **CompaniesListV2Component** (10 lines):
+
 ```typescript
 @Component({
   selector: 'app-companies-list-v2',
@@ -348,6 +357,7 @@ isNameAvailable(name: string): Observable<boolean> {
 ```
 
 The validator:
+
 - Debounces input to avoid excessive checks
 - Skips validation for empty values (let `required` validator handle that)
 - Excludes current value when editing
@@ -424,6 +434,7 @@ The system is production-ready for simple CRUDs and can be enhanced to support m
 See `src/app/features/companies/companies-list-v2/` for a working example with a simple entity.
 
 **Features demonstrated:**
+
 - Single text field
 - Basic validation
 - Router navigation
@@ -434,6 +445,7 @@ See `src/app/features/companies/companies-list-v2/` for a working example with a
 See `src/app/features/roles/roles-list-v2/` for a working example with a complex entity.
 
 **Features demonstrated:**
+
 - Text field with validation
 - MultiSelect with dynamic options (permissions)
 - MultiSelect with dynamic options (parent roles)
