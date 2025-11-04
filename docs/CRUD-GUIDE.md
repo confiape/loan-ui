@@ -1,401 +1,678 @@
-# CRUD Pattern Guide
+# CRUD Guide - Quick Start
 
-Basado en `features/companies/`. Copiar y reemplazar `Entity` por tu entidad.
+Guía práctica para crear un CRUD completo en **3 pasos**. Para entender la arquitectura técnica, ver [CRUD-ARCHITECTURE.md](./CRUD-ARCHITECTURE.md).
 
-## Estructura
+---
 
+## TL;DR
+
+```bash
+# 1. Crear servicio (100 líneas)
+# 2. Crear componente (10 líneas)
+# 3. Agregar ruta (3 líneas)
+# Total: ~15 minutos
 ```
-features/{entity}/
-├── {entity}-list/
-│   ├── {entity}-list.ts
-│   └── {entity}-list.html
-└── {entity}-form/
-    ├── {entity}-form.ts
-    └── {entity}-form.html
-```
 
-## Routing
+---
+
+## Prerequisitos
+
+- DTOs generados en `src/app/core/openapi/model/`
+- API service generado en `src/app/core/openapi/api/`
+
+---
+
+## Paso 1: Crear el Servicio
+
+**Archivo**: `src/app/features/{entity}/{entity}-list/{entity}-list.service.ts`
+
+### Template Básico
 
 ```typescript
-// app.routes.ts
+import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Validators } from '@angular/forms';
+import { BaseCrudService } from '../../../core/services/base-crud.service';
+import { EntityApiService } from '../../../core/openapi/api/entity.service';
+import { EntityDto, SaveEntityDto } from '../../../core/openapi/model/models';
+import { TableColumnMetadata, FormFieldMetadata } from '../../../core/models/form-metadata';
+
+@Injectable()
+export class EntityListService extends BaseCrudService<EntityDto, SaveEntityDto> {
+  private entityApi = inject(EntityApiService);
+  protected router = inject(Router);
+  protected enableRouterNavigation = true;
+
+  // 1. CARGAR DATOS
+  protected fetchAllItems(): Observable<EntityDto[]> {
+    return this.entityApi.getAll();
+  }
+
+  // 2. GUARDAR (crear o actualizar)
+  protected performSave(dto: SaveEntityDto): Observable<EntityDto> {
+    return this.entityApi.save(dto);
+  }
+
+  // 3. ELIMINAR
+  protected performDelete(id: string): Observable<unknown> {
+    return this.entityApi.delete(id);
+  }
+
+  // 4. COLUMNAS DE LA TABLA
+  getTableColumns(): TableColumnMetadata<EntityDto>[] {
+    return [
+      { key: 'name', label: 'Name', sortable: true },
+      { key: 'email', label: 'Email', sortable: true },
+      { key: 'id', label: 'ID', sortable: true },
+    ];
+  }
+
+  // 5. CAMPOS DEL FORMULARIO
+  getFormFields(): FormFieldMetadata[] {
+    return [
+      {
+        key: 'name',
+        label: 'Name',
+        type: 'text',
+        validators: [Validators.required, Validators.minLength(2)],
+        placeholder: 'Enter name',
+      },
+      {
+        key: 'email',
+        label: 'Email',
+        type: 'email',
+        validators: [Validators.required, Validators.email],
+        placeholder: 'name@example.com',
+      },
+    ];
+  }
+
+  // 6. RUTA BASE
+  getRouteBasePath(): string {
+    return '/entities';
+  }
+
+  // 7. HOOKS (opcional)
+  protected override onAfterFormSave(): void {
+    this.router.navigate(['/entities']);
+  }
+
+  protected override onAfterFormCancel(): void {
+    this.router.navigate(['/entities']);
+  }
+}
+```
+
+---
+
+## Paso 2: Crear el Componente
+
+**Archivo**: `src/app/features/{entity}/{entity}-list-v2/{entity}-list-v2.ts`
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { GenericCrudListComponent } from '../../../components/generic-crud';
+import { EntityListService } from '../entity-list/entity-list.service';
+
+@Component({
+  selector: 'app-entity-list-v2',
+  standalone: true,
+  imports: [GenericCrudListComponent],
+  providers: [EntityListService],
+  template: `<app-generic-crud-list [service]="service" />`,
+})
+export class EntityListV2Component {
+  service = inject(EntityListService);
+}
+```
+
+**¡Eso es todo! 10 líneas.**
+
+---
+
+## Paso 3: Agregar Ruta
+
+**Archivo**: `src/app/app.routes.ts`
+
+```typescript
+import { EntityListV2Component } from './features/entities/entity-list-v2/entity-list-v2';
+
+export const routes: Routes = [
+  // ... otras rutas
+  {
+    path: 'entities',
+    children: [
+      { path: '', component: EntityListV2Component },
+      { path: ':id', component: EntityListV2Component }, // Para edit modal
+    ],
+  },
+];
+```
+
+---
+
+## ✅ ¡Listo!
+
+Navega a `/entities` y verás:
+
+- ✅ Tabla con datos
+- ✅ Búsqueda y filtros
+- ✅ Botón "New Entity"
+- ✅ Botones Edit/Delete por fila
+- ✅ Modal para crear/editar
+- ✅ Validaciones
+- ✅ Loading states
+
+---
+
+## Tipos de Campos Disponibles
+
+### Campos de Texto
+
+```typescript
+{ key: 'name', label: 'Name', type: 'text' }
+{ key: 'email', label: 'Email', type: 'email' }
+{ key: 'password', label: 'Password', type: 'password' }
+{ key: 'age', label: 'Age', type: 'number' }
+{ key: 'bio', label: 'Bio', type: 'textarea' }
+```
+
+### Campos de Selección
+
+```typescript
+// Select simple con opciones estáticas
 {
-  path: '{entity}',
-  children: [
-    { path: '', component: EntityListComponent },
-    { path: ':id', component: EntityListComponent }, // Modal edit
+  key: 'status',
+  label: 'Status',
+  type: 'select',
+  options: [
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' },
+  ],
+}
+
+// Select con opciones dinámicas (API)
+{
+  key: 'companyId',
+  label: 'Company',
+  type: 'select',
+  loadOptions: () => this.companyApi.getAll().pipe(
+    map(companies => companies.map(c => ({
+      label: c.name,
+      value: c.id
+    })))
+  ),
+}
+
+// MultiSelect
+{
+  key: 'tagsId',
+  label: 'Tags',
+  type: 'multiselect',
+  loadOptions: () => this.tagApi.getAll().pipe(
+    map(tags => tags.map(t => ({ label: t.name, value: t.id })))
+  ),
+}
+```
+
+### Otros Campos
+
+```typescript
+{ key: 'birthDate', label: 'Birth Date', type: 'date' }
+{ key: 'isActive', label: 'Active', type: 'checkbox' }
+{
+  key: 'gender',
+  label: 'Gender',
+  type: 'radio',
+  options: [
+    { label: 'Male', value: 'M' },
+    { label: 'Female', value: 'F' },
   ],
 }
 ```
 
-## List Component
+---
+
+## Validaciones
+
+### Validaciones Síncronas
 
 ```typescript
-// {entity}-list.ts
-import { Component, signal, computed } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { TableToolbarComponent, TableComponent, ModalComponent } from '@ui';
-import { EntityApiService } from '@core/openapi';
-import { forkJoin } from 'rxjs';
+import { Validators } from '@angular/forms';
 
-export class EntityListComponent {
-  // State
-  allEntities = signal<EntityDto[]>([]);
-  loading = signal(false);
-  showModal = signal(false);
-  editingEntity = signal<EntityDto | null>(null);
-  showDeleteConfirm = signal(false);
-  deletingEntity = signal<EntityDto | null>(null);
-  searchTerm = signal('');
-  selectedEntities = signal<Set<string>>(new Set());
+{
+  key: 'name',
+  validators: [
+    Validators.required,           // Requerido
+    Validators.minLength(2),       // Mínimo 2 caracteres
+    Validators.maxLength(100),     // Máximo 100 caracteres
+    Validators.email,              // Email válido
+    Validators.pattern(/^[A-Z]/),  // Regex personalizado
+    Validators.min(18),            // Valor mínimo
+    Validators.max(120),           // Valor máximo
+  ],
+}
+```
 
-  // Computed
-  filteredEntities = computed(() => {
-    const term = this.searchTerm().toLowerCase();
-    return this.allEntities().filter(
-      (e) => e.name.toLowerCase().includes(term) || e.id.includes(term),
-    );
-  });
-  hasSelection = computed(() => this.selectedEntities().size > 0);
+### Validaciones Asíncronas (Unicidad)
 
-  // Table config
-  columns = [
-    { key: 'name', label: 'Name', sortable: true },
+```typescript
+import { uniqueValueValidator } from '../../../core/validators/async-validators';
+
+// En el servicio, agregar método:
+isNameAvailable(name: string): Observable<boolean> {
+  const exists = this.items().some(
+    item => item.name.toLowerCase() === name.toLowerCase() &&
+            item.id !== this.editingItem()?.id
+  );
+  return of(!exists);
+}
+
+// En getFormFields():
+{
+  key: 'name',
+  label: 'Name',
+  type: 'text',
+  validators: [Validators.required],
+  asyncValidators: [
+    uniqueValueValidator(
+      (name) => this.isNameAvailable(name),
+      this.editingItem()?.name  // Excluir nombre actual al editar
+    )
+  ],
+  helpText: 'Must be unique',
+}
+```
+
+---
+
+## Value Transformers
+
+Para campos complejos que necesitan transformación DTO → Form:
+
+```typescript
+// Ejemplo: RoleDto tiene permissions: PermissionDto[]
+// Pero el form necesita permissionsId: string[]
+
+{
+  key: 'permissionsId',
+  label: 'Permissions',
+  type: 'multiselect',
+  loadOptions: () => this.permissionApi.getAll().pipe(
+    map(permissions => permissions.map(p => ({
+      label: p.name,
+      value: p.name
+    })))
+  ),
+  valueTransformer: (role: RoleDto) => {
+    // Transforma PermissionDto[] a string[]
+    return role.permissions?.map(p => p.name) || [];
+  },
+}
+
+// Al guardar, transforma de vuelta en performSave():
+protected performSave(dto: SaveRoleDto): Observable<RoleDto> {
+  // dto.permissionsId = ['READ', 'WRITE']
+  // API espera: { permissions: ['READ', 'WRITE'] }
+  return this.roleApi.save(dto);
+}
+```
+
+---
+
+## Columnas Personalizadas
+
+### Columna Simple
+
+```typescript
+{ key: 'name', label: 'Name', sortable: true }
+```
+
+### Columna con Formato
+
+```typescript
+{
+  key: 'createdAt',
+  label: 'Created',
+  formatter: (item: EntityDto) => {
+    return new Date(item.createdAt).toLocaleDateString();
+  }
+}
+```
+
+### Columna Computada
+
+```typescript
+{
+  key: 'permissionsCount',
+  label: 'Permissions',
+  formatter: (role: RoleDto) => {
+    return role.permissions?.length.toString() || '0';
+  }
+}
+```
+
+### Columna con Ancho
+
+```typescript
+{ key: 'id', label: 'ID', width: '100px' }
+```
+
+---
+
+## Ejemplos Reales
+
+### CRUD Simple: Companies
+
+```typescript
+// companies-list.service.ts
+getFormFields(): FormFieldMetadata[] {
+  return [
+    {
+      key: 'name',
+      label: 'Company Name',
+      type: 'text',
+      validators: [Validators.required, Validators.minLength(2)],
+      placeholder: 'Enter company name',
+    },
+  ];
+}
+
+getTableColumns(): TableColumnMetadata<CompanyDto>[] {
+  return [
+    { key: 'name', label: 'Company', sortable: true },
     { key: 'id', label: 'ID', sortable: true },
   ];
+}
+```
 
-  rowActions = [
+**Resultado**: CRUD funcional en ~60 líneas.
+
+### CRUD Complejo: Roles
+
+```typescript
+// roles-list.service.ts
+getFormFields(): FormFieldMetadata[] {
+  return [
     {
-      label: 'Edit',
-      variant: 'secondary',
-      inline: true,
-      onClick: (row) => this.router.navigate(['/entities', row.id]),
+      key: 'name',
+      label: 'Role Name',
+      type: 'text',
+      validators: [Validators.required, Validators.minLength(2)],
+      asyncValidators: [
+        uniqueValueValidator(
+          (name) => this.isRoleNameAvailable(name),
+          this.editingItem()?.name
+        )
+      ],
     },
     {
-      label: 'Delete',
-      variant: 'danger',
-      inline: true,
-      onClick: (row) => {
-        this.deletingEntity.set(row);
-        this.showDeleteConfirm.set(true);
+      key: 'permissionsId',
+      label: 'Permissions',
+      type: 'multiselect',
+      loadOptions: () => this.userApi.getAllPermissions().pipe(
+        map(perms => perms.map(p => ({ label: p.name, value: p.name })))
+      ),
+      valueTransformer: (role: RoleDto) => {
+        return role.permissions?.map(p => p.name) || [];
+      },
+    },
+    {
+      key: 'rolesId',
+      label: 'Parent Roles',
+      type: 'multiselect',
+      loadOptions: () => this.userApi.getAllRoles().pipe(
+        map(roles => {
+          const currentId = this.editingItem()?.id;
+          return roles
+            .filter(r => r.id !== currentId) // Prevenir referencia circular
+            .map(r => ({ label: r.name, value: r.id }));
+        })
+      ),
+      valueTransformer: (role: RoleDto) => {
+        return role.roles?.map(r => r.id) || [];
       },
     },
   ];
+}
 
-  primaryAction = {
-    label: 'New Entity',
-    onClick: () => {
-      this.editingEntity.set(null);
-      this.showModal.set(true);
-    },
-  };
-
-  bulkActions = [{ label: 'Delete Selected', variant: 'outline' }];
-
-  constructor(
-    private entityService: EntityApiService,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {}
-
-  ngOnInit() {
-    this.loadEntities();
-    this.route.params.subscribe((params) => {
-      const id = params['id'];
-      if (id && this.allEntities().length) {
-        const entity = this.allEntities().find((e) => e.id === id);
-        entity
-          ? (this.editingEntity.set(entity), this.showModal.set(true))
-          : this.router.navigate(['/entities']);
-      }
-    });
-  }
-
-  loadEntities() {
-    this.loading.set(true);
-    this.entityService.getAll().subscribe({
-      next: (data) => {
-        this.allEntities.set(data);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
-  }
-
-  onFormSave() {
-    this.showModal.set(false);
-    this.editingEntity.set(null);
-    this.loadEntities();
-    this.router.navigate(['/entities']);
-  }
-
-  onFormCancel() {
-    this.showModal.set(false);
-    this.editingEntity.set(null);
-    this.router.navigate(['/entities']);
-  }
-
-  confirmDelete() {
-    const selected = this.selectedEntities();
-    const single = this.deletingEntity();
-
-    const requests =
-      selected.size > 0
-        ? Array.from(selected).map((id) => this.entityService.delete(id))
-        : [this.entityService.delete(single!.id)];
-
-    forkJoin(requests).subscribe(() => {
-      this.showDeleteConfirm.set(false);
-      this.deletingEntity.set(null);
-      this.selectedEntities.set(new Set());
-      this.loadEntities();
-    });
-  }
-
-  get deleteMessage() {
-    const count = this.selectedEntities().size;
-    return count > 0
-      ? `Delete ${count} entities?`
-      : `Delete <strong>${this.deletingEntity()?.name}</strong>?`;
-  }
+isRoleNameAvailable(name: string): Observable<boolean> {
+  const exists = this.items().some(
+    role => role.name.toLowerCase() === name.toLowerCase() &&
+            role.id !== this.editingItem()?.id
+  );
+  return of(!exists);
 }
 ```
 
-## List Template
+**Resultado**: CRUD con multiselects, validación async, y transformers en ~150 líneas.
 
-```html
-<!-- {entity}-list.html -->
-<div class="p-6">
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-[var(--color-text-primary)]">Entities</h1>
-  </div>
+---
 
-  <div class="mb-4">
-    <app-table-toolbar
-      searchPlaceholder="Search..."
-      [primaryAction]="primaryAction"
-      [bulkActions]="hasSelection() ? bulkActions : []"
-      (searchChange)="searchTerm.set($event)"
-      (bulkActionClick)="showDeleteConfirm.set(true)"
-    />
-  </div>
+## Customización
 
-  <app-table
-    [columns]="columns"
-    [data]="filteredEntities()"
-    [rowActions]="rowActions"
-    [selectable]="true"
-    [selectedItems]="selectedEntities()"
-    [loading]="loading()"
-    (selectionChange)="selectedEntities.set($event)"
-  />
-
-  <app-modal
-    [isOpen]="showModal()"
-    [title]="editingEntity() ? 'Edit' : 'New'"
-    (closed)="onFormCancel()"
-  >
-    <app-entity-form
-      [entity]="editingEntity()"
-      (save)="onFormSave($event)"
-      (cancel)="onFormCancel()"
-    />
-  </app-modal>
-
-  <app-modal
-    [isOpen]="showDeleteConfirm()"
-    title="Delete"
-    size="sm"
-    (closed)="showDeleteConfirm.set(false)"
-  >
-    <div class="p-4">
-      <p [innerHTML]="deleteMessage"></p>
-      <div class="flex gap-3 justify-end mt-4">
-        <button class="btn btn-secondary" (click)="showDeleteConfirm.set(false)">Cancel</button>
-        <button class="btn btn-error" (click)="confirmDelete()">Delete</button>
-      </div>
-    </div>
-  </app-modal>
-</div>
-```
-
-## Form Component
+### Deshabilitar Navegación por Router
 
 ```typescript
-// {entity}-form.ts
-import { Component, input, output, effect, signal } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { EntityApiService } from '@core/openapi';
+export class EntityListService extends BaseCrudService<EntityDto, SaveEntityDto> {
+  protected enableRouterNavigation = false; // Abre modal directamente
+}
+```
 
-export class EntityFormComponent {
-  entity = input<EntityDto | null>(null);
-  save = output<EntityDto>();
-  cancel = output<void>();
+### Agregar Lógica Custom al Guardar
 
-  loading = signal(false);
-  error = signal<string | null>(null);
+```typescript
+protected override onAfterFormSave(): void {
+  // Custom logic
+  this.toastService.success('Entity saved!');
+  this.analyticsService.track('entity_created');
 
-  form = this.fb.group({
-    name: [
-      '',
-      {
-        validators: [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(100),
-          Validators.pattern(/^[a-zA-Z0-9\s-]+$/),
-        ],
-        updateOn: 'blur', // Valida solo cuando el usuario sale del campo
-      },
-    ],
+  // Navegar
+  this.router.navigate(['/entities']);
+}
+```
+
+### Validación Personalizada
+
+```typescript
+// src/app/core/validators/custom-validators.ts
+export function phoneValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const valid = /^\+?[\d\s-]+$/.test(control.value);
+    return valid ? null : { invalidPhone: true };
+  };
+}
+
+// Usar en metadata:
+{
+  key: 'phone',
+  validators: [phoneValidator()],
+}
+```
+
+---
+
+## Testing
+
+### Unit Test del Servicio
+
+```typescript
+// entity-list.service.spec.ts
+describe('EntityListService', () => {
+  let service: EntityListService;
+  let apiMock: jasmine.SpyObj<EntityApiService>;
+
+  beforeEach(() => {
+    apiMock = jasmine.createSpyObj('EntityApiService', ['getAll', 'save', 'delete']);
+
+    TestBed.configureTestingModule({
+      providers: [EntityListService, { provide: EntityApiService, use: apiMock }],
+    });
+
+    service = TestBed.inject(EntityListService);
   });
 
-  constructor(
-    private fb: FormBuilder,
-    private service: EntityApiService,
-  ) {
-    effect(() => {
-      const e = this.entity();
-      e ? this.form.patchValue(e) : this.form.reset();
+  it('should load items', (done) => {
+    const mockData = [{ id: '1', name: 'Test' }];
+    apiMock.getAll.and.returnValue(of(mockData));
+
+    service.loadAllItems().subscribe(() => {
+      expect(service.items().length).toBe(1);
+      done();
     });
-  }
+  });
+});
+```
 
-  onSubmit() {
-    if (this.form.invalid) return this.form.markAllAsTouched();
+### E2E Test (Playwright)
 
-    this.loading.set(true);
-    const value = this.form.value;
-    const current = this.entity();
+```typescript
+// entity.spec.ts
+import { test, expect } from '@playwright/test';
 
-    const request = current
-      ? this.service.update({ id: current.id, ...value })
-      : this.service.create(value);
+test('should create entity', async ({ page }) => {
+  await page.goto('/entities');
 
-    request.subscribe({
-      next: (res) => {
-        this.loading.set(false);
-        this.save.emit(res);
-      },
-      error: () => {
-        this.error.set('Operation failed');
-        this.loading.set(false);
-      },
-    });
-  }
+  // Click "New Entity"
+  await page.click('[data-testid="btn-new"]');
 
-  get nameControl() {
-    return this.form.get('name');
-  }
-  get isEditMode() {
-    return this.entity() !== null;
-  }
+  // Fill form
+  await page.fill('[data-testid="input-name"]', 'Test Entity');
+  await page.fill('[data-testid="input-email"]', 'test@example.com');
+
+  // Submit
+  await page.click('[data-testid="btn-submit"]');
+
+  // Verify
+  await expect(page.locator('text=Test Entity')).toBeVisible();
+});
+
+test('should edit entity', async ({ page }) => {
+  await page.goto('/entities');
+
+  // Click edit on first row
+  await page.click('button:has-text("Edit")');
+
+  // Modify name
+  await page.fill('[data-testid="input-name"]', 'Updated Name');
+  await page.click('[data-testid="btn-submit"]');
+
+  // Verify
+  await expect(page.locator('text=Updated Name')).toBeVisible();
+});
+```
+
+Ver [PLAYWRIGHT-GUIDE.md](./testing/PLAYWRIGHT-GUIDE.md) para más detalles.
+
+---
+
+## Troubleshooting
+
+### Error: "effect() can only be used within an injection context"
+
+**Problema**: Estás usando `effect()` en `ngOnInit()`.
+
+**Solución**: Mueve `effect()` al constructor:
+
+```typescript
+// ❌ Incorrecto
+ngOnInit() {
+  effect(() => { ... });
+}
+
+// ✅ Correcto
+constructor() {
+  effect(() => { ... });
 }
 ```
 
-### Validación de Formularios
+### Modal no se abre al editar
 
-**updateOn Strategy:**
+**Problema**: La navegación por router no abre el modal.
+
+**Causa**: El efecto que escucha cambios de ruta no está funcionando.
+
+**Solución**: Verifica que:
+
+1. La ruta incluye `:id` parameter
+2. `enableRouterNavigation = true` en el servicio
+3. Items están cargados antes de navegar
+
+### Validación async no funciona
+
+**Problema**: Async validator no se ejecuta.
+
+**Solución**: Verifica que:
+
+1. Agregaste `asyncValidators` en metadata
+2. El form control tiene el validator aplicado
+3. El método retorna `Observable<boolean>`
 
 ```typescript
-// ✅ Recomendado: 'blur' - Valida cuando el usuario sale del campo
-name: [
-  '',
-  {
-    validators: [Validators.required, Validators.minLength(2)],
-    updateOn: 'blur',
-  },
-];
-
-// ❌ Evitar: 'change' - Valida en cada tecla (UX agresiva)
-// ⚠️  Default: Si no especificas, usa 'change'
+// Verificar que retorna Observable
+isNameAvailable(name: string): Observable<boolean> {
+  return of(true); // No solo: return true;
+}
 ```
 
-**Validadores comunes:**
+---
 
-```typescript
-Validators.required; // Campo requerido
-Validators.minLength(2); // Mínimo 2 caracteres
-Validators.maxLength(100); // Máximo 100 caracteres
-Validators.email; // Email válido
-Validators.pattern(/^[a-zA-Z0-9\s-]+$/); // Solo alfanuméricos, espacios y guiones
-Validators.min(0); // Número mínimo
-Validators.max(100); // Número máximo
-```
+## Checklist de Implementación
 
-## Form Template
+Antes de considerar el CRUD completo:
 
-```html
-<!-- {entity}-form.html -->
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6">
-  @if (error()) {
-  <div class="alert alert-error mb-4">{{ error() }}</div>
-  }
+**Servicio**:
 
-  <div class="space-y-4">
-    <div>
-      <label class="form-label">Name <span class="text-[var(--color-error)]">*</span></label>
-      <app-base-input
-        formControlName="name"
-        placeholder="Enter name"
-        [testId]="'entity-name-input'"
-        [class.form-input-error]="nameControl?.invalid && nameControl?.touched"
-      />
-      @if (nameControl?.invalid && nameControl?.touched) {
-      <div class="text-sm text-[var(--color-error)] mt-1">
-        @if (nameControl?.errors?.['required']) { <span>Required</span> } @if
-        (nameControl?.errors?.['minlength']) { <span>Min 2 chars</span> }
-      </div>
-      }
-    </div>
-  </div>
+- [ ] Extiende `BaseCrudService<TDto, TSaveDto>`
+- [ ] Implementa `fetchAllItems()`
+- [ ] Implementa `performSave()`
+- [ ] Implementa `performDelete()`
+- [ ] Define `getTableColumns()`
+- [ ] Define `getFormFields()`
+- [ ] Define `getRouteBasePath()`
+- [ ] Hooks `onAfterFormSave()` y `onAfterFormCancel()` si necesario
 
-  <div class="flex gap-3 justify-end mt-6 pt-4 border-t">
-    <button
-      type="button"
-      class="btn btn-secondary"
-      [attr.data-testid]="'entity-form-cancel-button'"
-      (click)="cancel.emit()"
-      [disabled]="loading()"
-    >
-      Cancel
-    </button>
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [attr.data-testid]="'entity-form-submit-button'"
-      [disabled]="loading() || form.invalid"
-    >
-      {{ loading() ? 'Saving...' : (isEditMode ? 'Update' : 'Create') }}
-    </button>
-  </div>
-</form>
-```
+**Componente**:
 
-### data-testid para E2E Testing
+- [ ] Importa `GenericCrudListComponent`
+- [ ] Provee el servicio
+- [ ] Template: `<app-generic-crud-list [service]="service" />`
 
-**Agregar data-testid facilita los tests E2E con Playwright:**
+**Rutas**:
 
-```html
-<!-- Inputs usan [testId] -->
-<app-base-input [testId]="'entity-name-input'" formControlName="name" />
+- [ ] Ruta base: `{ path: 'entities', component: ... }`
+- [ ] Ruta edit: `{ path: ':id', component: ... }`
 
-<!-- Botones usan [attr.data-testid] -->
-<button [attr.data-testid]="'entity-form-submit-button'">Submit</button>
+**Testing** (opcional pero recomendado):
 
-<!-- Modales usan [testId] -->
-<app-modal [testId]="'entity-form-modal'" [isOpen]="showModal()"></app-modal>
-```
+- [ ] Unit tests del servicio
+- [ ] E2E test de crear/editar/eliminar
 
-**Patrón de nombres:**
+**Validación**:
 
-- Inputs: `{entity}-{field}-input`
-- Botones: `{entity}-form-{action}-button`
-- Modales: `{entity}-form-modal`
-- Errores: `{entity}-{field}-input-error` (automático en base-input)
+- [ ] Validaciones client-side en metadata
+- [ ] **CRÍTICO**: Validaciones server-side en API
 
-## Checklist
+---
 
-- [ ] Files: list.ts/html, form.ts/html, routes
-- [ ] List: signals (all, loading, modals, selection), computed (filtered, hasSelection)
-- [ ] Form: input/output, effect para sync, create/update logic
-- [ ] Templates: toolbar + table + 2 modals (form, delete)
-- [ ] CRUD: load, create, update, delete (single/bulk), search
+## Próximos Pasos
+
+1. **Crear tu primer CRUD**: Sigue esta guía paso a paso
+2. **Leer arquitectura**: Ver [CRUD-ARCHITECTURE.md](./CRUD-ARCHITECTURE.md) para entender cómo funciona
+3. **Ver ejemplos**: Estudiar `features/companies/` y `features/roles/`
+4. **Agregar tests**: Ver [PLAYWRIGHT-GUIDE.md](./testing/PLAYWRIGHT-GUIDE.md)
+
+---
+
+## Recursos
+
+- **Arquitectura técnica**: [CRUD-ARCHITECTURE.md](./CRUD-ARCHITECTURE.md)
+- **POC completo**: [GENERIC-CRUD-POC.md](./GENERIC-CRUD-POC.md)
+- **Testing E2E**: [testing/PLAYWRIGHT-GUIDE.md](./testing/PLAYWRIGHT-GUIDE.md)
+- **Ejemplo simple**: `src/app/features/companies/`
+- **Ejemplo complejo**: `src/app/features/roles/`
+
+---
+
+**¿Dudas?** Consulta [CRUD-ARCHITECTURE.md](./CRUD-ARCHITECTURE.md) o pregunta al equipo.

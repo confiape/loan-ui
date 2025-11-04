@@ -5,11 +5,16 @@ export class CompaniesListPage extends BasePage {
   // Actions
   async openNewForm() {
     await this.page.getByRole('button', { name: /new company/i }).click();
-    await this.page.getByTestId('company-form-modal').waitFor({ state: 'visible' });
+    await this.page.getByTestId('companies-modal').waitFor({ state: 'visible' });
   }
 
   async searchCompany(term: string) {
     await this.page.getByTestId('companies-search-input').fill(term);
+    await this.page.waitForTimeout(300); // Debounce
+  }
+
+  async clearSearch() {
+    await this.page.getByTestId('companies-search-input').clear();
     await this.page.waitForTimeout(300); // Debounce
   }
 
@@ -19,28 +24,34 @@ export class CompaniesListPage extends BasePage {
   }
 
   async editCompany(name: string) {
+    // Search for the company first to handle pagination
+    await this.searchCompany(name);
     const row = await this.getRowByName(name);
     await row.getByRole('button', { name: /edit/i }).click();
     await this.page.waitForURL(`/companies/**`);
   }
 
   async deleteCompany(name: string) {
+    // Search for the company first to handle pagination
+    await this.searchCompany(name);
     const row = await this.getRowByName(name);
     await row.getByRole('button', { name: /delete/i }).click();
-    await expect(this.page.getByTestId('company-delete-modal')).toBeVisible();
+    await expect(this.page.getByTestId('companies-delete-modal')).toBeVisible();
   }
 
   async confirmDelete() {
-    await this.page.getByTestId('delete-confirm-button').click();
-    await this.page.getByTestId('company-delete-modal').waitFor({ state: 'hidden' });
+    await this.page.getByTestId('companies-btn-confirm-delete').click();
+    await this.page.getByTestId('companies-delete-modal').waitFor({ state: 'hidden' });
   }
 
   async cancelDelete() {
-    await this.page.getByTestId('delete-cancel-button').click();
-    await this.page.getByTestId('company-delete-modal').waitFor({ state: 'hidden' });
+    await this.page.getByTestId('companies-btn-cancel-delete').click();
+    await this.page.getByTestId('companies-delete-modal').waitFor({ state: 'hidden' });
   }
 
   async selectRow(name: string) {
+    // Search for the company first to handle pagination
+    await this.searchCompany(name);
     const row = await this.getRowByName(name);
     await row.locator('input[type="checkbox"]').check();
   }
@@ -51,7 +62,7 @@ export class CompaniesListPage extends BasePage {
 
   async bulkDelete() {
     await this.page.getByRole('button', { name: /delete selected/i }).click();
-    await expect(this.page.getByTestId('company-delete-modal')).toBeVisible();
+    await expect(this.page.getByTestId('companies-delete-modal')).toBeVisible();
     await this.confirmDelete();
   }
 
@@ -61,6 +72,8 @@ export class CompaniesListPage extends BasePage {
 
   // Assertions
   async expectCompanyInList(name: string) {
+    // Search for the company first to handle pagination
+    await this.searchCompany(name);
     const row = await this.getRowByName(name);
     await expect(row).toBeVisible();
   }
@@ -83,11 +96,11 @@ export class CompaniesListPage extends BasePage {
   }
 
   async expectDeleteModalVisible() {
-    await expect(this.page.getByTestId('company-delete-modal')).toBeVisible();
+    await expect(this.page.getByTestId('companies-delete-modal')).toBeVisible();
   }
 
   async expectDeleteModalHidden() {
-    await expect(this.page.getByTestId('company-delete-modal')).not.toBeVisible();
+    await expect(this.page.getByTestId('companies-delete-modal')).not.toBeVisible();
   }
 
   async expectPageTitle(title: string | RegExp) {

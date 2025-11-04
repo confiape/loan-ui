@@ -4,37 +4,37 @@ import { BasePage } from './base.page';
 export class CompanyFormPage extends BasePage {
   // Actions
   async fillCompanyName(name: string) {
-    const input = this.page.getByTestId('company-name-input');
+    const input = this.page.getByTestId('companies-input-name');
     await input.fill(name);
     await input.blur(); // Trigger validation with updateOn: 'blur'
     await this.page.waitForTimeout(100); // Wait for Angular to process validation
   }
 
   async submit() {
-    await this.page.getByTestId('company-form-submit-button').click();
+    await this.page.getByTestId('companies-btn-submit').click();
   }
 
   async submitForced() {
     // Force click for testing validation when button is disabled
-    await this.page.getByTestId('company-form-submit-button').click({ force: true });
+    await this.page.getByTestId('companies-btn-submit').click({ force: true });
   }
 
   async triggerValidation() {
     // Fill and clear to trigger Angular validation (makes field dirty + touched)
-    const input = this.page.getByTestId('company-name-input');
+    const input = this.page.getByTestId('companies-input-name');
     await input.fill('x'); // Write something
     await input.clear(); // Clear it (marks dirty + touched)
     await input.blur(); // Ensure blur event fires
   }
 
   async submitAndWait() {
-    await this.page.getByTestId('company-form-submit-button').click();
-    await this.page.getByTestId('company-form-modal').waitFor({ state: 'hidden' });
+    await this.page.getByTestId('companies-btn-submit').click();
+    await this.page.getByTestId('companies-modal').waitFor({ state: 'hidden' });
   }
 
   async cancel() {
-    await this.page.getByTestId('company-form-cancel-button').click();
-    await this.page.getByTestId('company-form-modal').waitFor({ state: 'hidden' });
+    await this.page.getByTestId('companies-btn-cancel').click();
+    await this.page.getByTestId('companies-modal').waitFor({ state: 'hidden' });
   }
 
   async fillAndSubmit(name: string) {
@@ -44,7 +44,7 @@ export class CompanyFormPage extends BasePage {
 
   // Assertions
   async expectModalOpen(title?: string | RegExp) {
-    const modal = this.page.getByTestId('company-form-modal');
+    const modal = this.page.getByTestId('companies-modal');
     await expect(modal).toBeVisible();
     if (title) {
       await expect(modal.locator('.modal-title').first()).toContainText(title);
@@ -52,21 +52,29 @@ export class CompanyFormPage extends BasePage {
   }
 
   async expectModalClosed() {
-    await expect(this.page.getByTestId('company-form-modal')).not.toBeVisible();
+    await expect(this.page.getByTestId('companies-modal')).not.toBeVisible();
   }
 
   async expectValidationError(message: string | RegExp) {
-    const errorMessage = this.page.getByTestId('company-name-input-error');
+    // Validation errors appear as siblings to the input, not with a specific testId
+    const input = this.page.getByTestId('companies-input-name');
+    const errorMessage = input
+      .locator('xpath=following-sibling::p[contains(@class, "text-red")]')
+      .first();
     await expect(errorMessage).toBeVisible();
     await expect(errorMessage).toContainText(message);
   }
 
   async expectNoValidationError() {
-    await expect(this.page.getByTestId('company-name-input-error')).not.toBeVisible();
+    const input = this.page.getByTestId('companies-input-name');
+    const errorMessage = input
+      .locator('xpath=following-sibling::p[contains(@class, "text-red")]')
+      .first();
+    await expect(errorMessage).not.toBeVisible();
   }
 
   async expectAlertError(message?: string | RegExp) {
-    const alertError = this.page.getByTestId('company-form-modal').locator('.alert-error');
+    const alertError = this.page.getByTestId('companies-modal').locator('.alert-error');
     await expect(alertError).toBeVisible();
     if (message) {
       await expect(alertError).toContainText(message);
@@ -74,19 +82,19 @@ export class CompanyFormPage extends BasePage {
   }
 
   async expectSubmitDisabled() {
-    await expect(this.page.getByTestId('company-form-submit-button')).toBeDisabled();
+    await expect(this.page.getByTestId('companies-btn-submit')).toBeDisabled();
   }
 
   async expectSubmitEnabled() {
-    await expect(this.page.getByTestId('company-form-submit-button')).toBeEnabled();
+    await expect(this.page.getByTestId('companies-btn-submit')).toBeEnabled();
   }
 
   async expectFormTitle(title: string | RegExp) {
-    const modalTitle = this.page.getByTestId('company-form-modal').locator('.modal-title').first();
+    const modalTitle = this.page.getByTestId('companies-modal').locator('.modal-title').first();
     await expect(modalTitle).toContainText(title);
   }
 
   async expectNameValue(value: string) {
-    await expect(this.page.getByTestId('company-name-input')).toHaveValue(value);
+    await expect(this.page.getByTestId('companies-input-name')).toHaveValue(value);
   }
 }

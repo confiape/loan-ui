@@ -2,6 +2,7 @@ import { test, expect } from '../../fixtures/auth.fixture';
 import { CompaniesListPage } from '../../pages/companies-list.page';
 import { CompanyFormPage } from '../../pages/company-form.page';
 import { testCompanies, generateCompanyName } from '../../fixtures/mock-data';
+import { searchInTable } from '../../fixtures/test-helpers';
 
 test.describe('Companies CRUD', () => {
   let listPage: CompaniesListPage;
@@ -112,6 +113,7 @@ test.describe('Companies CRUD', () => {
       await formPage.fillAndSubmit(originalName);
 
       // Edit it
+      await listPage.searchCompany(originalName);
       await listPage.editCompany(originalName);
       await formPage.expectModalOpen(/edit company/i);
 
@@ -120,6 +122,7 @@ test.describe('Companies CRUD', () => {
       await formPage.submitAndWait();
 
       await formPage.expectModalClosed();
+      await listPage.searchCompany(updatedName);
       await listPage.expectCompanyInList(updatedName);
       await listPage.expectCompanyNotInList(originalName);
     });
@@ -197,7 +200,7 @@ test.describe('Companies CRUD', () => {
       await listPage.openNewForm();
       await formPage.fillAndSubmit(company2);
 
-      // Select both
+      // Select both companies individually (searches for each one)
       await listPage.selectRow(company1);
       await listPage.selectRow(company2);
 
@@ -216,7 +219,7 @@ test.describe('Companies CRUD', () => {
       await formPage.fillCompanyName(specialName);
 
       // Should show validation error for invalid pattern
-      await formPage.expectValidationError(/does not match/i);
+      await formPage.expectValidationError(/invalid/i);
       await formPage.expectSubmitDisabled();
     });
 

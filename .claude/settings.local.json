@@ -26,7 +26,13 @@
       "Bash(git mv:*)",
       "Bash(npm run lint)",
       "Bash(npx prettier:*)",
-      "Bash(npm run test)"
+      "Bash(npm run test)",
+      "Bash(npm run test:e2e:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(awk:*)",
+      "Bash(timeout 90 npx playwright test:*)",
+      "Bash(timeout 120 npm run test:e2e:*)",
+      "Bash(timeout 60 npx playwright test:*)"
     ],
     "deny": [],
     "ask": []

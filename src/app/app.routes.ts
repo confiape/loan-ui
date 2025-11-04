@@ -2,10 +2,10 @@ import { Routes } from '@angular/router';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { Dashboard } from './features/dashboard/dashboard';
 import { LoginComponent } from './features/auth/login/login';
-import { CompaniesListComponent } from './features/companies/companies-list/companies-list';
-import { RolesListComponent } from './features/roles/roles-list/roles-list';
 import { authGuard } from './guards/auth.guard';
 import { loginGuard } from './guards/login.guard';
+import { CompaniesListComponent } from './features/companies/companies-list/companies-list';
+import { RolesListComponent } from './features/roles/roles-list/roles-list';
 
 export const routes: Routes = [
   {

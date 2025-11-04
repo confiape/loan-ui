@@ -1,0 +1,342 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+  <!-- Error message -->
+  @if (error()) {
+    <div class="alert alert-error">
+      <svg
+        class="alert-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <!-- Form fields -->
+  @for (field of fields(); track field.key) {
+    @if (shouldShowField(field)) {
+      <div [class]="'form-group ' + (field.cssClass || '')">
+        <!-- Text, Email, Password, Number inputs -->
+        @if (
+          field.type === 'text' ||
+          field.type === 'email' ||
+          field.type === 'password' ||
+          field.type === 'number'
+        ) {
+          <label class="form-label" [for]="field.key">
+            {{ field.label }}
+            @if (isFieldRequired(field.key)) {
+              <span class="text-red-500">*</span>
+            }
+          </label>
+          <input
+            [id]="field.key"
+            [type]="field.type"
+            [formControlName]="field.key"
+            [placeholder]="field.placeholder || ''"
+            [readonly]="field.readonly || false"
+            [attr.data-testid]="testIdPrefix() + '-input-' + field.key"
+            class="form-input"
+            [class.form-input-error]="getFieldError(field.key)"
+          />
+          @if (getFieldError(field.key)) {
+            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+              {{ getFieldError(field.key) }}
+            </p>
+          }
+          @if (field.helpText && !getFieldError(field.key)) {
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.helpText }}</p>
+          }
+        }
+
+        <!-- Textarea -->
+        @if (field.type === 'textarea') {
+          <label class="form-label" [for]="field.key">
+            {{ field.label }}
+            @if (isFieldRequired(field.key)) {
+              <span class="text-red-500">*</span>
+            }
+          </label>
+          <textarea
+            [id]="field.key"
+            [formControlName]="field.key"
+            [placeholder]="field.placeholder || ''"
+            [readonly]="field.readonly || false"
+            [attr.data-testid]="testIdPrefix() + '-textarea-' + field.key"
+            class="form-input"
+            [class.form-input-error]="getFieldError(field.key)"
+            rows="4"
+          ></textarea>
+          @if (getFieldError(field.key)) {
+            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+              {{ getFieldError(field.key) }}
+            </p>
+          }
+          @if (field.helpText && !getFieldError(field.key)) {
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.helpText }}</p>
+          }
+        }
+
+        <!-- Date input -->
+        @if (field.type === 'date') {
+          <label class="form-label" [for]="field.key">
+            {{ field.label }}
+            @if (isFieldRequired(field.key)) {
+              <span class="text-red-500">*</span>
+            }
+          </label>
+          <input
+            [id]="field.key"
+            type="date"
+            [formControlName]="field.key"
+            [readonly]="field.readonly || false"
+            [attr.data-testid]="testIdPrefix() + '-date-' + field.key"
+            class="form-input"
+            [class.form-input-error]="getFieldError(field.key)"
+          />
+          @if (getFieldError(field.key)) {
+            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+              {{ getFieldError(field.key) }}
+            </p>
+          }
+          @if (field.helpText && !getFieldError(field.key)) {
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.helpText }}</p>
+          }
+        }
+
+        <!-- Checkbox -->
+        @if (field.type === 'checkbox') {
+          <div class="flex items-center">
+            <input
+              [id]="field.key"
+              type="checkbox"
+              [formControlName]="field.key"
+              [attr.data-testid]="testIdPrefix() + '-checkbox-' + field.key"
+              class="form-checkbox"
+            />
+            <label
+              [for]="field.key"
+              class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              {{ field.label }}
+              @if (isFieldRequired(field.key)) {
+                <span class="text-red-500">*</span>
+              }
+            </label>
+          </div>
+          @if (getFieldError(field.key)) {
+            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+              {{ getFieldError(field.key) }}
+            </p>
+          }
+          @if (field.helpText && !getFieldError(field.key)) {
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.helpText }}</p>
+          }
+        }
+
+        <!-- Radio buttons -->
+        @if (field.type === 'radio') {
+          <div class="form-label">
+            {{ field.label }}
+            @if (isFieldRequired(field.key)) {
+              <span class="text-red-500">*</span>
+            }
+          </div>
+          <div class="space-y-2">
+            @for (option of getOptions(field.key); track option.value) {
+              <div class="flex items-center">
+                <input
+                  [id]="field.key + '-' + option.value"
+                  type="radio"
+                  [formControlName]="field.key"
+                  [value]="option.value"
+                  [attr.data-testid]="testIdPrefix() + '-radio-' + field.key + '-' + option.value"
+                  class="form-checkbox"
+                />
+                <label
+                  [for]="field.key + '-' + option.value"
+                  class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  {{ option.label }}
+                </label>
+              </div>
+            }
+          </div>
+          @if (getFieldError(field.key)) {
+            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+              {{ getFieldError(field.key) }}
+            </p>
+          }
+          @if (field.helpText && !getFieldError(field.key)) {
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.helpText }}</p>
+          }
+        }
+
+        <!-- Select (simple) -->
+        @if (field.type === 'select') {
+          <label class="form-label" [for]="field.key">
+            {{ field.label }}
+            @if (isFieldRequired(field.key)) {
+              <span class="text-red-500">*</span>
+            }
+          </label>
+          <select
+            [id]="field.key"
+            [formControlName]="field.key"
+            [attr.data-testid]="testIdPrefix() + '-select-' + field.key"
+            [disabled]="loadingOptions()"
+            class="form-input"
+            [class.form-input-error]="getFieldError(field.key)"
+          >
+            <option value="">
+              {{
+                loadingOptions() ? 'Loading options...' : field.placeholder || 'Select an option'
+              }}
+            </option>
+            @for (option of getOptions(field.key); track option.value) {
+              <option [value]="option.value">
+                {{ option.label }}
+              </option>
+            }
+          </select>
+          @if (loadingOptions()) {
+            <p class="mt-1 text-sm text-blue-600 dark:text-blue-400 flex items-center">
+              <svg
+                class="animate-spin -ml-1 mr-2 h-4 w-4 inline"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Loading options...
+            </p>
+          }
+          @if (getFieldError(field.key) && !loadingOptions()) {
+            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+              {{ getFieldError(field.key) }}
+            </p>
+          }
+          @if (field.helpText && !getFieldError(field.key) && !loadingOptions()) {
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.helpText }}</p>
+          }
+        }
+
+        <!-- MultiSelect -->
+        @if (field.type === 'multiselect') {
+          <div class="form-label">
+            {{ field.label }}
+            @if (isFieldRequired(field.key)) {
+              <span class="text-red-500">*</span>
+            }
+          </div>
+          <app-multiselect
+            [items]="toMultiSelectItems(getOptions(field.key))"
+            [formControlName]="field.key"
+            [placeholder]="field.placeholder || 'Select options'"
+            [disabled]="loadingOptions()"
+            [searchable]="true"
+            [attr.data-testid]="testIdPrefix() + '-multiselect-' + field.key"
+          />
+          @if (loadingOptions()) {
+            <p class="mt-1 text-sm text-blue-600 dark:text-blue-400 flex items-center">
+              <svg
+                class="animate-spin -ml-1 mr-2 h-4 w-4 inline"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Loading options...
+            </p>
+          }
+          @if (getFieldError(field.key) && !loadingOptions()) {
+            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+              {{ getFieldError(field.key) }}
+            </p>
+          }
+          @if (field.helpText && !getFieldError(field.key) && !loadingOptions()) {
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ field.helpText }}</p>
+          }
+        }
+      </div>
+    }
+  }
+
+  <!-- Form actions -->
+  <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="btn btn-secondary"
+      [attr.data-testid]="testIdPrefix() + '-btn-cancel'"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      [disabled]="loading() || form.invalid"
+      class="btn btn-primary"
+      [attr.data-testid]="testIdPrefix() + '-btn-submit'"
+    >
+      @if (loading()) {
+        <svg
+          class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        Saving...
+      } @else {
+        {{ isEditMode ? 'Update' : 'Create' }}
+      }
+    </button>
+  </div>
+</form>
